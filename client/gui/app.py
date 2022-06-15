@@ -1,7 +1,7 @@
 from tkinter import *
-from register import RegisterFrame
-from homepage import HomepageFrame
-from login import LoginFrame
+from gui.register import RegisterFrame
+from gui.homepage import HomepageFrame
+from gui.login import LoginFrame
 
 class App(Tk):
     def __init__(self):
