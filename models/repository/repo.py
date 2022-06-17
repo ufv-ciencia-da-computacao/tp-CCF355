@@ -29,14 +29,14 @@ class UsersRepository(AbstractRepository):
     def __init__(self, session):
         self.session = session
 
-    def add(self, user: entity.User):
+    def add(self, user: entity.Users):
         self.session.add(user)
 
-    def get(self, user_id: int) -> entity.User:
-        return self.session.query(entity.User).filter_by(user_id=user_id).one()
+    def get(self, user_id: int) -> entity.Users:
+        return self.session.query(entity.Users).filter_by(user_id=user_id).one()
 
     def list(self):
-        return self.session.query(entity.User).all()
+        return self.session.query(entity.Users).all()
 
 
 class ListStickersRepository(AbstractRepository):

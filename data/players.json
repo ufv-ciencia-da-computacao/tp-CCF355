@@ -1,0 +1,442 @@
+[   
+    {
+        "playername": "Flekken",
+        "country": "Holanda",
+        "rarity": "1"
+    },
+    {
+        "playername": "De Ligt",
+        "country": "Holanda",
+        "rarity": "2"
+    },
+    {
+        "playername": "Van Dijk",
+        "country": "Holanda",
+        "rarity": "3"
+    },
+    {
+        "playername": "Ake",
+        "country": "Holanda",
+        "rarity": "1"
+    },
+    {
+        "playername": "Dumfries",
+        "country": "Holanda",
+        "rarity": "1"
+    },
+    {
+        "playername": "Berghuis",
+        "country": "Holanda",
+        "rarity": "1"
+    },
+    {
+        "playername": "Koopmeiners",
+        "country": "Holanda",
+        "rarity": "1"
+    },
+    {
+        "playername": "Frenkie de Jong",
+        "country": "Holanda",
+        "rarity": "2"
+    },
+    {
+        "playername": "Blind",
+        "country": "Holanda",
+        "rarity": "2"
+    },
+    {
+        "playername": "Weghorst",
+        "country": "Holanda",
+        "rarity": "1"
+    },
+    {
+        "playername": "Memphis Depay",
+        "country": "Holanda",
+        "rarity": "3"
+    },
+    {
+        "playername": "Thibaut Courtois",
+        "country": "Bélgica",
+        "rarity": "3"
+    },
+    {
+        "playername": "Toby Alderweireld",
+        "country": "Bélgica",
+        "rarity": "1"
+    },
+    {
+        "playername": "Denayer",
+        "country": "Bélgica",
+        "rarity": "1"
+    },
+    {
+        "playername": "Vertonghen",
+        "country": "Bélgica",
+        "rarity": "1"
+    },
+    {
+        "playername": "Meunier",
+        "country": "Bélgica",
+        "rarity": "1"
+    },
+    {
+        "playername": "Tielemans",
+        "country": "Bélgica",
+        "rarity": "1"
+    },
+    {
+        "playername": "Witsel",
+        "country": "Bélgica",
+        "rarity": "1"
+    },
+    {
+        "playername": "Yannick Carrasco",
+        "country": "Bélgica",
+        "rarity": "2"
+    },
+    {
+        "playername": "Eden Hazard",
+        "country": "Bélgica",
+        "rarity": "3"
+    },
+    {
+        "playername": "Romelu Lukaku",
+        "country": "Bélgica",
+        "rarity": "3"
+    },
+    {
+        "playername": "Kevin De Bruyne",
+        "country": "Bélgica",
+        "rarity": "3"
+    },
+    {
+        "playername": "Emiliano Martínez",
+        "country": "Argentina",
+        "rarity": "1"
+    },
+    {
+        "playername": "Molina",
+        "country": "Argentina",
+        "rarity": "1"
+    },
+    {
+        "playername": "Romero",
+        "country": "Argentina",
+        "rarity": "1"
+    },
+    {
+        "playername": "Otamendi",
+        "country": "Argentina",
+        "rarity": "3"
+    },
+    {
+        "playername": "Tagliafico",
+        "country": "Argentina",
+        "rarity": "1"
+    },
+    {
+        "playername": "Rodrigo De Paul",
+        "country": "Argentina",
+        "rarity": "1"
+    },
+    {
+        "playername": "Guido Rodríguez",
+        "country": "Argentina",
+        "rarity": "1"
+    },
+    {
+        "playername": "Lo Celso",
+        "country": "Argentina",
+        "rarity": "1"
+    },
+    {
+        "playername": "Lionel Messi",
+        "country": "Argentina",
+        "rarity": "3"
+    },
+    {
+        "playername": "Lautaro Martínez",
+        "country": "Argentina",
+        "rarity": "2"
+    },
+    {
+        "playername": "Di María",
+        "country": "Argentina",
+        "rarity": "2"
+    },
+    {
+        "playername": "Unai Simón",
+        "country": "Espanha",
+        "rarity": "1"
+    },
+    {
+        "playername": "Jordi Alba",
+        "country": "Espanha",
+        "rarity": "2"
+    },
+    {
+        "playername": "Azpilicueta",
+        "country": "Espanha",
+        "rarity": "1"
+    },
+    {
+        "playername": "Iñigo Martínez",
+        "country": "Espanha",
+        "rarity": "1"
+    },
+    {
+        "playername": "Eric García",
+        "country": "Espanha",
+        "rarity": "1"
+    },
+    {
+        "playername": "Rodri",
+        "country": "Espanha",
+        "rarity": "1"
+    },
+    {
+        "playername": "Gavi",
+        "country": "Espanha",
+        "rarity": "1"
+    },
+    {
+        "playername": "Koke",
+        "country": "Espanha",
+        "rarity": "1"
+    },
+    {
+        "playername": "Dani Olmo",
+        "country": "Espanha",
+        "rarity": "2"
+    },
+    {
+        "playername": "Ferran Torres",
+        "country": "Espanha",
+        "rarity": "2"
+    },
+    {
+        "playername": "Álvaro Morata",
+        "country": "Espanha",
+        "rarity": "2"
+    },
+    {
+        "playername": "Rui Patrício",
+        "country": "Portugal",
+        "rarity": "1"
+    },
+    {
+        "playername": "João Cancelo",
+        "country": "Portugal",
+        "rarity": "1"
+    },
+    {
+        "playername": "Nuno Mendes",
+        "country": "Portugal",
+        "rarity": "1"
+    },
+    {
+        "playername": "Pepe",
+        "country": "Portugal",
+        "rarity": "1"
+    },
+    {
+        "playername": "Danilo Pereira",
+        "country": "Portugal",
+        "rarity": "1"
+    },
+    {
+        "playername": "Ruben Neves",
+        "country": "Portugal",
+        "rarity": "1"
+    },
+    {
+        "playername": "Bernardo Silva",
+        "country": "Portugal",
+        "rarity": "2"
+    },
+    {
+        "playername": "Bruno Fernandes",
+        "country": "Portugal",
+        "rarity": "2"
+    },
+    {
+        "playername": "Cristiano Ronaldo",
+        "country": "Portugal",
+        "rarity": "3"
+    },
+    {
+        "playername": "Diogo Jota",
+        "country": "Portugal",
+        "rarity": "1"
+    },
+    {
+        "playername": "Gonçalo Guedes",
+        "country": "Portugal",
+        "rarity": "1"
+    },
+    {
+        "playername": "Alisson",
+        "country": "Brasil",
+        "rarity": "2"
+    },
+    {
+        "playername": "Guilherme Arana",
+        "country": "Brasil",
+        "rarity": "1"
+    },
+    {
+        "playername": "Éder Militão",
+        "country": "Brasil",
+        "rarity": "2"
+    },
+    {
+        "playername": "Marquinhos",
+        "country": "Brasil",
+        "rarity": "2"
+    },
+    {
+        "playername": "Daniel Alves",
+        "country": "Brasil",
+        "rarity": "1"
+    },
+    {
+        "playername": "Casemiro",
+        "country": "Brasil",
+        "rarity": "1"
+    },
+    {
+        "playername": "Lucas Paquetá",
+        "country": "Brasil",
+        "rarity": "1"
+    },
+    {
+        "playername": "Philippe Coutinho",
+        "country": "Brasil",
+        "rarity": "1"
+    },
+    {
+        "playername": "Neymar",
+        "country": "Brasil",
+        "rarity": "3"
+    },
+    {
+        "playername": "Vinicius Junior",
+        "country": "Brasil",
+        "rarity": "2"
+    },
+    {
+        "playername": "Raphinha",
+        "country": "Brasil",
+        "rarity": "1"
+    },
+    {
+        "playername": "Mike Maignan",
+        "country": "França",
+        "rarity": "1"
+    },
+    {
+        "playername": "Théo Hernández",
+        "country": "França",
+        "rarity": "1"
+    },
+    {
+        "playername": "Benjamin Pavard",
+        "country": "França",
+        "rarity": "1"
+    },
+    {
+        "playername": "N'Golo Kanté",
+        "country": "França",
+        "rarity": "2"
+    },
+    {
+        "playername": "Jules Koundé",
+        "country": "França",
+        "rarity": "1"
+    },
+    {
+        "playername": "Presnel Kimpembe",
+        "country": "França",
+        "rarity": "1"
+    },
+    {
+        "playername": "Mattéo Guendouzi",
+        "country": "França",
+        "rarity": "1"
+    },
+    {
+        "playername": "Adrien Rabiot",
+        "country": "França",
+        "rarity": "1"
+    },
+    {
+        "playername": "Kylian Mbappe",
+        "country": "França",
+        "rarity": "3"
+    },
+    {
+        "playername": "Antoine Griezmann",
+        "country": "França",
+        "rarity": "2"
+    },
+    {
+        "playername": "Karim Benzema",
+        "country": "França",
+        "rarity": "3"
+    },
+    {
+        "playername": "Jordan Pickford",
+        "country": "Inglaterra",
+        "rarity": "1"
+    },
+    {
+        "playername": "Trent Alexander-Arnold",
+        "country": "Inglaterra",
+        "rarity": "1"
+    },
+    {
+        "playername": "Kieran Trippier",
+        "country": "Inglaterra",
+        "rarity": "1"
+    },
+    {
+        "playername": "Harry Maguire",
+        "country": "Inglaterra",
+        "rarity": "1"
+    },
+    {
+        "playername": "John Stones",
+        "country": "Inglaterra",
+        "rarity": "1"
+    },
+    {
+        "playername": "Mason Mount",
+        "country": "Inglaterra",
+        "rarity": "3"
+    },
+    {
+        "playername": "Phill Foden",
+        "country": "Inglaterra",
+        "rarity": "2"
+    },
+    {
+        "playername": "Declan Rice",
+        "country": "Inglaterra",
+        "rarity": "1"
+    },
+    {
+        "playername": "Harry Kane",
+        "country": "Inglaterra",
+        "rarity": "3"
+    },
+    {
+        "playername": "Jack Grealish",
+        "country": "Inglaterra",
+        "rarity": "1"
+    },
+    {
+        "playername": "Raheem Sterling",
+        "country": "Inglaterra",
+        "rarity": "2"
+    }
+]

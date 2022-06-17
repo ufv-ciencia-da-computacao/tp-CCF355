@@ -1,6 +1,6 @@
 import sqlalchemy
 from dataclasses import dataclass
-
+from sqlalchemy.orm import sessionmaker
 
 @dataclass
 class AlbumCredentials:
@@ -21,12 +21,15 @@ class DBConfig:
 
 class SQLiteConnection:
     connection = {}
+    session = {}
 
     @classmethod
     def get_connection(cls, host):
         db_key = f"{host}"
 
         if db_key not in cls.connection:
-            cls.connection[db_key] = DBConfig(host).connection
+            config = DBConfig(host)
+            cls.connection[db_key] = config.connection
+            cls.session[db_key] = sessionmaker(config.connection)
 
         return cls.connection[db_key]

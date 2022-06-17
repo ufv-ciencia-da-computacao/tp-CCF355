@@ -4,7 +4,7 @@ from ..repository.DBConfig import SQLiteConnection, AlbumCredentials
 
 Base = declarative_base()
 
-class User(Base):
+class Users(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
