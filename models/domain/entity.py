@@ -35,21 +35,22 @@ class Stickers(Base):
         self.country = country
         self.rarity = rarity
 
+    def __repr__(self) -> str:
+        return f"(id:{self.id}, playername: {self.playername}, country: {self.country}, rarity: {self.rarity})"
+
 
 class ListStickers(Base):
     __tablename__ = "list_stickers"
     
-    user_id = Column(ForeignKey("users.id"), primary_key=True)
-    sticker_id = Column(ForeignKey("stickers.id"), primary_key=True)
-    count = Column(Integer)
+    id = Column(Integer, primary_key=Integer)
+    user_id = Column(ForeignKey("users.id"))
+    sticker_id = Column(ForeignKey("stickers.id"))
 
-    def __init__(self, user_id: int, sticker_id: int, count: int):
+    def __init__(self, user_id: int, sticker_id: int):
         self.user_id = user_id
         self.sticker_id = sticker_id
-        self.count = count
+
 
 def create_db(con):
     Base.metadata.create_all(con)
 
-def populate_db():
-    pass

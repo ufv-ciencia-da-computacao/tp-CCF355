@@ -1,5 +1,10 @@
 import abc
+from typing import List
+
+import sqlalchemy
 from ..domain import entity
+from sqlalchemy.sql.expression import func, select
+from sqlalchemy.orm import Session
 
 class AbstractRepository(abc.ABC):
     @abc.abstractmethod
@@ -12,17 +17,23 @@ class AbstractRepository(abc.ABC):
 
 
 class StickersRepository(AbstractRepository):
-    def __init__(self, session):
+    def __init__(self, session: Session):
         self.session = session
 
     def add(self, sticker: entity.Stickers):
         self.session.add(sticker)
 
     def get(self, stickers_id: int) -> entity.Stickers:
-        return self.session.query(entity.Stickers).filter_by(reference=stickers_id).one()
+        stmt = select(entity.Stickers).filter_by(reference=stickers_id)
+        return self.session.execute(stmt).one()
+
+    def get_by_rarity(self, rarity: int) -> List[entity.Stickers]:
+        stmt = select(entity.Stickers).where(entity.Stickers.rarity == rarity).order_by(func.random())
+        return self.session.execute(stmt).first()
 
     def list(self):
-        return self.session.query(entity.Stickers).all()
+        stmt = select(entity.Stickers)
+        return self.session.execute(stmt).all()
 
 
 class UsersRepository(AbstractRepository):
@@ -33,7 +44,7 @@ class UsersRepository(AbstractRepository):
         self.session.add(user)
 
     def get(self, user_id: int) -> entity.Users:
-        return self.session.query(entity.Users).filter_by(user_id=user_id).one()
+        return self.session.query(entity.Users).filter_by(id=user_id).one()
 
     def list(self):
         return self.session.query(entity.Users).all()
