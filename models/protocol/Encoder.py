@@ -1,6 +1,11 @@
 from json import JSONEncoder
 
 
-class Encoder(JSONEncoder):
-    def default(self, obj):  ## create different encoders for specific commands
-        return obj.to_json()
+class CompleteUserEncoder(JSONEncoder):
+    def default(self, obj):
+        return obj.complete_to_json()
+
+
+class CreateUserEncoder(JSONEncoder):
+    def default(self, obj):
+        return obj.create_to_json()

@@ -2,6 +2,7 @@ from models.repository.DBConfig import AlbumCredentials, SQLiteConnection
 from models.repository import repo
 from models.service.StickersPack import StickersPack
 from models.protocol import command
+import json
 
 if __name__ == "__main__":
     con = SQLiteConnection.get_connection(AlbumCredentials.host)
@@ -17,6 +18,6 @@ if __name__ == "__main__":
         user = user_repo.get(1)
 
         c = command.CreateUserCommand(user)
-        print(c.execute())
+        print(type(json.loads(c.execute())))
 
         # print(ls_repo.get_duplicated_stickers_by_user_id(1))

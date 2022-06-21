@@ -2,9 +2,10 @@ from selectors import SelectSelector
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, Enum
 import enum
 from sqlalchemy.orm import declarative_base, relationship
+
 from ..repository.DBConfig import SQLiteConnection, AlbumCredentials
 import json
-from ..protocol.Encoder import Encoder
+from models.protocol.Encoder import CompleteUserEncoder
 
 Base = declarative_base()
 
@@ -42,12 +43,13 @@ class Users(Base):
         return self.__str__()
 
     def __str__(self):
-        return json.dumps(dict(self), cls=Encoder, ensure_ascii=False)
+        return json.dumps(dict(self), cls=CompleteUserEncoder, ensure_ascii=False)
 
-    def to_json(self):
+    def complete_to_json(self):
         to_return = {
             "id": self.id,
             "username": self.username,
+            "password": self.password,
         }
         stickers = []
         for stk in self.stickers.__iter__():
@@ -72,6 +74,15 @@ class Users(Base):
             trades_received.append(t)
 
         to_return["trades_received"] = trades_received
+
+        return to_return
+
+    def create_to_json(self):
+        to_return = {
+            "id": self.id,
+            "username": self.username,
+            "password": self.password,
+        }
 
         return to_return
 

@@ -1,6 +1,8 @@
 from email.headerregistry import Address
 import socket
 
+from models.protocol.reader import Reader
+
 
 class ServerSocket:
 
@@ -22,6 +24,8 @@ class ServerSocket:
 
             with conn:
                 while True:
-                    data = conn.recv(1024)
+                    data = conn.recv(2048)
                     if not data:
                         break
+
+                    Reader.read(data)

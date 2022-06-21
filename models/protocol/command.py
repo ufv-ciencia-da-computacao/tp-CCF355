@@ -2,10 +2,9 @@ from abc import (
     ABC,
     abstractmethod,
 )
-from codecs import EncodedFile
 import json
 
-from models.protocol.Encoder import Encoder
+from .Encoder import CompleteUserEncoder, CreateUserEncoder
 
 from ..domain import entity
 
@@ -40,13 +39,10 @@ class CreateUserCommand(Command):
         self.message_type = CreateUserCommand.__name__
 
     def execute(self) -> str:
-        return json.dumps(dict(self), cls=Encoder, ensure_ascii=False)
+        return json.dumps(dict(self), cls=CreateUserEncoder, ensure_ascii=False)
 
     def __iter__(self):
         yield from {"user": self.user, "message_type": self.message_type}.items()
-
-    def __str__(self):
-        return json.dumps(dict(self), cls=Encoder, ensure_ascii=False)
 
     def __repr__(self):
         return self.__str__()
@@ -58,7 +54,13 @@ class LoginCommand(Command):
         self.message_type = LoginCommand.__name__
 
     def execute(self) -> str:
-        return json.dumps(self.__dict__, indent=4, ensure_ascii=False)
+        return json.dumps(dict(self), cls=CompleteUserEncoder, ensure_ascii=False)
+
+    def __iter__(self):
+        yield from {"user": self.user, "message_type": self.message_type}.items()
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class ViewListUserStickersCommand(Command):
@@ -71,6 +73,6 @@ class ViewListStickersCommand(Command):
         pass
 
 
-class FilterListStickers(Command):
+class FilterListStickersCommand(Command):
     def execute(self):
         pass
