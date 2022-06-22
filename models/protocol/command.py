@@ -60,14 +60,9 @@ class RequestCreateUserCommand(Command):
 
 
 class ResponseCreateUserCommand(Command):
-    def __init__(self):
+    def __init__(self, status: bool):
         self.message_type = ResponseCreateUserCommand.__name__
-
-    def as_dict(self):
-        return {
-            "status": True,
-            "message_type": self.message_type,
-        }
+        self.status = status
 
 
 class RequestLoginCommand(Command):

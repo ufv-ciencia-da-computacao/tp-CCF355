@@ -30,8 +30,12 @@ class ReaderRequest(Reader):
 
         if message_type == command.RequestCreateUserCommand.__name__:
             u = entity.Users(username=data["username"], password=data["password"])
-            self.us_repo.add(u)
-            Writer.write_command(command.ResponseCreateUserCommand)
+            try:
+                self.us_repo.add(u)
+                cmd = command.ResponseCreateUserCommand(True)
+            except Exception as e:
+                cmd = command.ResponseCreateUserCommand(False)
+            Writer.write_command(sock, cmd)
         elif message_type == command.RequestTradeUserToUserCommand.__name__:
             pass
         elif message_type == command.RequestAnswerTradeCommand.__name__:
@@ -48,5 +52,5 @@ class Writer:
             total_sent += sent
 
     @staticmethod
-    def write_command(cmd: command.Command) -> str:
-        return Writer._write_string(cmd.execute())
+    def write_command(sock: socket.socket, cmd: command.Command) -> str:
+        return Writer._write_string(sock, cmd.execute())
