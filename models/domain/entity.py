@@ -86,6 +86,11 @@ class Users(Base):
 
         return to_return
 
+    def as_dict(self):
+        ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        ret["stickers"] = [stickers.as_dict() for stickers in self.stickers]
+        return ret
+
 
 class Stickers(Base):
     __tablename__ = "stickers"
@@ -122,6 +127,9 @@ class Stickers(Base):
     # def __repr__(self) -> str:
     #     return f"(id:{self.id}, playername: {self.playername}, country: {self.country}, rarity: {self.rarity})"
 
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class ListStickers(Base):
     __tablename__ = "list_stickers"
@@ -149,6 +157,9 @@ class ListStickers(Base):
 
     def to_json(self):
         return self.__str__()
+
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class Status(enum.Enum):

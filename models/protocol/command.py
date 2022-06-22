@@ -19,8 +19,18 @@ class Command(ABC):
 
 
 class TradeUserToUserCommand(Command):  # serialize object
+    def __init__(self, user_orig: int, stickers_user_orig: list, user_dest: int, stickers_user_dest: list):
+        self.message_type = TradeUserToUserCommand.__name__
+        self.user_orig = user_orig
+        self.user_dest = user_dest
+        self.stickers_user_orig = stickers_user_orig
+        self.stickers_user_dest = stickers_user_dest
+
     def execute(self):
         pass
+    
+    def as_dict(self):
+        return self.__dict__
 
 
 class TradeUserToSystemCommand(Command):
