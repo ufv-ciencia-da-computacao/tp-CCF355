@@ -1,7 +1,7 @@
 from email.headerregistry import Address
 import socket
 
-from models.protocol.reader import Reader
+from models.protocol.ioSocket import Reader
 
 
 class ServerSocket:

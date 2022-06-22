@@ -32,6 +32,7 @@ class Users(Base):
     def as_dict(self):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
         ret["stickers"] = [stickers.as_dict() for stickers in self.stickers]
+        ret.pop("password", None)
         return ret
 
 
