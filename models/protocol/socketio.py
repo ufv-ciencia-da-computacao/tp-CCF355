@@ -8,15 +8,16 @@ from ..repository import repo
 
 class Reader:
     def _read_message(sock: socket.socket):
-        chunks = []
-        bytes_recd = 0
-        while bytes_recd < 2048:
-            chunk = sock.recv(min(2048 - bytes_recd, 2048))
-            if chunk == b"":
-                print("error")
-            chunks.append(chunk)
-            bytes_recd = bytes_recd + len(chunk)
-        return b"".join(chunks)
+        with sock:
+            chunks = []
+            while True:
+                try:
+                    data = sock.recv(4096)
+                except socket.timeout:
+                    continue
+                if not data:
+                    break
+                chunks.append(data)
 
 
 class ReaderRequest(Reader):
@@ -42,14 +43,21 @@ class ReaderRequest(Reader):
             pass
 
 
+class ReaderResponse(Reader):
+    def read(self, sock: socket.socket):
+        data = self.read_message(sock)
+        data = json.loads(data)
+        message_type = data["message_type"]
+
+        if message_type == command.ResponseCreateUserCommand.__name__:
+            return data
+
+
 class Writer:
     def _write_string(sock: socket.socket, msg: str) -> None:
-        total_sent = 0
-        while total_sent < 2048:
-            sent = sock.send(msg[total_sent:])
-            if sent == 0:
-                print("error")
-            total_sent += sent
+        sent = sock.sendall(msg)
+        if sent == 0:
+            print("error")
 
     @staticmethod
     def write_command(sock: socket.socket, cmd: command.Command) -> str:
