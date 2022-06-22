@@ -3,86 +3,73 @@ from abc import (
     abstractmethod,
 )
 import json
-
-from .Encoder import CompleteUserEncoder, CreateUserEncoder
+from typing import List
 
 from ..domain import entity
 
 
-class Command(ABC):
+class Command:
 
     message_type: str
 
-    @abstractmethod
     def execute(self):
-        pass
+        return json.dumps(self.as_dict(), ensure_ascii=False)
 
 
 class TradeUserToUserCommand(Command):  # serialize object
-    def __init__(self, user_orig: int, stickers_user_orig: list, user_dest: int, stickers_user_dest: list):
+    def __init__(
+        self,
+        user_orig: int,
+        stickers_user_orig: list,
+        user_dest: int,
+        stickers_user_dest: list,
+    ):
         self.message_type = TradeUserToUserCommand.__name__
         self.user_orig = user_orig
         self.user_dest = user_dest
         self.stickers_user_orig = stickers_user_orig
         self.stickers_user_dest = stickers_user_dest
 
-    def execute(self):
-        pass
-    
     def as_dict(self):
         return self.__dict__
 
 
-class TradeUserToSystemCommand(Command):
-    def execute(self):
-        pass
-
-
 class AcceptTradeCommand(Command):
-    def execute(self):
+    def as_dict(self):
         pass
 
 
-class CreateUserCommand(Command):
-    def __init__(self, user: entity.Users) -> None:
-        self.user = user
-        self.message_type = CreateUserCommand.__name__
-
-    def execute(self) -> str:
-        return json.dumps(dict(self), cls=CreateUserEncoder, ensure_ascii=False)
-
-    def __iter__(self):
-        yield from {"user": self.user, "message_type": self.message_type}.items()
-
-    def __repr__(self):
-        return self.__str__()
-
-
-class LoginCommand(Command):
-    def __init__(self, user: entity.Users) -> None:
-        self.user = user
-        self.message_type = LoginCommand.__name__
-
-    def execute(self) -> str:
-        return json.dumps(dict(self), cls=CompleteUserEncoder, ensure_ascii=False)
-
-    def __iter__(self):
-        yield from {"user": self.user, "message_type": self.message_type}.items()
-
-    def __repr__(self):
-        return self.__str__()
-
-
-class ViewListUserStickersCommand(Command):
-    def execute(self):
+class RecusedTradeCommand(Command):
+    def as_dict(self):
         pass
 
 
-class ViewListStickersCommand(Command):
-    def execute(self):
-        pass
+class RequestCreateLoginCommand(Command):
+    def __init__(self, name: str, password: str) -> None:
+        self.name = name
+        self.password = password
+        self.message_type = RequestCreateLoginCommand.__name__
+
+    def as_dict(self):
+        return {"name": self.name, "password": self.password}
 
 
-class FilterListStickersCommand(Command):
-    def execute(self):
-        pass
+class RequestListUserStickersCommand(Command):
+    def __init__(self, user_id: int) -> None:
+        self.user_id = user_id
+        self.message_type = RequestListUserStickersCommand.__name__
+
+    def as_dict(self):
+        return {"user_id": self.user_id, "message_type": self.message_type}
+
+
+class ResponseListStickersCommand(Command):
+    def __init__(self, stickers: List[entity.Stickers]) -> None:
+        self.stickers = stickers
+        self.message_type = ResponseListStickersCommand.__name__
+
+    def as_dict(self):
+        return {
+            "stickers": [s.as_dict() for s in self.stickers],
+            "message_type": self.message_type,
+        }

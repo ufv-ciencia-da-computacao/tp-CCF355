@@ -37,8 +37,7 @@ class StickersRepository(AbstractRepository):
         return self.session.execute(stmt).first()
 
     def list(self):
-        stmt = select(entity.Stickers)
-        return self.session.execute(stmt).all()
+        return self.session.query(entity.Stickers).all()
 
 
 class UsersRepository(AbstractRepository):

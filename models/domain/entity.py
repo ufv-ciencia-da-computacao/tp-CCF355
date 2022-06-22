@@ -5,7 +5,6 @@ from sqlalchemy.orm import declarative_base, relationship
 
 from ..repository.DBConfig import SQLiteConnection, AlbumCredentials
 import json
-from models.protocol.Encoder import CompleteUserEncoder
 
 Base = declarative_base()
 
@@ -30,62 +29,6 @@ class Users(Base):
         self.username = username
         self.password = password
 
-    def __iter__(self):
-        yield from {
-            "id": self.id,
-            "username": self.username,
-            "stickers": self.stickers,
-            "trades_sent": self.trades_sent,
-            "trades_received": self.trades_received,
-        }.items()
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return json.dumps(dict(self), cls=CompleteUserEncoder, ensure_ascii=False)
-
-    def complete_to_json(self):
-        to_return = {
-            "id": self.id,
-            "username": self.username,
-            "password": self.password,
-        }
-        stickers = []
-        for stk in self.stickers.__iter__():
-            s = stk.__dict__
-            s.pop("_sa_instance_state", None)
-            stickers.append(s)
-
-        to_return["stickers"] = stickers
-
-        trades_sent = []
-        for tdse in self.trades_sent.__iter__():
-            t = tdse.__dict__
-            t.pop("_sa_instance_state", None)
-            trades_sent.append(t)
-
-        to_return["trades_sent"] = trades_sent
-
-        trades_received = []
-        for tdre in self.trades_received.__iter__():
-            t = tdre.__dict__
-            t.pop("_sa_instance_state", None)
-            trades_received.append(t)
-
-        to_return["trades_received"] = trades_received
-
-        return to_return
-
-    def create_to_json(self):
-        to_return = {
-            "id": self.id,
-            "username": self.username,
-            "password": self.password,
-        }
-
-        return to_return
-
     def as_dict(self):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
         ret["stickers"] = [stickers.as_dict() for stickers in self.stickers]
@@ -107,28 +50,8 @@ class Stickers(Base):
         self.country = country
         self.rarity = rarity
 
-    def __iter__(self):
-        yield from {
-            "id": self.id,
-            "playername": self.playername,
-            "country": self.country,
-            "rarity": self.rarity,
-        }.items()
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return json.dumps(dict(self), cls=Encoder, ensure_ascii=False)
-
-    def to_json(self):
-        return self.__str__()
-
-    # def __repr__(self) -> str:
-    #     return f"(id:{self.id}, playername: {self.playername}, country: {self.country}, rarity: {self.rarity})"
-
     def as_dict(self):
-       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class ListStickers(Base):
@@ -142,39 +65,14 @@ class ListStickers(Base):
         self.user_id = user_id
         self.sticker_id = sticker_id
 
-    def __iter__(self):
-        yield from {
-            "id": self.id,
-            "user_id": self.user_id,
-            "sticker_id": self.sticker_id,
-        }.items()
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return json.dumps(dict(self), cls=Encoder, ensure_ascii=False)
-
-    def to_json(self):
-        return self.__str__()
-
     def as_dict(self):
-       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class Status(enum.Enum):
     pendent = 1
     recused = 2
     accepted = 3
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return json.dumps(dict(self), cls=Encoder, ensure_ascii=False)
-
-    def to_json(self):
-        return self.__str__()
 
 
 class TradeRequest(Base):
@@ -210,24 +108,8 @@ class TradeRequest(Base):
         self.sticker_receiver_id = sticker_receiver_id
         self.status = status
 
-    def __iter__(self):
-        yield from {
-            "id": self.id,
-            "receiver_sticker": self.receiver_sticker,
-            "sender_sticker": self.sender_sticker,
-            "receiver_user": self.receiver_user,
-            "sender_user": self.sender_user,
-            "status": self.status,
-        }.items()
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return json.dumps(dict(self), cls=Encoder, ensure_ascii=False)
-
-    def to_json(self):
-        return self.__str__()
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 def create_db(con):

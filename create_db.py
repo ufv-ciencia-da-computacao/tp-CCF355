@@ -1,5 +1,5 @@
 from models.domain import entity
-from models.protocol.Encoder import Encoder
+from models.protocol.encoder import Encoder
 from models.repository.DBConfig import AlbumCredentials, SQLiteConnection
 from models.repository import repo
 from models.protocol import command
@@ -13,8 +13,7 @@ if __name__ == "__main__":
 
     c = command.CreateUserCommand(user)
     print(c.execute())
-    # print(json.dumps(user, cls=Encoder))
-    # print(json.dumps(dict(user), cls=Encoder, ensure_ascii=True))
+
     # entity.create_db(con)
     # with open('data/players.json') as f:
     #     players = json.load(f)
