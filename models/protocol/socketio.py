@@ -1,3 +1,4 @@
+from ast import Break
 from ..protocol.command import (
     Command,
     RequestAllUsersCommand,
@@ -15,18 +16,20 @@ from ..repository import repo
 
 
 class Reader:
-    def _read_message(sock: socket.socket):  # mudar esse read_message
+    def _read_message(sock: socket.socket):
         with sock:
             chunks = []
             print("reading_message")
             while True:
                 try:
-                    data = sock.recv(4096)  # problema aqui
+                    data = sock.recv(4096)
+                    chunks.append(data.decode("utf-8"))
                 except socket.timeout:
-                    continue
+                    break
                 if not data:
-                    return "".join(chunks)
-                chunks.append(data.decode("utf-8"))
+                    break
+
+            return "".join(chunks)
 
 
 class ReaderRequest(Reader):
@@ -36,25 +39,23 @@ class ReaderRequest(Reader):
     def read(self, sock: socket.socket):
         data = Reader._read_message(sock)
         data = json.loads(data)
-        print(data)
         message_type = data["message_type"]
 
         if message_type == RequestCreateUserCommand.__name__:
             u = entity.Users(username=data["username"], password=data["password"])
             try:
                 self.us_repo.add(u)
-                print("oi")
                 cmd = ResponseCreateUserCommand(True)
-                print(cmd.execute())
             except Exception:
                 cmd = ResponseCreateUserCommand(False)
-            Writer.write_command(sock, cmd)
         elif message_type == RequestLoginCommand.__name__:
             pass
         elif message_type == RequestTradeUserToUserCommand.__name__:
             pass
         elif message_type == RequestAnswerTradeCommand.__name__:
             pass
+
+        return cmd  # diferente
 
 
 class ReaderResponse(Reader):

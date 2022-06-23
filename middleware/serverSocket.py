@@ -5,6 +5,7 @@ import sys
 
 from models.protocol.socketio import ReaderRequest
 from models.repository.repo import UsersRepository
+from models.protocol.socketio import Writer
 
 
 class ServerSocket:
@@ -30,7 +31,8 @@ class ServerSocket:
     def _start(self, client):
         while True:
             try:
-                self.reader_request.read(client)
+                cmd = self.reader_request.read(client)
+                Writer.write_command(client, cmd)
             except Exception as e:
                 traceback.print_exception(*sys.exc_info())
                 client.close()
