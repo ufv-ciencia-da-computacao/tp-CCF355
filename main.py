@@ -5,7 +5,7 @@ from models.protocol import command
 import json
 from models.domain.entity import Users
 from models.domain.entity import Stickers
-from models.protocol.command import TradeUserToUserCommand
+from middleware.serverSocket import ServerSocket
 
 if __name__ == "__main__":
     con = SQLiteConnection.get_connection(AlbumCredentials.host)
@@ -18,13 +18,16 @@ if __name__ == "__main__":
         # sp = StickersPack(stickers_repo, ls_repo)
 
         # sp.add_pack2user(1)
-        user = user_repo.get(1)
+        # user = user_repo.get(1)
+
+        ss = ServerSocket(user_repo)
+        ss.listen()
 
         # c = command.ViewListUserStickersCommand(user)
         # print(c.execute())
-        stickers = stickers_repo.list()
-        c = command.ViewListStickersCommand(stickers)
-        print(c.execute())
+        # stickers = stickers_repo.list()
+        # c = command.ViewListStickersCommand(stickers)
+        # print(c.execute())
 
         # trade = TradeUserToUserCommand(10, [1,2,3], 5, [4,5,6])
         # print(type(json.dumps(trade.as_dict())))

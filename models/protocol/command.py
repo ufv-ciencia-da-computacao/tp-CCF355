@@ -1,7 +1,3 @@
-from abc import (
-    ABC,
-    abstractmethod,
-)
 import json
 from typing import List
 
@@ -53,8 +49,8 @@ class ResponseAnswerTradeCommand(Command):
 
 
 class RequestCreateUserCommand(Command):
-    def __init__(self, name: str, password: str) -> None:
-        self.name = name
+    def __init__(self, username: str, password: str) -> None:
+        self.username = username
         self.password = password
         self.message_type = RequestCreateUserCommand.__name__
 
