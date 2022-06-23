@@ -30,11 +30,10 @@ class ServerSocket:
     def _start(self, client):
         while True:
             try:
-                cmd = self.reader_request.read(
-                    client
-                )  ## server está tentando ler e ler e ler
+                cmd = self.reader_request.read(client)
                 Writer.write_command(client, cmd)
                 client.close()
+                return
             except Exception as e:
                 traceback.print_exception(*sys.exc_info())
                 client.close()

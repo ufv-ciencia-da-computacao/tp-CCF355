@@ -19,7 +19,6 @@ class Reader:
     def _read_message(sock: socket.socket):
         chunks = []
         print("address: ", sock.getsockname())
-        sock.settimeout(5)
 
         while True:
             data = sock.recv(4096)
@@ -73,8 +72,7 @@ class ReaderResponse(Reader):
 class Writer:
     def _write_string(sock: socket.socket, msg: str) -> None:
         print(msg)
-        sent = sock.sendall(msg.encode("utf-8"))
-        print("address-write_string: ", sock.getsockname())
+        sock.sendall(msg.encode("utf-8"))
 
     @staticmethod
     def write_command(sock: socket.socket, cmd: Command) -> str:
