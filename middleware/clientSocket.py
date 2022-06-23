@@ -12,9 +12,8 @@ class ClientSocket:
 
     def send_receive(self, command):
 
-        with self.sock as s:
-            self.sock.connect((self.HOST, self.PORT))
-            self.sock.settimeout(5)
-            Writer.write_command(s, command)
-            data = ReaderResponse().read(s)
-            return data
+        self.sock.connect((self.HOST, self.PORT))
+        Writer.write_command(self.sock, command)
+        data = ReaderResponse().read(self.sock)
+        self.sock.close()
+        return data

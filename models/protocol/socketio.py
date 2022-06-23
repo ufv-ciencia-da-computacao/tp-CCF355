@@ -17,19 +17,20 @@ from ..repository import repo
 
 class Reader:
     def _read_message(sock: socket.socket):
-        with sock:
-            chunks = []
-            print("reading_message")
-            while True:
-                try:
-                    data = sock.recv(4096)
-                    chunks.append(data.decode("utf-8"))
-                except socket.timeout:
-                    break
-                if not data:
-                    break
+        chunks = []
+        print("address: ", sock.getsockname())
+        sock.settimeout(5)
 
-            return "".join(chunks)
+        while True:
+            data = sock.recv(4096)
+            print("received", len(data))
+            if len(data) < 4096:
+                chunks.append(data.decode("utf-8"))
+                break
+            if not data:
+                break
+
+        return "".join(chunks)
 
 
 class ReaderRequest(Reader):
@@ -55,11 +56,12 @@ class ReaderRequest(Reader):
         elif message_type == RequestAnswerTradeCommand.__name__:
             pass
 
-        return cmd  # diferente
+        return cmd
 
 
 class ReaderResponse(Reader):
     def read(self, sock: socket.socket):
+        print("lendo response")
         data = Reader._read_message(sock)
         data = json.loads(data)
         message_type = data["message_type"]
@@ -72,8 +74,7 @@ class Writer:
     def _write_string(sock: socket.socket, msg: str) -> None:
         print(msg)
         sent = sock.sendall(msg.encode("utf-8"))
-        if sent == 0:
-            print("error")
+        print("address-write_string: ", sock.getsockname())
 
     @staticmethod
     def write_command(sock: socket.socket, cmd: Command) -> str:

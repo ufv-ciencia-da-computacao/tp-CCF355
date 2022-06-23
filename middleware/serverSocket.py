@@ -25,14 +25,16 @@ class ServerSocket:
         while True:
             client, address = self.sock.accept()
             print(f"Connected by {address}")
-            client.settimeout(60)
             threading.Thread(target=self._start, args=(client,)).start()
 
     def _start(self, client):
         while True:
             try:
-                cmd = self.reader_request.read(client)
+                cmd = self.reader_request.read(
+                    client
+                )  ## server está tentando ler e ler e ler
                 Writer.write_command(client, cmd)
+                client.close()
             except Exception as e:
                 traceback.print_exception(*sys.exc_info())
                 client.close()
