@@ -10,11 +10,14 @@ from ..protocol.command import (
 )
 import socket
 import json
+import traceback
+import sys
 
 from models.domain import entity
 from ..repository import repo
 
 EOF = 0x05
+
 
 class Reader:
     def _read_message(sock: socket.socket):
@@ -24,7 +27,8 @@ class Reader:
         while True:
             data = sock.recv(4096)
             for d in data:
-                if d == EOF: return "".join(chunks)
+                if d == EOF:
+                    return "".join(chunks)
                 chunks.append(str(bytearray([d]).decode("utf-8")))
             if not data:
                 print("communication failed")
@@ -48,6 +52,7 @@ class ReaderRequest(Reader):
                 self.us_repo.add(u)
                 cmd = ResponseCreateUserCommand(True)
             except Exception:
+                traceback.print_exception(*sys.exc_info())
                 cmd = ResponseCreateUserCommand(False)
         elif message_type == RequestLoginCommand.__name__:
             pass

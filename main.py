@@ -6,6 +6,7 @@ import json
 from models.domain.entity import Users
 from models.domain.entity import Stickers
 from middleware.serverSocket import ServerSocket
+from sqlalchemy.orm import sessionmaker
 
 if __name__ == "__main__":
     con = SQLiteConnection.get_connection(AlbumCredentials.host)
@@ -22,7 +23,6 @@ if __name__ == "__main__":
 
         ss = ServerSocket(user_repo)
         ss.listen()
-
         # c = command.ViewListUserStickersCommand(user)
         # print(c.execute())
         # stickers = stickers_repo.list()

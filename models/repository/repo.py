@@ -46,6 +46,7 @@ class UsersRepository(AbstractRepository):
 
     def add(self, user: entity.Users):
         self.session.add(user)
+        self.session.commit()
 
     def get(self, user_id: int) -> entity.Users:
         return self.session.query(entity.Users).filter_by(id=user_id).one()
