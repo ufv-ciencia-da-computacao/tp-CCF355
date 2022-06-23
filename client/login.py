@@ -1,5 +1,5 @@
 from tkinter import *
-from app import App
+from client.app import App
 
 class LoginView(Frame):
     def __init__(self, window: App):
@@ -28,6 +28,9 @@ class LoginView(Frame):
         self.btn_enter.grid(row=5, column=1, sticky="e", pady=10, padx=5)
 
         content.pack(expand=True)
+
+    def clear(self):
+        pass
 
     def show_error_msg(self):
         self.lbl_error.grid(row=4, column=0, sticky="w", columnspan=2)

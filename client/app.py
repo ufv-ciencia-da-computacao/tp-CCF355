@@ -17,6 +17,7 @@ class App(Tk):
             self.cur_page.grid_forget()
         self.cur_page = self.pages[name]
         self.cur_page.grid(column=0, row=0, sticky="snew")
+        self.cur_page.clear()
 
         if menu:
             self._show_menu_bar()

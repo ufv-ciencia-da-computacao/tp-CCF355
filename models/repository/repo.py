@@ -23,6 +23,7 @@ class StickersRepository(AbstractRepository):
 
     def add(self, sticker: entity.Stickers):
         self.session.add(sticker)
+        self.session.commit()
 
     def get(self, stickers_id: int) -> entity.Stickers:
         stmt = select(entity.Stickers).filter_by(reference=stickers_id)

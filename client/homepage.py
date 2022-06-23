@@ -1,5 +1,5 @@
 from tkinter import *
-from app import App
+from client.app import App
 
 class StickerFrame(Frame):
     def __init__(self, window: Frame):
@@ -35,3 +35,6 @@ class HomepageView(Frame):
         StickerFrame(f).pack(side="left", padx=10)
         StickerFrame(f).pack(side="left", padx=10)
         StickerFrame(f).pack(side="left", padx=10)
+
+    def clear(self):
+        pass
