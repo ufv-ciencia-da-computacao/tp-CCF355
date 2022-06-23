@@ -14,6 +14,7 @@ import json
 from models.domain import entity
 from ..repository import repo
 
+EOF = 0x05
 
 class Reader:
     def _read_message(sock: socket.socket):
@@ -22,14 +23,14 @@ class Reader:
 
         while True:
             data = sock.recv(4096)
-            print("received", len(data))
-            if len(data) < 4096:
-                chunks.append(data.decode("utf-8"))
-                break
+            for d in data:
+                if d == EOF: return "".join(chunks)
+                chunks.append(str(bytearray([d]).decode("utf-8")))
             if not data:
+                print("communication failed")
                 break
 
-        return "".join(chunks)
+        return ""
 
 
 class ReaderRequest(Reader):
@@ -73,6 +74,7 @@ class Writer:
     def _write_string(sock: socket.socket, msg: str) -> None:
         print(msg)
         sock.sendall(msg.encode("utf-8"))
+        sock.sendall(bytearray([EOF]))
 
     @staticmethod
     def write_command(sock: socket.socket, cmd: Command) -> str:
