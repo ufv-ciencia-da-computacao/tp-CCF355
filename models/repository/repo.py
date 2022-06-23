@@ -1,6 +1,6 @@
 import abc
 from typing import List
-
+from contextlib import contextmanager
 import sqlalchemy
 from ..domain import entity
 from sqlalchemy.sql.expression import func, select
@@ -46,8 +46,13 @@ class UsersRepository(AbstractRepository):
         self.session = session
 
     def add(self, user: entity.Users):
-        self.session.add(user)
-        self.session.commit()
+        try:
+            self.session.add(user)
+        except:
+            self.session.rollback()
+            raise
+        else:
+            self.session.commit()
 
     def get(self, user_id: int) -> entity.Users:
         return self.session.query(entity.Users).filter_by(id=user_id).one()
