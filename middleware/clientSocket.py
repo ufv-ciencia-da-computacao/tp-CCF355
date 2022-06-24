@@ -11,7 +11,6 @@ class ClientSocket:
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     def send_receive(self, command):
-
         self.sock.connect((self.HOST, self.PORT))
         Writer.write_command(self.sock, command)
         data = ReaderResponse().read(self.sock)

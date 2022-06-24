@@ -7,6 +7,7 @@ from ..protocol.command import (
     RequestCreateUserCommand,
     RequestTradeUserToUserCommand,
     ResponseCreateUserCommand,
+    ResponseLoginCommand,
 )
 import socket
 import json
@@ -55,7 +56,12 @@ class ReaderRequest(Reader):
                 traceback.print_exception(*sys.exc_info())
                 cmd = ResponseCreateUserCommand(False)
         elif message_type == RequestLoginCommand.__name__:
-            pass
+            login_cmd = RequestLoginCommand.from_dict(data)
+            list_users = self.us_repo.list()
+            cmd = ResponseLoginCommand(entity.Users("",""))
+            for user in list_users:
+                if user.username == login_cmd.username and user.password == login_cmd.password:
+                    cmd = ResponseLoginCommand(user=user)
         elif message_type == RequestTradeUserToUserCommand.__name__:
             pass
         elif message_type == RequestAnswerTradeCommand.__name__:
@@ -65,14 +71,17 @@ class ReaderRequest(Reader):
 
 
 class ReaderResponse(Reader):
-    def read(self, sock: socket.socket):
-        print("lendo response")
+    @staticmethod
+    def read(sock: socket.socket):
         data = Reader._read_message(sock)
         data = json.loads(data)
-        message_type = data["message_type"]
+        cmd = None
+        if data["message_type"] == ResponseCreateUserCommand.__name__:
+            cmd = ResponseCreateUserCommand.from_dict(data)
+        elif data["message_type"] == ResponseLoginCommand.__name__:
+            cmd = ResponseLoginCommand.from_dict(data)
 
-        if message_type == ResponseCreateUserCommand.__name__:
-            return data
+        return cmd
 
 
 class Writer:

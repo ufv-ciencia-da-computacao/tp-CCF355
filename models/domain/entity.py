@@ -1,4 +1,3 @@
-from selectors import SelectSelector
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, Enum
 import enum
 from sqlalchemy.orm import declarative_base, relationship
@@ -25,15 +24,21 @@ class Users(Base):
         "TradeRequest", primaryjoin="TradeRequest.user_receiver_id == Users.id"
     )
 
-    def __init__(self, username: str, password: str):
+    def __init__(self, username: str, password: str, id: int = None, stickers: list = []):
+        self.id = id
         self.username = username
         self.password = password
+        self.stickers = stickers
 
     def as_dict(self):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
         ret["stickers"] = [stickers.as_dict() for stickers in self.stickers]
-        ret.pop("password", None)
+        ret["password"] = ""
         return ret
+
+    @staticmethod
+    def from_dict(obj: dict):
+        return Users(username=obj["username"], password=obj["password"], id=obj["id"], stickers=[Stickers.from_dict(s) for s in obj["stickers"]])
 
 
 class Stickers(Base):
@@ -46,13 +51,18 @@ class Stickers(Base):
     # photo
     users = relationship("Users", secondary="list_stickers", back_populates="stickers")
 
-    def __init__(self, playername: str, country: str, rarity: int):
+    def __init__(self, playername: str, country: str, rarity: int, id: int = None):
+        self.id = id
         self.playername = playername
         self.country = country
         self.rarity = rarity
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    @staticmethod
+    def from_dict(obj: dict):
+        return Stickers(playername=obj["playername"], country=obj["country"], rarity=obj["rarity"], id=obj["id"])
 
 
 class ListStickers(Base):
