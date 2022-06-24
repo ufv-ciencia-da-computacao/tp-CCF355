@@ -28,7 +28,7 @@ class RegisterView(Frame):
 
         self.sock = ClientSocket()
 
-    def clear(self):
+    def update_view(self):
         self.username_input.delete(0, END)
         self.password_input.delete(0, END)
         self.confirm_input.delete(0, END)

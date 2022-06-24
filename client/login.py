@@ -1,5 +1,9 @@
 from tkinter import *
 from client.app import App
+from middleware.clientSocket import ClientSocket
+from models.domain.entity import Users
+from models.protocol.command import RequestLoginCommand, ResponseLoginCommand
+from models.protocol.socketio import ReaderResponse
 
 class LoginView(Frame):
     def __init__(self, window: App):
@@ -29,18 +33,26 @@ class LoginView(Frame):
 
         content.pack(expand=True)
 
-    def clear(self):
-        pass
+    def update_view(self):
+        self.username.delete(0, END)
+        self.password.delete(0, END)
 
-    def show_error_msg(self):
+
+    def _show_error_msg(self):
+        self.lbl_error.grid_forget()
         self.lbl_error.grid(row=4, column=0, sticky="w", columnspan=2)
 
-    def hide_error_msg(self):
-        self.lbl_error.grid_forget()
-
     def _enter_clicked(self):
-        print("enter")
-        self.window.show_page("homepage", menu=True)
+        username = self.username.get()
+        password = self.password.get()
+
+        sock = ClientSocket()
+        cmd = RequestLoginCommand(username=username, password=password)
+        resp = sock.send_receive(cmd)
+
+        if resp.user.id != None:
+            self.window.set_logged_user(resp.user)
+            self.window.show_page("homepage", menu=True)
 
     def _register_clicked(self):
         print("register")

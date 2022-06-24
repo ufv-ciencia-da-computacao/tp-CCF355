@@ -2,7 +2,11 @@ from tkinter import *
 
 from sqlalchemy import column
 
+from models.domain.entity import Users
+
 class App(Tk):
+    logged_user: Users
+
     def __init__(self):
         super().__init__()
         self.title("Troca de Figurinhas")
@@ -12,12 +16,15 @@ class App(Tk):
         self.pages = dict()
         self.cur_page = None
 
+    def set_logged_user(self, user: Users):
+        self.logged_user = user
+
     def show_page(self, name: str, menu=False):
         if self.cur_page:
             self.cur_page.grid_forget()
         self.cur_page = self.pages[name]
         self.cur_page.grid(column=0, row=0, sticky="snew")
-        self.cur_page.clear()
+        self.cur_page.update_view()
 
         if menu:
             self._show_menu_bar()

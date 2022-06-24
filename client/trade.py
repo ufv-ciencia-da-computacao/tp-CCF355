@@ -59,7 +59,7 @@ class ListSticker(Frame):
                 selected.append(item.id)
         return selected
 
-    def clear(self):
+    def update_view(self):
         for v in self.view_list:
             v.pack_forget()
             v.destroy()
