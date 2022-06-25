@@ -16,6 +16,7 @@ import sys
 
 from models.domain import entity
 from ..repository import repo
+from ..service.StickersPack import StickersPack
 
 EOF = 0x05
 
@@ -27,20 +28,29 @@ class Reader:
 
         while True:
             data = sock.recv(4096)
-            for d in data:
-                if d == EOF:
-                    return "".join(chunks)
-                chunks.append(str(bytearray([d]).decode("utf-8")))
+            if data[len(data) - 1] == EOF:
+                decode = data[: len(data) - 1].decode("utf-8")
+                return decode
+            else:
+                chunks.append(str(data.decode("utf-8")))
             if not data:
                 print("communication failed")
                 break
 
-        return ""
+        return "".join(chunks)
 
 
 class ReaderRequest(Reader):
-    def __init__(self, us_repo: repo.UsersRepository) -> None:
+    def __init__(
+        self,
+        us_repo: repo.UsersRepository,
+        s_repo: repo.StickersRepository,
+        ls_repo: repo.ListStickersRepository,
+    ) -> None:
         self.us_repo = us_repo
+        self.s_repo = s_repo
+        self.ls_repo = ls_repo
+        self.stickerspack = StickersPack(s_repo, ls_repo)
 
     def read(self, sock: socket.socket):
         data = Reader._read_message(sock)
@@ -52,16 +62,24 @@ class ReaderRequest(Reader):
             try:
                 self.us_repo.add(u)
                 cmd = ResponseCreateUserCommand(True)
+                for _ in range(5):
+                    self.stickerspack.add_pack2user(user=self.us_repo.get(u.username))
             except Exception:
                 traceback.print_exception(*sys.exc_info())
                 cmd = ResponseCreateUserCommand(False)
+
         elif message_type == RequestLoginCommand.__name__:
-            login_cmd = RequestLoginCommand.from_dict(data)
-            list_users = self.us_repo.list()
-            cmd = ResponseLoginCommand(entity.Users("",""))
-            for user in list_users:
-                if user.username == login_cmd.username and user.password == login_cmd.password:
+            try:
+                user = self.us_repo.get(data["username"])
+
+                if user is not None:
                     cmd = ResponseLoginCommand(user=user)
+                else:
+                    cmd = ResponseLoginCommand(entity.Users("", ""))
+            except:
+                traceback.print_exception(*sys.exc_info())
+                # cmd = ErrorCommand()
+
         elif message_type == RequestTradeUserToUserCommand.__name__:
             pass
         elif message_type == RequestAnswerTradeCommand.__name__:
@@ -74,6 +92,7 @@ class ReaderResponse(Reader):
     @staticmethod
     def read(sock: socket.socket):
         data = Reader._read_message(sock)
+        print(data)
         data = json.loads(data)
         cmd = None
         if data["message_type"] == ResponseCreateUserCommand.__name__:
@@ -86,7 +105,7 @@ class ReaderResponse(Reader):
 
 class Writer:
     def _write_string(sock: socket.socket, msg: str) -> None:
-        print(msg)
+        print(len(msg))
         sock.sendall(msg.encode("utf-8"))
         sock.sendall(bytearray([EOF]))
 

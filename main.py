@@ -1,3 +1,4 @@
+from asyncio import set_child_watcher
 from models.repository.DBConfig import AlbumCredentials, SQLiteConnection
 from models.repository import repo
 from models.service.StickersPack import StickersPack
@@ -21,7 +22,7 @@ if __name__ == "__main__":
     # sp.add_pack2user(1)
     # user = user_repo.get(1)
 
-    ss = ServerSocket(user_repo)
+    ss = ServerSocket(user_repo, stickers_repo, ls_repo)
     ss.listen()
     # c = command.ViewListUserStickersCommand(user)
     # print(c.execute())

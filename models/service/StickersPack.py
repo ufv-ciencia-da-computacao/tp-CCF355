@@ -2,6 +2,7 @@ from typing import List
 import random
 from ..repository.repo import StickersRepository, ListStickersRepository
 from ..domain.entity import ListStickers, Stickers
+from models.domain import entity
 
 
 class StickersPack:
@@ -22,11 +23,12 @@ class StickersPack:
 
         return pack
 
-    def add_pack2user(self, user_id: int):
+    def add_pack2user(self, user: entity.Users):
+        print(user.as_dict())
         pack = self._get_pack()
 
         for s in pack:
-            self.ls_repo.add(ListStickers(user_id, s.id))
+            self.ls_repo.add(ListStickers(user.id, s.id))
 
     def trade_duplicated_cards(self, user_id: int):
         pass

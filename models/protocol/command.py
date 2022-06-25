@@ -60,8 +60,8 @@ class ResponseCreateUserCommand(Command):
         self.message_type = ResponseCreateUserCommand.__name__
         self.status = status
 
-    @staticmethod
-    def from_dict(obj: dict):
+    @classmethod
+    def from_dict(cls, obj: dict):
         return ResponseCreateUserCommand(status=obj["status"])
 
 
@@ -71,23 +71,24 @@ class RequestLoginCommand(Command):
         self.username = username
         self.password = password
 
-    @staticmethod
-    def from_dict(obj: dict):
+    @classmethod
+    def from_dict(cls, obj: dict):
         return RequestLoginCommand(username=obj["username"], password=obj["password"])
+
 
 class ResponseLoginCommand(Command):
     def __init__(self, user: entity.Users):
         self.message_type = ResponseLoginCommand.__name__
         self.user = user
 
-    @staticmethod
-    def from_dict(obj: dict):
+    @classmethod
+    def from_dict(cls, obj: dict):
         return ResponseLoginCommand(entity.Users.from_dict(obj["user"]))
 
     def as_dict(self):
         return {
             "message_type": ResponseLoginCommand.__name__,
-            "user": self.user.as_dict()
+            "user": self.user.as_dict(),
         }
 
 

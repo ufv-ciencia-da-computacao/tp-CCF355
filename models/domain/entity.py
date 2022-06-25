@@ -24,7 +24,9 @@ class Users(Base):
         "TradeRequest", primaryjoin="TradeRequest.user_receiver_id == Users.id"
     )
 
-    def __init__(self, username: str, password: str, id: int = None, stickers: list = []):
+    def __init__(
+        self, username: str, password: str, id: int = None, stickers: list = []
+    ):
         self.id = id
         self.username = username
         self.password = password
@@ -36,9 +38,14 @@ class Users(Base):
         ret["password"] = ""
         return ret
 
-    @staticmethod
-    def from_dict(obj: dict):
-        return Users(username=obj["username"], password=obj["password"], id=obj["id"], stickers=[Stickers.from_dict(s) for s in obj["stickers"]])
+    @classmethod
+    def from_dict(cls, obj: dict):
+        return Users(
+            username=obj["username"],
+            password=obj["password"],
+            id=obj["id"],
+            stickers=[Stickers.from_dict(s) for s in obj["stickers"]],
+        )
 
 
 class Stickers(Base):
@@ -60,9 +67,14 @@ class Stickers(Base):
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-    @staticmethod
-    def from_dict(obj: dict):
-        return Stickers(playername=obj["playername"], country=obj["country"], rarity=obj["rarity"], id=obj["id"])
+    @classmethod
+    def from_dict(cls, obj: dict):
+        return Stickers(
+            playername=obj["playername"],
+            country=obj["country"],
+            rarity=obj["rarity"],
+            id=obj["id"],
+        )
 
 
 class ListStickers(Base):

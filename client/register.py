@@ -6,6 +6,7 @@ from client.app import App
 from middleware.clientSocket import ClientSocket
 from models.protocol.command import RequestCreateUserCommand
 
+
 class RegisterView(Frame):
     def __init__(self, window: App):
         super().__init__(window)
@@ -16,14 +17,20 @@ class RegisterView(Frame):
         self.username_input = Entry(content, width=40)
         self.username_input.grid(row=1, column=0, columnspan=2)
         Label(content, text="Senha:").grid(row=2, column=0, columnspan=2, sticky="w")
-        self.password_input = Entry(content, show='*', width=40)
+        self.password_input = Entry(content, show="*", width=40)
         self.password_input.grid(row=3, column=0, columnspan=2)
-        Label(content, text="Confirmar senha:").grid(row=4, column=0, columnspan=2, sticky="w")
-        self.confirm_input = Entry(content, show='*', width=40)
+        Label(content, text="Confirmar senha:").grid(
+            row=4, column=0, columnspan=2, sticky="w"
+        )
+        self.confirm_input = Entry(content, show="*", width=40)
         self.confirm_input.grid(row=5, column=0, columnspan=2)
         self.error_msg_lbl = Label(content, fg="red")
-        Button(content, text="Cancelar", command=self._cancel_clicked).grid(row=7, column=0, sticky="e", pady=10, padx=5)
-        Button(content, text="Confirmar", command=self._confirm_clicked).grid(row=7, column=1, sticky="e", pady=10, padx=5)
+        Button(content, text="Cancelar", command=self._cancel_clicked).grid(
+            row=7, column=0, sticky="e", pady=10, padx=5
+        )
+        Button(content, text="Confirmar", command=self._confirm_clicked).grid(
+            row=7, column=1, sticky="e", pady=10, padx=5
+        )
         content.pack(expand=True)
 
         self.sock = ClientSocket()
@@ -50,9 +57,8 @@ class RegisterView(Frame):
         sock = ClientSocket()
         cmd = RequestCreateUserCommand(username=username, password=password)
         resp = sock.send_receive(cmd)
-        print(resp["message_type"])
 
-        if resp["status"]:
+        if resp.status:
             self.window.show_page("login")
         else:
             self._show_error("Falha ao cadastrar")

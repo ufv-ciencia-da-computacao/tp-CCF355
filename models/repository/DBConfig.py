@@ -2,6 +2,7 @@ import sqlalchemy
 from dataclasses import dataclass
 from sqlalchemy.orm import sessionmaker
 
+
 @dataclass
 class AlbumCredentials:
     host = "db1"
@@ -13,7 +14,9 @@ class DBConfig:
     def __init__(self, host) -> None:
         self.host = host
 
-        self.connection = sqlalchemy.create_engine(self.get_uri(), encoding="UTF-8")
+        self.connection = sqlalchemy.create_engine(
+            self.get_uri(), encoding="UTF-8", connect_args={"check_same_thread": False}
+        )
 
     def get_uri(self):
         return f"sqlite:///{self.host}"

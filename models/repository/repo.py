@@ -1,4 +1,5 @@
 import abc
+import string
 from typing import List
 from contextlib import contextmanager
 import sqlalchemy
@@ -42,7 +43,7 @@ class StickersRepository(AbstractRepository):
 
 
 class UsersRepository(AbstractRepository):
-    def __init__(self, session):
+    def __init__(self, session: Session):
         self.session = session
 
     def add(self, user: entity.Users):
@@ -54,8 +55,8 @@ class UsersRepository(AbstractRepository):
         else:
             self.session.commit()
 
-    def get(self, user_id: int) -> entity.Users:
-        return self.session.query(entity.Users).filter_by(id=user_id).one()
+    def get(self, username: string) -> entity.Users:
+        return self.session.query(entity.Users).filter_by(username=username).one()
 
     def list(self):
         return self.session.query(entity.Users).all()
@@ -66,7 +67,13 @@ class ListStickersRepository(AbstractRepository):
         self.session = session
 
     def add(self, list_sticker: entity.ListStickers):
-        self.session.add(list_sticker)
+        try:
+            self.session.add(list_sticker)
+        except:
+            self.session.rollback()
+            raise
+        else:
+            self.session.commit()
 
     def get(self, user_id: int) -> entity.ListStickers:
         return self.session.query(entity.ListStickers).filter_by(user_id=user_id).one()
