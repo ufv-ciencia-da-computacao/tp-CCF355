@@ -27,7 +27,7 @@ class ServerSocket:
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind((self.HOST, self.PORT))
 
-        self.reader_request = ReaderRequest(us_repo, s_repo, ls_repo)
+        self.reader_request = ReaderRequest(us_repo, s_repo, ls_repo, None, None)
 
     def listen(self):
         self.sock.listen(5)

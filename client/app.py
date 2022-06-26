@@ -40,7 +40,6 @@ class App(Tk):
     def _show_menu_bar(self):
         self.menubar = Menu(self)
         self.menubar.add_command(label="inicio", command=lambda:self.show_page("homepage", menu=True))
-        self.menubar.add_command(label="buscar", command=lambda:self.show_page("search", menu=True))
-        self.menubar.add_command(label="trocar", command=lambda:self.show_page("exchange", menu=True))
+        self.menubar.add_command(label="trocar", command=lambda:self.show_page("trade", menu=True))
         self.menubar.add_command(label="sair", command=lambda:self.show_page("login"))
         self.config(menu=self.menubar)

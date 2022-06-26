@@ -1,7 +1,9 @@
-from tkinter import ALL, Button, Canvas, Checkbutton, Frame, IntVar, Label, Scrollbar
+from tkinter import ALL, END, Button, Canvas, Checkbutton, Entry, Frame, IntVar, Label, Scrollbar
 from typing import Any, Callable, List
+from middleware.clientSocket import ClientSocket
 from models.domain.entity import Stickers
 from client.app import App
+from models.protocol.command import RequestListStickersUserCommand
 
 class ItemListSticker(Frame):
     sticker: Stickers
@@ -35,7 +37,7 @@ class ListSticker(Frame):
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
 
-        self.canvas = Canvas(self, bg="blue")
+        self.canvas = Canvas(self)
         self.canvas.grid(column=0, row=0, sticky="snew")
 
         scroll = Scrollbar(self, orient="vertical", command=self.canvas.yview)
@@ -56,7 +58,7 @@ class ListSticker(Frame):
         selected = []
         for item in self.view_list:
             if item.is_selected():
-                selected.append(item.id)
+                selected.append(item.sticker.id)
         return selected
 
     def update_view(self):
@@ -65,10 +67,16 @@ class ListSticker(Frame):
             v.destroy()
         self.view_list.clear()
 
-    def add_sticker(self, sticker: Stickers):
-        item = ItemListSticker(self.content, sticker=sticker)
-        item.pack(fill="x")
-        self.view_list.append(item)
+    def add_stickers(self, stickers: List[Stickers]):
+        for s in stickers:
+            item = ItemListSticker(self.content, sticker=s)
+            item.pack(fill="x")
+            self.view_list.append(item)
+
+    def clear(self):
+        for v in self.view_list:
+            v.pack_forget()
+        self.view_list.clear()
 
     def _change_frame_width(self, event):
         canvas_width = event.width
@@ -79,41 +87,66 @@ class ListSticker(Frame):
 
 class TradeView(Frame):
     def __init__(self, window: App):
-        super().__init__(window, bg="green")
+        super().__init__(window)
+        self.window = window
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.rowconfigure(1, weight=1)
 
-        Label(self, text="Minhas Figurinhas", pady=15, highlightbackground="gray", highlightthickness=1).grid(row=0, column=0, sticky="we")
+        my_name = Frame(self, pady=15, padx=5, highlightbackground="gray", highlightthickness=1)
+        my_name.columnconfigure(0, weight=1)
+        my_name.rowconfigure(0, weight=1)
+        Label(my_name, text="Minhas Figurinhas").grid(row=0, column=0)
+        my_name.grid(row=0, column=0, sticky ="snew")
+
         self.my_list = ListSticker(self)
         self.my_list.grid(row=1, column=0, sticky="snew")
 
-        self.other_name_lbl = Label(self, text="Figurinhas de ", pady=15, highlightbackground="gray", highlightthickness=1)
-        self.other_name_lbl.grid(row=0, column=1, sticky="we")  
+        search = Frame(self, pady=15, padx=5, highlightbackground="gray", highlightthickness=1)
+        search.columnconfigure(1, weight=1)
+        search.rowconfigure(0, weight=1)
+        self.other_name_lbl = Label(search, text="Figurinhas de: ")
+        self.other_name_entry = Entry(search)
+        self.other_name_entry.grid(column=1, row=0, sticky="we", padx=5)
+        self.other_name_lbl.grid(row=0, column=0)
+        self.search_btn = Button(search, text="Buscar", command=self._search_clicked)
+        self.search_btn.bind('<Return>', self._search_clicked)
+        self.search_btn.grid(column=2, row=0)  
+        search.grid(row=0, column=1, sticky ="we")
 
         self.other_list = ListSticker(self)
         self.other_list.grid(row=1, column=1, sticky="snew")
 
         Button(self, text="Solicitar Troca", command=self._trade, padx=10).grid(row=2, column=0, columnspan=2, padx=10, pady=5)
-    
-    def add_my_stickers(self, stickers: List[Stickers]):
-        for v in stickers:
-            self.my_list.add_sticker(v)
-
-    def add_other_stickers(self, stickers: List[Stickers]):
-        for v in stickers:
-            self.other_list.add_sticker(v)
 
     def clear(self):
         self.my_list.clear()
         self.other_list.clear()
-        self.other_name_lbl.config(text="Figurinhas de ")
+        self.other_name_entry.delete(0, END)
+
+    def update_view(self):
+        self.clear()
+        self.my_list.add_stickers(self.window.logged_user.stickers)
+
+    def _search_clicked(self, event = None):
+        self.other_list.clear()
+        username = self.other_name_entry.get()
+
+        if username == self.window.logged_user.username:
+            # cant trade with myself
+            return
+        
+        sock = ClientSocket()
+        cmd = RequestListStickersUserCommand(username=username)
+        resp = sock.send_receive(cmd)
+
+        self.other_list.add_stickers(resp.stickers)
 
     def _trade(self):
         my_stickers = self.my_list.get_selected_stickers()
         other_stickers = self.other_list.get_selected_stickers()
 
-        sticker = Stickers(playername="Neymar", country="Brasil", rarity=1)
-        self.my_list.add_sticker(sticker=sticker)
+        print(my_stickers)
+        print(other_stickers)
 
         

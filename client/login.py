@@ -2,6 +2,7 @@ from tkinter import *
 from client.app import App
 from middleware.clientSocket import ClientSocket
 from models.domain.entity import Users
+from models.protocol import command
 from models.protocol.command import RequestLoginCommand, ResponseLoginCommand
 from models.protocol.socketio import ReaderResponse
 
@@ -27,22 +28,25 @@ class LoginView(Frame):
         
         self.btn_register = Button(content, text="Cadastrar", command=self._register_clicked)
         self.btn_register.grid(row=5, column=0, sticky="e", pady=10, padx=5)
-        
+        self.btn_register.bind('<Return>', self._register_clicked)
+
         self.btn_enter = Button(content, text="Entrar", command=self._enter_clicked)
         self.btn_enter.grid(row=5, column=1, sticky="e", pady=10, padx=5)
+        self.btn_enter.bind('<Return>', self._enter_clicked)
 
         content.pack(expand=True)
 
     def update_view(self):
         self.username.delete(0, END)
         self.password.delete(0, END)
+        self.username.focus()
 
 
     def _show_error_msg(self):
         self.lbl_error.grid_forget()
         self.lbl_error.grid(row=4, column=0, sticky="w", columnspan=2)
 
-    def _enter_clicked(self):
+    def _enter_clicked(self, event = None):
         username = self.username.get()
         password = self.password.get()
 
@@ -53,7 +57,8 @@ class LoginView(Frame):
         if resp.user.id != None:
             self.window.set_logged_user(resp.user)
             self.window.show_page("homepage", menu=True)
+        else:
+            self._show_error_msg()
 
-    def _register_clicked(self):
-        print("register")
+    def _register_clicked(self, event = None):
         self.window.show_page("register")

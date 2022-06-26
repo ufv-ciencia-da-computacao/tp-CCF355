@@ -19,7 +19,8 @@ class StickersPack:
         pack = []
         for r in self.rarities:
             s = self.stickers_repo.get_by_rarity(r)
-            pack.append(*s)
+            if s is not None:
+                pack.append(*s)
 
         return pack
 

@@ -122,16 +122,16 @@ class RequestListStickersUserCommand(Command):
 
 
 class ResponseListStickersUserCommand(Command):
-    def __init__(self, users: List[entity.Users]):
-        self.users = users
+    def __init__(self, stickers: List[entity.Stickers]):
+        self.stickers = stickers
         self.message_type = ResponseListStickersUserCommand.__name__
 
     @classmethod
     def from_dict(cls, obj: dict):
-        return ResponseListStickersUserCommand(entity.Users.from_dict(obj["user"]))
+        return ResponseListStickersUserCommand([entity.Stickers.from_dict(s) for s in obj["stickers"]])
 
     def as_dict(self):
         return {
             "message_type": ResponseListStickersUserCommand.__name__,
-            "user": self.user.as_dict(),
+            "stickers": [s.as_dict() for s in self.stickers],
         }

@@ -23,12 +23,14 @@ class Users(Base):
     )
 
     def __init__(
-        self, username: str, password: str, id: int = None, stickers: list = []
+        self, username: str, password: str, id: int = None, stickers: list = [], trades_sent: list = [], trades_received: list = []
     ):
         self.id = id
         self.username = username
         self.password = password
         self.stickers = stickers
+        self.trades_sent = trades_sent
+        self.trades_received = trades_received
 
     def as_dict(self, stickers=True, password=False, trades=True):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}

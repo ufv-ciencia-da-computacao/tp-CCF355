@@ -34,14 +34,15 @@ class Reader:
 
         while True:
             data = sock.recv(4096)
+            if not data:
+                print("communication failed")
+                break
+            print(len(data))
             if data[len(data) - 1] == EOF:
                 decode = data[: len(data) - 1].decode("utf-8")
                 return decode
             else:
                 chunks.append(str(data.decode("utf-8")))
-            if not data:
-                print("communication failed")
-                break
 
         return "".join(chunks)
 
@@ -68,6 +69,8 @@ class ReaderRequest(Reader):
         data = json.loads(data)
         message_type = data["message_type"]
 
+        cmd = None
+        print("received:", message_type)
         if message_type == RequestCreateUserCommand.__name__:
             u = entity.Users(username=data["username"], password=data["password"])
             try:
@@ -80,24 +83,22 @@ class ReaderRequest(Reader):
                 cmd = ResponseCreateUserCommand(False)
 
         elif message_type == RequestLoginCommand.__name__:
+            cmd = ResponseLoginCommand(entity.Users("", ""))
             try:
                 user = self.us_repo.get(data["username"])
-
-                if user is not None:
+                if user is not None and user.password == data["password"]:
                     cmd = ResponseLoginCommand(user=user)
-                else:
-                    cmd = ResponseLoginCommand(entity.Users("", ""))
             except:
                 traceback.print_exception(*sys.exc_info())
                 # cmd = ErrorCommand()
         elif message_type == RequestListStickersUserCommand.__name__:
+            cmd = ResponseListStickersUserCommand(stickers=[])
+            print(cmd)
             try:
                 user = self.us_repo.get(data["username"])
 
                 if user is not None:
-                    cmd = ResponseListStickersUserCommand(user=user)
-                else:
-                    cmd = ResponseListStickersUserCommand(entity.Users("", ""))
+                    cmd = ResponseListStickersUserCommand(stickers=user.stickers)
             except:
                 traceback.print_exception(*sys.exc_info())
 
@@ -133,6 +134,8 @@ class ReaderResponse(Reader):
             cmd = ResponseLoginCommand.from_dict(data)
         elif data["message_type"] == ResponseAllUsersCommand.__name__:
             cmd = ResponseAllUsersCommand.from_dict(data)
+        elif data["message_type"] == ResponseListStickersUserCommand.__name__:
+            cmd = ResponseListStickersUserCommand.from_dict(data)
 
         return cmd
 
