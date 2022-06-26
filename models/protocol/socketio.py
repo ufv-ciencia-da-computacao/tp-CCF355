@@ -12,6 +12,7 @@ from ..protocol.command import (
     ResponseCreateUserCommand,
     ResponseListStickersUserCommand,
     ResponseLoginCommand,
+    ResponseTradeUserToUserCommand,
 )
 import socket
 import json
@@ -21,6 +22,7 @@ import sys
 from models.domain import entity
 from ..repository import repo
 from ..service.StickersPack import StickersPack
+from ..service.TradeStickers import TradeStickers
 
 EOF = 0x05
 
@@ -50,11 +52,16 @@ class ReaderRequest(Reader):
         us_repo: repo.UsersRepository,
         s_repo: repo.StickersRepository,
         ls_repo: repo.ListStickersRepository,
+        t_repo: repo.TradeRepository,
+        tr_repo: repo.TradeRequestRepository,
     ) -> None:
         self.us_repo = us_repo
         self.s_repo = s_repo
         self.ls_repo = ls_repo
+        self.t_repo = t_repo
+        self.tr_repo = tr_repo
         self.stickerspack = StickersPack(s_repo, ls_repo)
+        self.tradestickers = TradeStickers(t_repo, tr_repo, us_repo)
 
     def read(self, sock: socket.socket):
         data = Reader._read_message(sock)
@@ -95,7 +102,18 @@ class ReaderRequest(Reader):
                 traceback.print_exception(*sys.exc_info())
 
         elif message_type == RequestTradeUserToUserCommand.__name__:
-            pass
+            try:
+                trade = self.tradestickers.request_trade(
+                    data["user_orig"],
+                    data["user_dest"],
+                    data["stickers_user_orig"],
+                    data["stickers_user_dest"],
+                )
+                trade = self.t_repo.get(trade.id)
+                cmd = ResponseTradeUserToUserCommand(trade)
+            except:
+                traceback.print_exception(*sys.exc_info())
+
         elif message_type == RequestAnswerTradeCommand.__name__:
             pass
 

@@ -93,7 +93,38 @@ class ListStickersRepository(AbstractRepository):
         return self.session.query(entity.ListStickers).all()
 
 
-class TradeRequestsRepository(AbstractRepository):
+class TradeRepository(AbstractRepository):
+    def __init__(self, session):
+        self.session = session
+
+    def add(self, trade: entity.Trade):
+        try:
+            self.session.add(trade)
+        except:
+            self.session.rollback()
+            raise
+        else:
+            self.session.commit()
+
+    def get(self, user_sender_id: int) -> entity.Trade:
+        return (
+            self.session.query(entity.Trade)
+            .filter_by(user_sender_id=user_sender_id)
+            .one()
+        )
+
+    def get_by_status(self, user_sender_id: int, status: int) -> entity.Trade:
+        return (
+            self.session.query(entity.TradeRequest)
+            .filter_by(user_sender_id=user_sender_id, status=status)
+            .one()
+        )
+
+    def list(self):
+        return self.session.query(entity.Trade).all()
+
+
+class TradeRequestRepository(AbstractRepository):
     def __init__(self, session):
         self.session = session
 
@@ -106,18 +137,9 @@ class TradeRequestsRepository(AbstractRepository):
         else:
             self.session.commit()
 
-    def get(self, user_sender_id: int) -> entity.TradeRequest:
+    def get_by_trade(self, id_trade: int) -> entity.Trade:
         return (
-            self.session.query(entity.TradeRequest)
-            .filter_by(user_sender_id=user_sender_id)
-            .one()
-        )
-
-    def get_by_status(self, user_sender_id: int, status: int) -> entity.TradeRequest:
-        return (
-            self.session.query(entity.TradeRequest)
-            .filter_by(user_sender_id=user_sender_id, status=status)
-            .one()
+            self.session.query(entity.TradeRequest).filter_by(id_trade=id_trade).one()
         )
 
     def list(self):

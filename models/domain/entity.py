@@ -30,7 +30,7 @@ class Users(Base):
         self.password = password
         self.stickers = stickers
 
-    def as_dict(self, stickers=True, password=False):
+    def as_dict(self, stickers=True, password=False, trades=True):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
         if stickers:
             ret["stickers"] = [stickers.as_dict() for stickers in self.stickers]
@@ -39,6 +39,14 @@ class Users(Base):
 
         if not password:
             ret["password"] = ""
+
+        if trades:
+            ret["trades_sent"] = [ts.asdict() for ts in self.trades_sent]
+            ret["trades_received"] = [tr.asdict() for tr in self.trades_received]
+        else:
+            ret["trades_sent"] = ""
+            ret["trades_received"] = ""
+
         return ret
 
     @classmethod
@@ -48,6 +56,8 @@ class Users(Base):
             password=obj["password"],
             id=obj["id"],
             stickers=[Stickers.from_dict(s) for s in obj["stickers"]],
+            trades_sent=[],
+            trades_received=[],
         )
 
 
@@ -130,7 +140,11 @@ class Trade(Base):
         self.status = status
 
     def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        ret["stickers_traded"] = [tr.as_dict() for tr in self.trades_requests]
+        ret["receiver_user"] = self.receiver_user.as_dict()
+        ret["sender_id"] = self.sender_user.as_dict()
+        return ret
 
 
 class TradeRequest(Base):
