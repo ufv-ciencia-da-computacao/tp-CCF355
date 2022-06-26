@@ -3,20 +3,22 @@ from models.repository.DBConfig import AlbumCredentials, SQLiteConnection
 from models.repository import repo
 from models.protocol import command
 import json
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 if __name__ == "__main__":
     con = SQLiteConnection.get_connection(AlbumCredentials.host)
-    session = SQLiteConnection.session[AlbumCredentials.host]
-    # entity.create_db(con)
-    # with open('data/players.json') as f:
-    #     players = json.load(f)
-    # with session.begin() as sesh:
-    #     stickers_repo = repo.StickersRepository(sesh)
-    #     users_repo = repo.UsersRepository(sesh)
+    session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=con))
 
-    #     user = entity.Users("gegen07", "germano")
-    #     users_repo.add(user)
+    session.begin_nested()
+    entity.create_db(con)
 
-    #     for d in players:
-    #         s = entity.Stickers(country=d['country'], playername=d['playername'], rarity=d['rarity'])
-    #         stickers_repo.add(s)
+    with open("data/players.json") as f:
+        players = json.load(f)
+    stickers_repo = repo.StickersRepository(session)
+    users_repo = repo.UsersRepository(session)
+
+    for d in players:
+        s = entity.Stickers(
+            country=d["country"], playername=d["playername"], rarity=d["rarity"]
+        )
+        stickers_repo.add(s)

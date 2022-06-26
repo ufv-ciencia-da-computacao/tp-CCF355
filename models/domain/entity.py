@@ -17,11 +17,9 @@ class Users(Base):
     stickers = relationship(
         "Stickers", secondary="list_stickers", back_populates="users"
     )
-    trades_sent = relationship(
-        "TradeRequest", primaryjoin="TradeRequest.user_sender_id == Users.id"
-    )
+    trades_sent = relationship("Trade", primaryjoin="Trade.user_sender_id == Users.id")
     trades_received = relationship(
-        "TradeRequest", primaryjoin="TradeRequest.user_receiver_id == Users.id"
+        "Trade", primaryjoin="Trade.user_receiver_id == Users.id"
     )
 
     def __init__(
@@ -103,35 +101,57 @@ class Status(enum.Enum):
     accepted = 3
 
 
-class TradeRequest(Base):
-    __tablename__ = "trade_request"
+class Trade(Base):
+    __tablename__ = "trade"
 
     id = Column(Integer, primary_key=True)
     user_sender_id = Column(Integer, ForeignKey("users.id"))
     user_receiver_id = Column(Integer, ForeignKey("users.id"))
-    sticker_sender_id = Column(Integer, ForeignKey("stickers.id"))
-    sticker_receiver_id = Column(Integer, ForeignKey("stickers.id"))
     status = Column(Enum(Status), nullable=False)
 
-    receiver_sticker = relationship("Stickers", foreign_keys=[sticker_receiver_id])
-    sender_sticker = relationship("Stickers", foreign_keys=[sticker_sender_id])
     receiver_user = relationship(
         "Users", foreign_keys=[user_receiver_id], back_populates="trades_received"
     )
     sender_user = relationship(
         "Users", foreign_keys=[user_sender_id], back_populates="trades_sent"
     )
+    trades_requests = relationship(
+        "TradeRequest", primaryjoin="TradeRequest.id_trade == Trade.id"
+    )
 
     def __init__(
         self,
         user_sender_id,
         user_receiver_id,
-        sticker_sender_id,
-        sticker_receiver_id,
         status=Status.pendent,
     ) -> None:
         self.user_sender_id = user_sender_id
         self.user_receiver_id = user_receiver_id
+        self.status = status
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
+class TradeRequest(Base):
+    __tablename__ = "trade_request"
+
+    id = Column(Integer, primary_key=True)
+    id_trade = Column(ForeignKey("trade.id"))
+    sticker_sender_id = Column(Integer, ForeignKey("stickers.id"), nullable=True)
+    sticker_receiver_id = Column(Integer, ForeignKey("stickers.id"), nullable=True)
+
+    receiver_sticker = relationship("Stickers", foreign_keys=[sticker_receiver_id])
+    sender_sticker = relationship("Stickers", foreign_keys=[sticker_sender_id])
+
+    def __init__(
+        self,
+        id_trade,
+        sticker_sender_id,
+        sticker_receiver_id,
+        status=Status.pendent,
+    ) -> None:
+        self.id_trade = id_trade
         self.sticker_sender_id = sticker_sender_id
         self.sticker_receiver_id = sticker_receiver_id
         self.status = status

@@ -1,5 +1,7 @@
 from ..repository.repo import TradeRequestsRepository, UsersRepository
 from ..domain.entity import Status, TradeRequest
+from typing import List
+import itertools
 
 
 class TradeStickers:
@@ -10,14 +12,22 @@ class TradeStickers:
         self.us_repo = us_repo
 
     def request_trade(
-        self, user_sender_id, user_receiver_id, sticker_sender_id, sticker_receiver_id
+        self,
+        user_sender_id,
+        user_receiver_id,
+        sticker_sender_id: List[int],
+        sticker_receiver_id: List[int],
     ):
-        tr_request = TradeRequest(
-            user_sender_id=user_sender_id,
-            user_receiver_id=user_receiver_id,
-            sticker_sender_id=sticker_sender_id,
-            sticker_receiver_id=sticker_receiver_id,
-        )
+        stickers = itertools.zip_longest(sticker_sender_id, sticker_receiver_id)
+
+        for s in stickers:
+            sticker_sender, sticker_receiver = s
+            tr_request = TradeRequest(
+                user_sender_id=user_sender_id,
+                user_receiver_id=user_receiver_id,
+                sticker_sender_id=sticker_sender,
+                sticker_receiver_id=sticker_receiver,
+            )
 
         self.tr_repo.add(tr_request)
 
