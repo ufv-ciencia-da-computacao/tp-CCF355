@@ -15,13 +15,13 @@ class Command:
         return self.__dict__
 
 
-class RequestTradeUserToUserCommand(Command):  # serialize object
+class RequestTradeUserToUserCommand(Command):
     def __init__(
         self,
         user_orig: int,
-        stickers_user_orig: list,
+        stickers_user_orig: List[int],
         user_dest: int,
-        stickers_user_dest: list,
+        stickers_user_dest: List[int],
     ):
         self.message_type = RequestTradeUserToUserCommand.__name__
         self.user_orig = user_orig
@@ -104,6 +104,34 @@ class ResponseAllUsersCommand(Command):
 
     def as_dict(self):
         return {
-            "users": [u.as_dict() for u in self.users],
+            "users": [u.as_dict(stickers=False) for u in self.users],
             "message_type": self.message_type,
+        }
+
+    @classmethod
+    def from_dict(cls, obj: dict):
+        return ResponseAllUsersCommand(
+            users=[entity.Users.from_dict(d) for d in obj["users"]]
+        )
+
+
+class RequestListStickersUserCommand(Command):
+    def __init__(self, username) -> None:
+        self.message_type = RequestListStickersUserCommand.__name__
+        self.username = username
+
+
+class ResponseListStickersUserCommand(Command):
+    def __init__(self, users: List[entity.Users]):
+        self.users = users
+        self.message_type = ResponseListStickersUserCommand.__name__
+
+    @classmethod
+    def from_dict(cls, obj: dict):
+        return ResponseListStickersUserCommand(entity.Users.from_dict(obj["user"]))
+
+    def as_dict(self):
+        return {
+            "message_type": ResponseListStickersUserCommand.__name__,
+            "user": self.user.as_dict(),
         }

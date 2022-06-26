@@ -98,7 +98,13 @@ class TradeRequestsRepository(AbstractRepository):
         self.session = session
 
     def add(self, trade_request: entity.TradeRequest):
-        self.session.add(trade_request)
+        try:
+            self.session.add(trade_request)
+        except:
+            self.session.rollback()
+            raise
+        else:
+            self.session.commit()
 
     def get(self, user_sender_id: int) -> entity.TradeRequest:
         return (

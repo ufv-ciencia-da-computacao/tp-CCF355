@@ -1,12 +1,16 @@
 from ast import Break
+from email import message
 from ..protocol.command import (
     Command,
     RequestAllUsersCommand,
     RequestAnswerTradeCommand,
+    RequestListStickersUserCommand,
     RequestLoginCommand,
     RequestCreateUserCommand,
     RequestTradeUserToUserCommand,
+    ResponseAllUsersCommand,
     ResponseCreateUserCommand,
+    ResponseListStickersUserCommand,
     ResponseLoginCommand,
 )
 import socket
@@ -79,6 +83,16 @@ class ReaderRequest(Reader):
             except:
                 traceback.print_exception(*sys.exc_info())
                 # cmd = ErrorCommand()
+        elif message_type == RequestListStickersUserCommand.__name__:
+            try:
+                user = self.us_repo.get(data["username"])
+
+                if user is not None:
+                    cmd = ResponseListStickersUserCommand(user=user)
+                else:
+                    cmd = ResponseListStickersUserCommand(entity.Users("", ""))
+            except:
+                traceback.print_exception(*sys.exc_info())
 
         elif message_type == RequestTradeUserToUserCommand.__name__:
             pass
@@ -99,6 +113,8 @@ class ReaderResponse(Reader):
             cmd = ResponseCreateUserCommand.from_dict(data)
         elif data["message_type"] == ResponseLoginCommand.__name__:
             cmd = ResponseLoginCommand.from_dict(data)
+        elif data["message_type"] == ResponseAllUsersCommand.__name__:
+            cmd = ResponseAllUsersCommand.from_dict(data)
 
         return cmd
 

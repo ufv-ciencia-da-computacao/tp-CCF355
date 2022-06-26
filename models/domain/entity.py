@@ -32,10 +32,15 @@ class Users(Base):
         self.password = password
         self.stickers = stickers
 
-    def as_dict(self):
+    def as_dict(self, stickers=True, password=False):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
-        ret["stickers"] = [stickers.as_dict() for stickers in self.stickers]
-        ret["password"] = ""
+        if stickers:
+            ret["stickers"] = [stickers.as_dict() for stickers in self.stickers]
+        else:
+            ret["stickers"] = ""
+
+        if not password:
+            ret["password"] = ""
         return ret
 
     @classmethod
