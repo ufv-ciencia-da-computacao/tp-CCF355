@@ -1,22 +1,19 @@
-from ast import Break
-from email import message
 from ..protocol.command import (
     Command,
-    RequestAllUsersCommand,
     RequestAnswerTradeCommand,
     RequestListStickersUserCommand,
     RequestLoginCommand,
     RequestCreateUserCommand,
     RequestTradeUserToUserCommand,
     RequestTradesReceivedUserCommand,
-    RequestUser,
+    RequestUserCommand,
     ResponseAllUsersCommand,
     ResponseCreateUserCommand,
     ResponseListStickersUserCommand,
     ResponseLoginCommand,
     ResponseTradeUserToUserCommand,
     ResponseTradesReceivedUserCommand,
-    ResponseUser,
+    ResponseUserCommand,
 )
 import socket
 import json
@@ -133,9 +130,9 @@ class ReaderRequest(Reader):
 
         elif message_type == RequestAnswerTradeCommand.__name__:
             pass
-        elif message_type == RequestUser.__name__:
+        elif message_type == RequestUserCommand.__name__:
             user = self.us_repo.get_by_id(data["user_id"])
-            cmd = ResponseUser(user=user)
+            cmd = ResponseUserCommand(user=user)
 
         return cmd
 
@@ -155,8 +152,8 @@ class ReaderResponse(Reader):
             cmd = ResponseAllUsersCommand.from_dict(data)
         elif data["message_type"] == ResponseListStickersUserCommand.__name__:
             cmd = ResponseListStickersUserCommand.from_dict(data)
-        elif data["message_type"] == ResponseUser.__name__:
-            cmd = ResponseUser.from_dict(data)
+        elif data["message_type"] == ResponseUserCommand.__name__:
+            cmd = ResponseUserCommand.from_dict(data)
         elif data["message_type"] == ResponseTradeUserToUserCommand.__name__:
             cmd = ResponseTradeUserToUserCommand.from_dict(data)
         elif data["message_type"] == ResponseTradesReceivedUserCommand.__name__:

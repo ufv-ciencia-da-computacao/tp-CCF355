@@ -14,12 +14,7 @@ from typing import Any, Callable, List
 from middleware.clientSocket import ClientSocket
 from models.domain.entity import Stickers, Users
 from client.app import App
-from models.protocol.command import (
-    RequestListStickersUserCommand,
-    RequestTradeUserToUserCommand,
-    RequestUser,
-)
-
+from models.protocol.command import RequestListStickersUserCommand, RequestTradeUserToUserCommand, RequestUserCommand
 
 class ItemListSticker(Frame):
     sticker: Stickers
@@ -166,7 +161,7 @@ class TradeView(Frame):
 
     def update_view(self):
         sock = ClientSocket()
-        cmd = RequestUser(self.window.logged_user_id)
+        cmd = RequestUserCommand(self.window.logged_user_id)
         resp = sock.send_receive(cmd)
         self.user = resp.user
 

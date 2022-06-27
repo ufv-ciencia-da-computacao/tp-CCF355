@@ -3,7 +3,7 @@ from typing import List
 from client.app import App
 from middleware.clientSocket import ClientSocket
 from models.domain.entity import Users
-from models.protocol.command import RequestUser
+from models.protocol.command import RequestUserCommand
 
 class StickerFrame(Frame):
     def __init__(self, window: Frame, playername: str,  country: str, rarity: int):
@@ -62,7 +62,7 @@ class HomepageView(Frame):
 
     def update_view(self, *args, **kwargs):
         sock = ClientSocket()
-        cmd = RequestUser(self.window.logged_user_id)
+        cmd = RequestUserCommand(self.window.logged_user_id)
         resp = sock.send_receive(cmd)
 
         self.user = resp.user

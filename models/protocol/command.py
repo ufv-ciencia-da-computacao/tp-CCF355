@@ -110,16 +110,14 @@ class ResponseLoginCommand(Command):
     def from_dict(cls, obj: dict):
         return ResponseLoginCommand(obj["user_id"])
 
-
-class RequestUser(Command):
+class RequestUserCommand(Command):
     def __init__(self, user_id: int):
-        self.message_type = RequestUser.__name__
+        self.message_type = RequestUserCommand.__name__
         self.user_id = user_id
 
-
-class ResponseUser(Command):
+class ResponseUserCommand(Command):
     def __init__(self, user: entity.Users):
-        self.message_type = ResponseUser.__name__
+        self.message_type = ResponseUserCommand.__name__
         self.user = user
 
     def as_dict(self):
@@ -127,7 +125,7 @@ class ResponseUser(Command):
 
     @classmethod
     def from_dict(cls, obj: dict):
-        return ResponseUser(entity.Users.from_dict(obj["user"]))
+        return ResponseUserCommand(entity.Users.from_dict(obj["user"]))
 
 
 class RequestAllUsersCommand(Command):
