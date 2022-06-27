@@ -36,14 +36,33 @@ class ResponseTradeUserToUserCommand(Command):
         self.trade = trade
 
     def as_dict(self):
+        return {"message_type": self.message_type, "trade": self.trade.as_dict()}
+
+    @classmethod
+    def from_dict(cls, obj: dict):
+        return ResponseTradeUserToUserCommand(entity.Trade.from_dict(obj))  # errado
+
+
+class RequestAllTradesUserCommand(Command):
+    def __init__(self, user_id) -> None:
+        self.message_type = RequestAllTradesUserCommand.__name__
+        self.user_id = user_id
+
+
+class ResponseAllTradesUserCommand(Command):
+    def __init__(self, user: entity.Users) -> None:
+        self.message_type = ResponseAllTradesUserCommand.__name__
+        self.user = user
+
+    def as_dict(self):
         return {
             "message_type": self.message_type,
-            "trade": self.trade.as_dict()
+            "user": self.user.as_dict(stickers=False, trades=True),
         }
 
-    @staticmethod
-    def from_dict(obj: dict):
-        return ResponseTradeUserToUserCommand(entity.Trade.from_dict(obj["trade"]))
+    @classmethod
+    def from_dict(cls, obj: dict):
+        return ResponseAllTradesUserCommand(entity.Users.from_dict(obj))
 
 
 class RequestAnswerTradeCommand(Command):
@@ -95,10 +114,12 @@ class ResponseLoginCommand(Command):
     def from_dict(cls, obj: dict):
         return ResponseLoginCommand(obj["user_id"])
 
+
 class RequestUser(Command):
     def __init__(self, user_id: int):
         self.message_type = RequestUser.__name__
         self.user_id = user_id
+
 
 class ResponseUser(Command):
     def __init__(self, user: entity.Users):
@@ -106,13 +127,10 @@ class ResponseUser(Command):
         self.user = user
 
     def as_dict(self):
-        return {
-            "message_type": self.message_type,
-            "user": self.user.as_dict()
-        }
-    
-    @staticmethod
-    def from_dict(obj: dict):
+        return {"message_type": self.message_type, "user": self.user.as_dict()}
+
+    @classmethod
+    def from_dict(cls, obj: dict):
         return ResponseUser(entity.Users.from_dict(obj["user"]))
 
 
@@ -152,7 +170,9 @@ class ResponseListStickersUserCommand(Command):
 
     @classmethod
     def from_dict(cls, obj: dict):
-        return ResponseListStickersUserCommand([entity.Stickers.from_dict(s) for s in obj["stickers"]])
+        return ResponseListStickersUserCommand(
+            [entity.Stickers.from_dict(s) for s in obj["stickers"]]
+        )
 
     def as_dict(self):
         return {

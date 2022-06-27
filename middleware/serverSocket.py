@@ -7,6 +7,8 @@ from models.protocol.socketio import ReaderRequest
 from models.repository.repo import (
     ListStickersRepository,
     StickersRepository,
+    TradeRepository,
+    TradeRequestRepository,
     UsersRepository,
 )
 from models.protocol.socketio import Writer
@@ -22,12 +24,14 @@ class ServerSocket:
         us_repo: UsersRepository,
         s_repo: StickersRepository,
         ls_repo: ListStickersRepository,
+        t_repo: TradeRepository,
+        tr_repo: TradeRequestRepository,
     ) -> None:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind((self.HOST, self.PORT))
 
-        self.reader_request = ReaderRequest(us_repo, s_repo, ls_repo, None, None)
+        self.reader_request = ReaderRequest(us_repo, s_repo, ls_repo, t_repo, tr_repo)
 
     def listen(self):
         self.sock.listen(5)

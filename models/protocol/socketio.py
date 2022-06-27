@@ -78,8 +78,9 @@ class ReaderRequest(Reader):
             try:
                 self.us_repo.add(u)
                 cmd = ResponseCreateUserCommand(True)
-                for _ in range(5):
-                    self.stickerspack.add_pack2user(user=self.us_repo.get(u.username))
+                self.stickerspack.add_pack2user(
+                    user=self.us_repo.get(u.username)
+                )  # sorteando 100 cartas
             except Exception:
                 traceback.print_exception(*sys.exc_info())
                 cmd = ResponseCreateUserCommand(False)
@@ -95,7 +96,6 @@ class ReaderRequest(Reader):
                 # cmd = ErrorCommand()
         elif message_type == RequestListStickersUserCommand.__name__:
             cmd = ResponseListStickersUserCommand(stickers=[])
-            print(cmd)
             try:
                 user = self.us_repo.get(data["username"])
 
@@ -106,15 +106,18 @@ class ReaderRequest(Reader):
 
         elif message_type == RequestTradeUserToUserCommand.__name__:
             cmd = ResponseTradeUserToUserCommand(None)
+            print(data)
             try:
                 user_orig = self.us_repo.get(data["user_orig"])
                 user_dest = self.us_repo.get(data["user_dest"])
+
                 trade = self.tradestickers.request_trade(
                     user_orig.id,
                     user_dest.id,
-                    data["stickers_user_orig"],
                     data["stickers_user_dest"],
+                    data["stickers_user_orig"],
                 )
+                print(trade.id)
                 trade = self.t_repo.get(trade.id)
                 cmd = ResponseTradeUserToUserCommand(trade=trade)
             except:

@@ -101,6 +101,7 @@ class TradeRepository(AbstractRepository):
         self.session = session
 
     def add(self, trade: entity.Trade):
+        print(trade)
         try:
             self.session.add(trade)
         except:
@@ -132,6 +133,7 @@ class TradeRequestRepository(AbstractRepository):
         self.session = session
 
     def add(self, trade_request: entity.TradeRequest):
+        print(trade_request)
         try:
             self.session.add(trade_request)
         except:
@@ -140,7 +142,7 @@ class TradeRequestRepository(AbstractRepository):
         else:
             self.session.commit()
 
-    def get_by_trade(self, id_trade: int) -> entity.Trade:
+    def get(self, id_trade: int) -> entity.Trade:
         return (
             self.session.query(entity.TradeRequest).filter_by(id_trade=id_trade).one()
         )
