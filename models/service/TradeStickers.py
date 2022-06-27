@@ -1,14 +1,14 @@
-from ..repository.repo import UsersRepository, TradeRequestRepository, TradeRepository
-from ..domain.entity import Status, Trade, TradeRequest
+from ..repository.repo import UsersRepository, TradeStickersRepository, TradeRepository
+from ..domain.entity import ReceiverSender, Status, Trade, TradeSticker
 from typing import List
 import itertools
 
 
-class TradeStickers:
+class TradeStickersService:
     def __init__(
         self,
         t_repo: TradeRepository,
-        tr_repo: TradeRequestRepository,
+        tr_repo: TradeStickersRepository,
         us_repo: UsersRepository,
     ) -> None:
         self.t_repo = t_repo
@@ -28,14 +28,18 @@ class TradeStickers:
             )
             self.t_repo.add(obj)
 
-            stickers = itertools.zip_longest(sticker_sender_id, sticker_receiver_id)
+            for s in sticker_sender_id:
+                tr_request = TradeSticker(
+                    id_trade=obj.id, sticker_id=s, receiver_sender=ReceiverSender.sender
+                )
 
-            for s in stickers:
-                sticker_sender, sticker_receiver = s
-                tr_request = TradeRequest(
+                self.tr_repo.add(tr_request)
+
+            for s in sticker_receiver_id:
+                tr_request = TradeSticker(
                     id_trade=obj.id,
-                    sticker_sender_id=sticker_sender,
-                    sticker_receiver_id=sticker_receiver,
+                    sticker_id=s,
+                    receiver_sender=ReceiverSender.receiver,
                 )
 
                 self.tr_repo.add(tr_request)

@@ -12,7 +12,7 @@ if __name__ == "__main__":
     ls_repo = repo.ListStickersRepository(session)
     user_repo = repo.UsersRepository(session)
     t_repo = repo.TradeRepository(session)
-    tr_repo = repo.TradeRequestRepository(session)
+    tr_repo = repo.TradeStickersRepository(session)
 
     ss = ServerSocket(user_repo, stickers_repo, ls_repo, t_repo, tr_repo)
     ss.listen()

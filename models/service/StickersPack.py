@@ -25,7 +25,6 @@ class StickersPack:
         return pack
 
     def add_pack2user(self, user: entity.Users):
-        print(user.as_dict())
         pack = self._get_pack()
 
         for s in pack:

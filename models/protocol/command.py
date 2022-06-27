@@ -31,16 +31,13 @@ class RequestTradeUserToUserCommand(Command):
 
 
 class ResponseTradeUserToUserCommand(Command):
-    def __init__(self, trade: entity.Trade):
+    def __init__(self, status: bool):
         self.message_type = ResponseTradeUserToUserCommand.__name__
-        self.trade = trade
-
-    def as_dict(self):
-        return {"message_type": self.message_type, "trade": self.trade.as_dict()}
+        self.status = status
 
     @classmethod
     def from_dict(cls, obj: dict):
-        return ResponseTradeUserToUserCommand(entity.Trade.from_dict(obj))  # errado
+        return ResponseTradeUserToUserCommand(status=obj["status"])
 
 
 class RequestAllTradesUserCommand(Command):

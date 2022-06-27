@@ -101,7 +101,6 @@ class TradeRepository(AbstractRepository):
         self.session = session
 
     def add(self, trade: entity.Trade):
-        print(trade)
         try:
             self.session.add(trade)
         except:
@@ -110,7 +109,10 @@ class TradeRepository(AbstractRepository):
         else:
             self.session.commit()
 
-    def get(self, user_sender_id: int) -> entity.Trade:
+    def get(self, id) -> entity.Trade:
+        return self.session.query(entity.Trade).filter_by(id=id).one()
+
+    def get_by_sender_id(self, user_sender_id: int) -> entity.Trade:
         return (
             self.session.query(entity.Trade)
             .filter_by(user_sender_id=user_sender_id)
@@ -128,12 +130,11 @@ class TradeRepository(AbstractRepository):
         return self.session.query(entity.Trade).all()
 
 
-class TradeRequestRepository(AbstractRepository):
+class TradeStickersRepository(AbstractRepository):
     def __init__(self, session):
         self.session = session
 
-    def add(self, trade_request: entity.TradeRequest):
-        print(trade_request)
+    def add(self, trade_request: entity.TradeSticker):
         try:
             self.session.add(trade_request)
         except:
@@ -142,9 +143,9 @@ class TradeRequestRepository(AbstractRepository):
         else:
             self.session.commit()
 
-    def get(self, id_trade: int) -> entity.Trade:
+    def get(self, id_trade: int) -> entity.TradeSticker:
         return (
-            self.session.query(entity.TradeRequest).filter_by(id_trade=id_trade).one()
+            self.session.query(entity.TradeSticker).filter_by(id_trade=id_trade).all()
         )
 
     def list(self):

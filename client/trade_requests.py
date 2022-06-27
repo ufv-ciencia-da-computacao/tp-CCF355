@@ -2,25 +2,27 @@ from tkinter import *
 from typing import List
 from client.app import App
 from middleware.clientSocket import ClientSocket
-from models.domain.entity import TradeRequest, Users
+from models.domain.entity import TradeSticker, Users
 from models.protocol.command import RequestUser
+
 
 class ListRequestsView(Frame):
     def __init__(self, window: Frame):
         super().__init__(window)
         self.window = window
 
-    def add_requests(self, requests: List[TradeRequest]):
+    def add_requests(self, requests: List[TradeSticker]):
         print(len(requests))
 
     def clear(self):
         pass
 
+
 class TradeRequestsView(Frame):
     list_requests: ListRequestsView
     user: Users
 
-    def __init__(self, window : App):
+    def __init__(self, window: App):
         super().__init__(window)
         self.window = window
         self.rowconfigure(0, weight=1)
@@ -36,8 +38,8 @@ class TradeRequestsView(Frame):
         canvas.config(scrollregion=canvas.bbox(ALL))
 
         f = Frame(canvas)
-        canvas.create_window((0,0), window=f, anchor="nw")
-        
+        canvas.create_window((0, 0), window=f, anchor="nw")
+
         self.list_requests = ListRequestsView(f)
 
         self.user = None

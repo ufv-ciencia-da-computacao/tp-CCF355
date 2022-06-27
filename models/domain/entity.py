@@ -119,6 +119,11 @@ class Status(enum.Enum):
     accepted = 3
 
 
+class ReceiverSender(enum.Enum):
+    receiver = 1
+    sender = 2
+
+
 class Trade(Base):
     __tablename__ = "trade"
 
@@ -127,8 +132,8 @@ class Trade(Base):
     user_receiver_id = Column(ForeignKey("users.id"), nullable=False)
     status = Column(Enum(Status), nullable=False)
 
-    rades_requests = relationship(
-        "TradeRequest", primaryjoin="TradeRequest.id_trade == Trade.id"
+    trades_requests = relationship(
+        "TradeSticker", primaryjoin="TradeSticker.id_trade == Trade.id"
     )
 
     def __init__(
@@ -153,7 +158,7 @@ class Trade(Base):
         return Trade(
             id=obj["trade"],
             trades_requests=[
-                TradeRequest.from_dict(tr) for tr in obj["stickers_traded"]
+                TradeSticker.from_dict(tr) for tr in obj["stickers_traded"]
             ],
             receiver_user=Users.from_dict(obj["receiver_user"]),
             sender_user=Users.from_dict(obj["sender_user"]),
@@ -164,47 +169,45 @@ class Trade(Base):
         return f"receiver_user_id = {self.user_receiver_id}, sender_user_id = {self.user_sender_id}"
 
 
-class TradeRequest(Base):
-    __tablename__ = "trade_request"
+class TradeSticker(Base):
+    __tablename__ = "trade_stickers"
 
     id = Column(Integer, primary_key=True)
     id_trade = Column(ForeignKey("trade.id"))
-    sticker_sender_id = Column(ForeignKey("stickers.id"), nullable=True)
-    sticker_receiver_id = Column(ForeignKey("stickers.id"), nullable=True)
+    sticker_id = Column(ForeignKey("stickers.id"), nullable=False)
+    receiver_sender = Column(Enum(ReceiverSender), nullable=False)
 
-    receiver_sticker = relationship(
-        "Stickers", primaryjoin="Stickers.id==TradeRequest.sticker_receiver_id"
-    )
     sender_sticker = relationship(
-        "Stickers", primaryjoin="Stickers.id==TradeRequest.sticker_sender_id"
+        "Stickers", primaryjoin="Stickers.id==TradeSticker.sticker_id"
     )
 
     def __init__(
         self,
         id_trade,
-        sticker_sender_id,
-        sticker_receiver_id,
+        sticker_id,
+        receiver_sender,
     ) -> None:
         self.id_trade = id_trade
-        self.sticker_sender_id = sticker_sender_id
-        self.sticker_receiver_id = sticker_receiver_id
+        self.sticker_id = sticker_id
+        self.receiver_sender = receiver_sender
 
     def as_dict(self):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
-        ret["receiver_sticker"] = self.receiver_sticker.as_dict()
-        ret["sender_sticker"] = self.sender_sticker.as_dict()
+        ret["sticker"] = self.sender_sticker.as_dict()
+        ret["category"] = self.receiver_sender
         return ret
 
     def from_dict(self, obj: dict):
-        return TradeRequest(
+        print(obj)
+        return TradeSticker(
             id=obj["id"],
             id_trade=obj["id_trade"],
-            receiver_sticker=Stickers.from_dict(obj["receiver_sticker"]),
-            sender_sticker=Stickers.from_dict(obj["sender_sticker"]),
+            stickers=Stickers.from_dict(obj["stickers"]),
+            receiver_sender=obj["receiver_sender"],
         )
 
     def __repr__(self) -> str:
-        return f"id_trade = {self.id_trade}, sticker_sender_id = {self.sticker_receiver_id}, sticker_receiver_id = {self.sticker_sender_id}"
+        return f"id_trade = {self.id_trade}, sticker_id = {self.sticker_id}"
 
 
 def create_db(con):

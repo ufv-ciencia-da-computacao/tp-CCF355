@@ -8,7 +8,7 @@ from models.repository.repo import (
     ListStickersRepository,
     StickersRepository,
     TradeRepository,
-    TradeRequestRepository,
+    TradeStickersRepository,
     UsersRepository,
 )
 from models.protocol.socketio import Writer
@@ -25,7 +25,7 @@ class ServerSocket:
         s_repo: StickersRepository,
         ls_repo: ListStickersRepository,
         t_repo: TradeRepository,
-        tr_repo: TradeRequestRepository,
+        tr_repo: TradeStickersRepository,
     ) -> None:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
