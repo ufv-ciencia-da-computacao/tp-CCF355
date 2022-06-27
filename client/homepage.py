@@ -1,6 +1,9 @@
 from tkinter import *
 from typing import List
 from client.app import App
+from middleware.clientSocket import ClientSocket
+from models.domain.entity import Users
+from models.protocol.command import RequestUser
 
 class StickerFrame(Frame):
     def __init__(self, window: Frame, playername: str,  country: str, rarity: int):
@@ -28,6 +31,7 @@ class StickerFrame(Frame):
 
 class HomepageView(Frame):
     list_stickers : List[StickerFrame]
+    user: Users
 
     def __init__(self, window: App):
         super().__init__(window)
@@ -54,10 +58,18 @@ class HomepageView(Frame):
 
         self.list_stickers = []
 
-    def update_view(self):
-        self.welcome.config(text="Bem vindo "+self.window.logged_user.username)
+        self.user = None
+
+    def update_view(self, *args, **kwargs):
+        sock = ClientSocket()
+        cmd = RequestUser(self.window.logged_user_id)
+        resp = sock.send_receive(cmd)
+
+        self.user = resp.user
+
+        self.welcome.config(text="Bem vindo " + self.user.username)
         self.clear()
-        for sticker in self.window.logged_user.stickers:
+        for sticker in self.user.stickers:
             s = StickerFrame(self.f, sticker.playername, sticker.country, sticker.rarity)
             s.pack(side="left", padx=10)
             self.list_stickers.append(s)

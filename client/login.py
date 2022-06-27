@@ -1,10 +1,7 @@
 from tkinter import *
 from client.app import App
 from middleware.clientSocket import ClientSocket
-from models.domain.entity import Users
-from models.protocol import command
-from models.protocol.command import RequestLoginCommand, ResponseLoginCommand
-from models.protocol.socketio import ReaderResponse
+from models.protocol.command import RequestLoginCommand
 
 class LoginView(Frame):
     def __init__(self, window: App):
@@ -36,7 +33,7 @@ class LoginView(Frame):
 
         content.pack(expand=True)
 
-    def update_view(self):
+    def update_view(self, *args, **kwargs):
         self.username.delete(0, END)
         self.password.delete(0, END)
         self.username.focus()
@@ -54,8 +51,8 @@ class LoginView(Frame):
         cmd = RequestLoginCommand(username=username, password=password)
         resp = sock.send_receive(cmd)
 
-        if resp.user.id != None:
-            self.window.set_logged_user(resp.user)
+        if resp.user_id != None:
+            self.window.set_logged_user_id(user_id=resp.user_id)
             self.window.show_page("homepage", menu=True)
         else:
             self._show_error_msg()

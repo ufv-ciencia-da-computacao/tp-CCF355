@@ -58,6 +58,9 @@ class UsersRepository(AbstractRepository):
     def get(self, username: string) -> entity.Users:
         return self.session.query(entity.Users).filter_by(username=username).one()
 
+    def get_by_id(self, id: int) -> entity.Users:
+        return self.session.query(entity.Users).filter_by(id=id).one()
+
     def list(self):
         return self.session.query(entity.Users).all()
 

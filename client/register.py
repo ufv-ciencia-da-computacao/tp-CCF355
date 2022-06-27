@@ -33,7 +33,7 @@ class RegisterView(Frame):
         self.btn_confirm.grid(row=7, column=1, sticky="e", pady=10, padx=5)
         content.pack(expand=True)
 
-    def update_view(self):
+    def update_view(self, *args, **kwargs):
         self.username_input.delete(0, END)
         self.password_input.delete(0, END)
         self.confirm_input.delete(0, END)

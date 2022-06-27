@@ -18,9 +18,9 @@ class Command:
 class RequestTradeUserToUserCommand(Command):
     def __init__(
         self,
-        user_orig: int,
+        user_orig: str,
         stickers_user_orig: List[int],
-        user_dest: int,
+        user_dest: str,
         stickers_user_dest: List[int],
     ):
         self.message_type = RequestTradeUserToUserCommand.__name__
@@ -31,9 +31,19 @@ class RequestTradeUserToUserCommand(Command):
 
 
 class ResponseTradeUserToUserCommand(Command):
-    def __init__(self, trade: entity.TradeRequest):
+    def __init__(self, trade: entity.Trade):
         self.message_type = ResponseTradeUserToUserCommand.__name__
         self.trade = trade
+
+    def as_dict(self):
+        return {
+            "message_type": self.message_type,
+            "trade": self.trade.as_dict()
+        }
+
+    @staticmethod
+    def from_dict(obj: dict):
+        return ResponseTradeUserToUserCommand(entity.Trade.from_dict(obj["trade"]))
 
 
 class RequestAnswerTradeCommand(Command):
@@ -77,19 +87,33 @@ class RequestLoginCommand(Command):
 
 
 class ResponseLoginCommand(Command):
-    def __init__(self, user: entity.Users):
+    def __init__(self, user_id: int):
         self.message_type = ResponseLoginCommand.__name__
-        self.user = user
+        self.user_id = user_id
 
     @classmethod
     def from_dict(cls, obj: dict):
-        return ResponseLoginCommand(entity.Users.from_dict(obj["user"]))
+        return ResponseLoginCommand(obj["user_id"])
+
+class RequestUser(Command):
+    def __init__(self, user_id: int):
+        self.message_type = RequestUser.__name__
+        self.user_id = user_id
+
+class ResponseUser(Command):
+    def __init__(self, user: entity.Users):
+        self.message_type = ResponseUser.__name__
+        self.user = user
 
     def as_dict(self):
         return {
-            "message_type": ResponseLoginCommand.__name__,
-            "user": self.user.as_dict(),
+            "message_type": self.message_type,
+            "user": self.user.as_dict()
         }
+    
+    @staticmethod
+    def from_dict(obj: dict):
+        return ResponseUser(entity.Users.from_dict(obj["user"]))
 
 
 class RequestAllUsersCommand(Command):

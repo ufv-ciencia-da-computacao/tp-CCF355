@@ -148,6 +148,10 @@ class Trade(Base):
         ret["sender_id"] = self.sender_user.as_dict()
         return ret
 
+    @staticmethod
+    def from_dict(obj: dict):
+        pass
+
 
 class TradeRequest(Base):
     __tablename__ = "trade_request"

@@ -8,11 +8,13 @@ from ..protocol.command import (
     RequestLoginCommand,
     RequestCreateUserCommand,
     RequestTradeUserToUserCommand,
+    RequestUser,
     ResponseAllUsersCommand,
     ResponseCreateUserCommand,
     ResponseListStickersUserCommand,
     ResponseLoginCommand,
     ResponseTradeUserToUserCommand,
+    ResponseUser,
 )
 import socket
 import json
@@ -39,8 +41,8 @@ class Reader:
                 break
             print(len(data))
             if data[len(data) - 1] == EOF:
-                decode = data[: len(data) - 1].decode("utf-8")
-                return decode
+                chunks.append(str(data[: len(data) - 1].decode("utf-8")))
+                break
             else:
                 chunks.append(str(data.decode("utf-8")))
 
@@ -83,11 +85,11 @@ class ReaderRequest(Reader):
                 cmd = ResponseCreateUserCommand(False)
 
         elif message_type == RequestLoginCommand.__name__:
-            cmd = ResponseLoginCommand(entity.Users("", ""))
+            cmd = ResponseLoginCommand(None)
             try:
                 user = self.us_repo.get(data["username"])
                 if user is not None and user.password == data["password"]:
-                    cmd = ResponseLoginCommand(user=user)
+                    cmd = ResponseLoginCommand(user_id=user.id)
             except:
                 traceback.print_exception(*sys.exc_info())
                 # cmd = ErrorCommand()
@@ -103,20 +105,26 @@ class ReaderRequest(Reader):
                 traceback.print_exception(*sys.exc_info())
 
         elif message_type == RequestTradeUserToUserCommand.__name__:
+            cmd = ResponseTradeUserToUserCommand(None)
             try:
+                user_orig = self.us_repo.get(data["user_orig"])
+                user_dest = self.us_repo.get(data["user_dest"])
                 trade = self.tradestickers.request_trade(
-                    data["user_orig"],
-                    data["user_dest"],
+                    user_orig.id,
+                    user_dest.id,
                     data["stickers_user_orig"],
                     data["stickers_user_dest"],
                 )
                 trade = self.t_repo.get(trade.id)
-                cmd = ResponseTradeUserToUserCommand(trade)
+                cmd = ResponseTradeUserToUserCommand(trade=trade)
             except:
                 traceback.print_exception(*sys.exc_info())
 
         elif message_type == RequestAnswerTradeCommand.__name__:
             pass
+        elif message_type == RequestUser.__name__:
+            user = self.us_repo.get_by_id(data["user_id"])
+            cmd = ResponseUser(user=user)
 
         return cmd
 
@@ -136,6 +144,10 @@ class ReaderResponse(Reader):
             cmd = ResponseAllUsersCommand.from_dict(data)
         elif data["message_type"] == ResponseListStickersUserCommand.__name__:
             cmd = ResponseListStickersUserCommand.from_dict(data)
+        elif data["message_type"] == ResponseUser.__name__:
+            cmd = ResponseUser.from_dict(data)
+        elif data["message_type"] == ResponseTradeUserToUserCommand.__name__:
+            cmd = ResponseTradeUserToUserCommand.from_dict(data)
 
         return cmd
 

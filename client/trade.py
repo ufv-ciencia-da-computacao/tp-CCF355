@@ -1,9 +1,9 @@
 from tkinter import ALL, END, Button, Canvas, Checkbutton, Entry, Frame, IntVar, Label, Scrollbar
 from typing import Any, Callable, List
 from middleware.clientSocket import ClientSocket
-from models.domain.entity import Stickers
+from models.domain.entity import Stickers, Users
 from client.app import App
-from models.protocol.command import RequestListStickersUserCommand
+from models.protocol.command import RequestListStickersUserCommand, RequestTradeUserToUserCommand, RequestUser
 
 class ItemListSticker(Frame):
     sticker: Stickers
@@ -61,7 +61,7 @@ class ListSticker(Frame):
                 selected.append(item.sticker.id)
         return selected
 
-    def update_view(self):
+    def update_view(self, *args, **kwargs):
         for v in self.view_list:
             v.pack_forget()
             v.destroy()
@@ -86,6 +86,8 @@ class ListSticker(Frame):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
 class TradeView(Frame):
+    user: Users
+
     def __init__(self, window: App):
         super().__init__(window)
         self.window = window
@@ -119,20 +121,27 @@ class TradeView(Frame):
 
         Button(self, text="Solicitar Troca", command=self._trade, padx=10).grid(row=2, column=0, columnspan=2, padx=10, pady=5)
 
+        self.user = None
+
     def clear(self):
         self.my_list.clear()
         self.other_list.clear()
         self.other_name_entry.delete(0, END)
 
     def update_view(self):
+        sock = ClientSocket()
+        cmd = RequestUser(self.window.logged_user_id)
+        resp = sock.send_receive(cmd)
+        self.user = resp.user
+
         self.clear()
-        self.my_list.add_stickers(self.window.logged_user.stickers)
+        self.my_list.add_stickers(self.user.stickers)
 
     def _search_clicked(self, event = None):
         self.other_list.clear()
         username = self.other_name_entry.get()
 
-        if username == self.window.logged_user.username:
+        if username == self.user.username:
             # cant trade with myself
             return
         
@@ -146,7 +155,10 @@ class TradeView(Frame):
         my_stickers = self.my_list.get_selected_stickers()
         other_stickers = self.other_list.get_selected_stickers()
 
-        print(my_stickers)
-        print(other_stickers)
+        sock = ClientSocket()
+        cmd = RequestTradeUserToUserCommand(self.user.username, my_stickers, self.other_name_entry.get(), other_stickers)
+        resp = sock.send_receive(cmd)
+
+        
 
         
