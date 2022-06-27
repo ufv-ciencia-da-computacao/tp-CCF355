@@ -116,7 +116,14 @@ class TradeRepository(AbstractRepository):
         return (
             self.session.query(entity.Trade)
             .filter_by(user_sender_id=user_sender_id)
-            .one()
+            .all()
+        )
+
+    def get_by_receiver_id(self, user_receiver_id: int) -> entity.Trade:
+        return (
+            self.session.query(entity.Trade)
+            .filter_by(user_receiver_id=user_receiver_id)
+            .all()
         )
 
     def get_by_status(self, user_sender_id: int, status: int) -> entity.Trade:

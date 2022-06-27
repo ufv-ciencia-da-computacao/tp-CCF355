@@ -8,12 +8,14 @@ from ..protocol.command import (
     RequestLoginCommand,
     RequestCreateUserCommand,
     RequestTradeUserToUserCommand,
+    RequestTradesReceivedUserCommand,
     RequestUser,
     ResponseAllUsersCommand,
     ResponseCreateUserCommand,
     ResponseListStickersUserCommand,
     ResponseLoginCommand,
     ResponseTradeUserToUserCommand,
+    ResponseTradesReceivedUserCommand,
     ResponseUser,
 )
 import socket
@@ -114,12 +116,18 @@ class ReaderRequest(Reader):
                 trade = self.tradestickers.request_trade(
                     user_orig.id,
                     user_dest.id,
-                    data["stickers_user_dest"],
                     data["stickers_user_orig"],
+                    data["stickers_user_dest"],
                 )
                 trade = self.t_repo.get(trade.id)
                 print(trade.as_dict())
                 cmd = ResponseTradeUserToUserCommand(True)
+            except:
+                traceback.print_exception(*sys.exc_info())
+        elif message_type == RequestTradesReceivedUserCommand:
+            try:
+                trades = self.t_repo.get_by_sender_id(data["user_id"])
+                cmd = ResponseTradesReceivedUserCommand(trades)
             except:
                 traceback.print_exception(*sys.exc_info())
 
@@ -151,6 +159,8 @@ class ReaderResponse(Reader):
             cmd = ResponseUser.from_dict(data)
         elif data["message_type"] == ResponseTradeUserToUserCommand.__name__:
             cmd = ResponseTradeUserToUserCommand.from_dict(data)
+        elif data["message_type"] == ResponseTradesReceivedUserCommand.__name__:
+            cmd = ResponseTradesReceivedUserCommand.from_dict(data)
 
         return cmd
 

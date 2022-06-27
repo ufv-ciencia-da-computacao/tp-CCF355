@@ -1,6 +1,5 @@
 import json
 from typing import List
-
 from ..domain import entity
 
 
@@ -40,26 +39,26 @@ class ResponseTradeUserToUserCommand(Command):
         return ResponseTradeUserToUserCommand(status=obj["status"])
 
 
-class RequestAllTradesUserCommand(Command):
+class RequestTradesReceivedUserCommand(Command):
     def __init__(self, user_id) -> None:
-        self.message_type = RequestAllTradesUserCommand.__name__
+        self.message_type = RequestTradesReceivedUserCommand.__name__
         self.user_id = user_id
 
 
-class ResponseAllTradesUserCommand(Command):
-    def __init__(self, user: entity.Users) -> None:
-        self.message_type = ResponseAllTradesUserCommand.__name__
-        self.user = user
+class ResponseTradesReceivedUserCommand(Command):
+    def __init__(self, trades: List[entity.Trade]) -> None:
+        self.message_type = ResponseTradesReceivedUserCommand.__name__
+        self.trades = trades
 
     def as_dict(self):
         return {
             "message_type": self.message_type,
-            "user": self.user.as_dict(stickers=False, trades=True),
+            "trades_received": [t.as_dict() for t in self.trades],
         }
 
     @classmethod
     def from_dict(cls, obj: dict):
-        return ResponseAllTradesUserCommand(entity.Users.from_dict(obj))
+        return ResponseTradesReceivedUserCommand(entity.Trade.from_dict(obj))
 
 
 class RequestAnswerTradeCommand(Command):

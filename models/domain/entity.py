@@ -17,10 +17,6 @@ class Users(Base):
     stickers = relationship(
         "Stickers", secondary="list_stickers", back_populates="users"
     )
-    trades_sent = relationship("Trade", primaryjoin="Trade.user_sender_id == Users.id")
-    trades_received = relationship(
-        "Trade", primaryjoin="Trade.user_receiver_id == Users.id"
-    )
 
     def __init__(
         self,
@@ -28,17 +24,13 @@ class Users(Base):
         password: str,
         id: int = None,
         stickers: list = [],
-        trades_sent: list = [],
-        trades_received: list = [],
     ):
         self.id = id
         self.username = username
         self.password = password
         self.stickers = stickers
-        self.trades_sent = trades_sent
-        self.trades_received = trades_received
 
-    def as_dict(self, stickers=True, password=False, trades=False):
+    def as_dict(self, stickers=True, password=False):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
         if stickers:
             ret["stickers"] = [stickers.as_dict() for stickers in self.stickers]
@@ -47,13 +39,6 @@ class Users(Base):
 
         if not password:
             ret["password"] = ""
-
-        if trades:
-            ret["trades_sent"] = [ts.asdict() for ts in self.trades_sent]
-            ret["trades_received"] = [tr.asdict() for tr in self.trades_received]
-        else:
-            ret["trades_sent"] = []
-            ret["trades_received"] = []
 
         return ret
 
@@ -64,8 +49,6 @@ class Users(Base):
             password=obj["password"],
             id=obj["id"],
             stickers=[Stickers.from_dict(s) for s in obj["stickers"]],
-            trades_sent=[Trade.from_dict(t) for t in obj["trades_sent"]],
-            trades_received=[Trade.from_dict(t) for t in obj["trades_received"]],
         )
 
 
@@ -136,6 +119,12 @@ class Trade(Base):
         "TradeSticker", primaryjoin="TradeSticker.id_trade == Trade.id"
     )
 
+    sender_user = relationship("Users", primaryjoin="Users.id == Trade.user_sender_id")
+
+    receiver_user = relationship(
+        "Users", primaryjoin="Users.id == Trade.user_receiver_id"
+    )
+
     def __init__(
         self,
         user_sender_id,
@@ -150,7 +139,20 @@ class Trade(Base):
 
     def as_dict(self):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
-        ret["stickers_traded"] = [tr.as_dict() for tr in self.trades_requests]
+
+        stickers_received = []
+        stickers_sent = []
+
+        for tr in self.trades_requests:
+            if tr.receiver_sender == ReceiverSender.receiver:
+                stickers_received.append(tr.as_dict())
+            else:
+                stickers_sent.append(tr.as_dict())
+
+        ret["stickers_sent"] = stickers_sent
+        ret["stickers_received"] = stickers_received
+        ret["receiver_user"] = self.receiver_user.as_dict(stickers=False)
+        ret["sender_user"] = self.sender_user.as_dict(stickers=False)
         ret["status"] = self.status
         return ret
 
