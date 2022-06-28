@@ -85,10 +85,12 @@ class ListStickersRepository(AbstractRepository):
     def get_by_user_id_and_by_sticker_id(
         self, user_id: int, sticker_id: int
     ) -> entity.ListStickers:
+        print(user_id, sticker_id)
         return (
             self.session.query(entity.ListStickers)
-            .filter_by(user_id=user_id, sticker_id=sticker_id)
-            .one()
+            .filter_by(user_id=user_id)
+            .filter_by(sticker_id=sticker_id)
+            .first()
         )
 
     def get_duplicated_stickers_by_user_id(self, user_id: int) -> entity.ListStickers:
@@ -102,17 +104,14 @@ class ListStickersRepository(AbstractRepository):
             .all()
         )
 
-    def update_list_stickers(
-        self, user_id: int, sticker_id: int, new_user_id: int
-    ) -> None:
-        stmt = (
-            update(entity.ListStickers)
-            .where(entity.ListStickers.user_id == user_id)
-            .values(user_id=new_user_id)
-        )
-
+    def update_list_stickers(self, id: int, new_user_id: int) -> None:
+        print(id, new_user_id)
         try:
-            self.session.execute(stmt)
+            self.session.query(entity.ListStickers).filter(
+                entity.ListStickers.id == id
+            ).update(
+                {entity.ListStickers.user_id: new_user_id}, synchronize_session=False
+            )
         except:
             self.session.rollback()
             raise
@@ -161,10 +160,10 @@ class TradeRepository(AbstractRepository):
         )
 
     def update_trade_status(self, id: int, status: int) -> None:
-        stmt = update(entity.Trade).where(entity.Trade.id == id).values(status=status)
-
         try:
-            self.session.execute(stmt)
+            self.session.query(entity.Trade).filter(entity.Trade.id == id).update(
+                {entity.Trade.status: status}, synchronize_session=False
+            )
         except:
             self.session.rollback()
             raise
