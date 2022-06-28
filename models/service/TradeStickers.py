@@ -1,4 +1,9 @@
-from ..repository.repo import UsersRepository, TradeStickersRepository, TradeRepository
+from ..repository.repo import (
+    ListStickersRepository,
+    UsersRepository,
+    TradeStickersRepository,
+    TradeRepository,
+)
 from ..domain.entity import ReceiverSender, Status, Trade, TradeSticker
 from typing import List
 import itertools
@@ -10,10 +15,12 @@ class TradeStickersService:
         t_repo: TradeRepository,
         tr_repo: TradeStickersRepository,
         us_repo: UsersRepository,
+        ls_repo: ListStickersRepository,
     ) -> None:
         self.t_repo = t_repo
         self.tr_repo = tr_repo
-        self.us_repo = us_repo
+        self.us_repo = (us_repo,)
+        self.ls_repo = ls_repo
 
     def request_trade(
         self,
@@ -46,6 +53,43 @@ class TradeStickersService:
             return obj
         except:
             raise
+
+    def answer_trade(self, trade_id, answer):
+        trade = self.t_repo.get(trade_id).as_dict()
+        user_sender_id = trade["user_sender_id"]
+        user_receiver_id = trade["user_receiver_id"]
+
+        if answer == Status.recused:
+            self.t_repo.update_trade_status(trade.id, Status.recused)
+        else:
+            error = False
+            for ss in trade["stickers_sent"]:
+                sticker_from_ls = self.ls_repo.get_by_user_id_and_by_sticker_id(
+                    user_sender_id, ss["id"]
+                )
+                if sticker_from_ls is None:
+                    error = True
+
+            for sr in trade["stickers_received"]:
+                sticker_from_ls = self.ls_repo.get_by_user_id_and_by_sticker_id(
+                    user_receiver_id, sr["id"]
+                )
+                if sticker_from_ls is None:
+                    error = True
+
+            if error == True:
+                raise
+            else:
+                self.t_repo.update_trade_status(trade.id, Status.accepted)
+                for ss in trade["stickers_sent"]:
+                    self.ls_repo.update_list_stickers(
+                        user_sender_id, ss["id"], user_receiver_id
+                    )
+
+                for sr in trade["stickers_received"]:
+                    sticker_from_ls = self.ls_repo.update_list_stickers(
+                        user_receiver_id, sr["id"], user_sender_id
+                    )
 
     def get_all_trades_accepted(self, user_id):
         return self.t_repo.get_by_status(user_id, Status.accepted)

@@ -11,6 +11,7 @@ from ..protocol.command import (
     RequestTradesReceivedUserCommand,
     RequestUser,
     ResponseAllUsersCommand,
+    ResponseAnswerTradeCommand,
     ResponseCreateUserCommand,
     ResponseListStickersUserCommand,
     ResponseLoginCommand,
@@ -66,7 +67,7 @@ class ReaderRequest(Reader):
         self.t_repo = t_repo
         self.tr_repo = tr_repo
         self.stickerspack = StickersPack(s_repo, ls_repo)
-        self.tradestickers = TradeStickersService(t_repo, tr_repo, us_repo)
+        self.tradestickers = TradeStickersService(t_repo, tr_repo, us_repo, ls_repo)
 
     def read(self, sock: socket.socket):
         data = Reader._read_message(sock)
@@ -132,7 +133,13 @@ class ReaderRequest(Reader):
                 traceback.print_exception(*sys.exc_info())
 
         elif message_type == RequestAnswerTradeCommand.__name__:
-            pass
+            cmd = ResponseAnswerTradeCommand(False)
+            try:
+                self.tradestickers.answer_trade(data["trade_id"], data["accept"])
+                cmd = ResponseAnswerTradeCommand(True)
+            except:
+                traceback.print_exception(*sys.exc_info())
+
         elif message_type == RequestUser.__name__:
             user = self.us_repo.get_by_id(data["user_id"])
             cmd = ResponseUser(user=user)
@@ -161,7 +168,8 @@ class ReaderResponse(Reader):
             cmd = ResponseTradeUserToUserCommand.from_dict(data)
         elif data["message_type"] == ResponseTradesReceivedUserCommand.__name__:
             cmd = ResponseTradesReceivedUserCommand.from_dict(data)
-
+        elif data["message_type"] == ResponseAnswerTradeCommand.__name__:
+            cmd = ResponseAnswerTradeCommand.from_dict(data)
         return cmd
 
 

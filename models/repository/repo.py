@@ -6,6 +6,7 @@ import sqlalchemy
 from ..domain import entity
 from sqlalchemy.sql.expression import func, select
 from sqlalchemy.orm import Session
+from sqlalchemy import update
 
 
 class AbstractRepository(abc.ABC):
@@ -81,6 +82,15 @@ class ListStickersRepository(AbstractRepository):
     def get(self, user_id: int) -> entity.ListStickers:
         return self.session.query(entity.ListStickers).filter_by(user_id=user_id).one()
 
+    def get_by_user_id_and_by_sticker_id(
+        self, user_id: int, sticker_id: int
+    ) -> entity.ListStickers:
+        return (
+            self.session.query(entity.ListStickers)
+            .filter_by(user_id=user_id, sticker_id=sticker_id)
+            .one()
+        )
+
     def get_duplicated_stickers_by_user_id(self, user_id: int) -> entity.ListStickers:
         return (
             self.session.query(
@@ -91,6 +101,23 @@ class ListStickersRepository(AbstractRepository):
             .having(func.count(entity.ListStickers.sticker_id) > 1)
             .all()
         )
+
+    def update_list_stickers(
+        self, user_id: int, sticker_id: int, new_user_id: int
+    ) -> None:
+        stmt = (
+            update(entity.ListStickers)
+            .where(entity.ListStickers.user_id == user_id)
+            .values(user_id=new_user_id)
+        )
+
+        try:
+            self.session.execute(stmt)
+        except:
+            self.session.rollback()
+            raise
+        else:
+            self.session.commit()
 
     def list(self):
         return self.session.query(entity.ListStickers).all()
@@ -132,6 +159,17 @@ class TradeRepository(AbstractRepository):
             .filter_by(user_sender_id=user_sender_id, status=status)
             .one()
         )
+
+    def update_trade_status(self, id: int, status: int) -> None:
+        stmt = update(entity.Trade).where(entity.Trade.id == id).values(status=status)
+
+        try:
+            self.session.execute(stmt)
+        except:
+            self.session.rollback()
+            raise
+        else:
+            self.session.commit()
 
     def list(self):
         return self.session.query(entity.Trade).all()

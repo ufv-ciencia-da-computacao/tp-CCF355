@@ -115,7 +115,7 @@ class Trade(Base):
     user_receiver_id = Column(ForeignKey("users.id"), nullable=False)
     status = Column(Enum(Status), nullable=False)
 
-    trades_requests = relationship(
+    trades_stickers = relationship(
         "TradeSticker", primaryjoin="TradeSticker.id_trade == Trade.id"
     )
 
@@ -130,12 +130,12 @@ class Trade(Base):
         user_sender_id,
         user_receiver_id,
         status=Status.pendent,
-        trades_requests=[],
+        trades_stickers=[],
     ) -> None:
         self.user_sender_id = user_sender_id
         self.user_receiver_id = user_receiver_id
         self.status = status
-        self.trades_requests = trades_requests
+        self.trades_stickers = trades_stickers
 
     def as_dict(self):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -143,7 +143,7 @@ class Trade(Base):
         stickers_received = []
         stickers_sent = []
 
-        for tr in self.trades_requests:
+        for tr in self.trades_stickers:
             if tr.receiver_sender == ReceiverSender.receiver:
                 stickers_received.append(tr.as_dict())
             else:
@@ -159,7 +159,7 @@ class Trade(Base):
     def from_dict(self, obj: dict):
         return Trade(
             id=obj["trade"],
-            trades_requests=[
+            trades_stickers=[
                 TradeSticker.from_dict(tr) for tr in obj["stickers_traded"]
             ],
             receiver_user=Users.from_dict(obj["receiver_user"]),

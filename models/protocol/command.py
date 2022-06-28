@@ -62,15 +62,20 @@ class ResponseTradesReceivedUserCommand(Command):
 
 
 class RequestAnswerTradeCommand(Command):
-    def __init__(self, accept: bool):
+    def __init__(self, trade_id: int, accept: bool):
         self.message_type = RequestAnswerTradeCommand.__name__
         self.accept = accept
+        self.trade_id = trade_id
 
 
 class ResponseAnswerTradeCommand(Command):
     def __init__(self, status: bool):
         self.message_type = ResponseAnswerTradeCommand.__name__
         self.status = status
+
+    @classmethod
+    def from_dict(cls, obj: dict):
+        return ResponseAnswerTradeCommand(status=obj["status"])
 
 
 class RequestCreateUserCommand(Command):
