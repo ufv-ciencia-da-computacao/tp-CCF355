@@ -14,6 +14,7 @@ from ..protocol.command import (
     ResponseTradeUserToUserCommand,
     ResponseTradesReceivedUserCommand,
     ResponseUserCommand,
+    TradeItem,
 )
 import socket
 import json
@@ -121,10 +122,32 @@ class ReaderRequest(Reader):
                 cmd = ResponseTradeUserToUserCommand(True)
             except:
                 traceback.print_exception(*sys.exc_info())
-        elif message_type == RequestTradesReceivedUserCommand:
+        elif message_type == RequestTradesReceivedUserCommand.__name__:
+            cmd = ResponseTradesReceivedUserCommand([])
             try:
-                trades = self.t_repo.get_by_sender_id(data["user_id"])
-                cmd = ResponseTradesReceivedUserCommand(trades)
+                trades = self.t_repo.get_by_receiver_id(data["user_id"])
+                trade_item_list = []
+                for t in trades:
+                    stickers_received = []
+                    stickers_sent = []
+
+                    for tr in t.trades_requests:
+                        if tr.receiver_sender == entity.ReceiverSender.receiver:
+                            stickers_received.append(tr.sender_sticker)
+                        else:
+                            stickers_sent.append(tr.sender_sticker)
+
+                    trade_item_list.append(
+                        TradeItem(
+                            t.sender_user.username, 
+                            t.receiver_user.username, 
+                            stickers_received,
+                            stickers_sent,
+                            t.status
+                        )
+                    )
+
+                cmd = ResponseTradesReceivedUserCommand(trade_item_list)
             except:
                 traceback.print_exception(*sys.exc_info())
 
@@ -141,6 +164,8 @@ class ReaderResponse(Reader):
     @staticmethod
     def read(sock: socket.socket):
         data = Reader._read_message(sock)
+        print()
+        print()
         print(data)
         data = json.loads(data)
         cmd = None
