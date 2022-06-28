@@ -1,26 +1,62 @@
 from tkinter import *
+from turtle import position
 from typing import List
 from client.app import App
 from middleware.clientSocket import ClientSocket
-from models.domain.entity import TradeSticker, Users
-from models.protocol.command import RequestUser
+from models.protocol.command import RequestTradesReceivedUserCommand, TradeItem
 
 
-class ListRequestsView(Frame):
+class RequestView(Frame):
+    position: int
+    user_id: int
+    list_trades: List[TradeItem]
+
     def __init__(self, window: Frame):
         super().__init__(window)
         self.window = window
+        self.rowconfigure(1, weight=1)
+        self.columnconfigure(0, weight=1)
 
-    def add_requests(self, requests: List[TradeSticker]):
-        print(len(requests))
+        self.head = Label(self, text="Hello")
+        self.head.grid(column=0, row=0, pady=20)
+
+        self.btn_next = Button(self, text="Próxima", command=self._next_clicked)
+        self.btn_next.grid(column=0, row=2, sticky="e", padx=20)
+        self.btn_next.bind('<Return>', self._next_clicked)
+
+    def update_view(self, *args, **kwargs):
+        self.position = 0
+        self.user_id = kwargs["user_id"]
+        
+        sock = ClientSocket()
+        cmd = RequestTradesReceivedUserCommand(self.user_id)
+        resp = sock.send_receive(cmd)
+
+        self.list_trades = resp.trades
+
+        if len(self.list_trades) == 0:
+            self.head.config(text="Nenhuma solicitação")
+        else:
+            self.show_trade()
+
+    def show_trade(self):
+        trade = self.list_trades[self.position]
+        self.head.config(text="Solicitação de " + trade.username_orig)
+
+    def _next_clicked(self, event = None):
+        if len(self.list_trades) == 0:
+            return
+
+        self.position = (self.position + 1) % len(self.list_trades)
+        self.show_trade() 
 
     def clear(self):
         pass
 
 
+
 class TradeRequestsView(Frame):
-    list_requests: ListRequestsView
-    user: Users
+    view: RequestView
 
     def __init__(self, window: App):
         super().__init__(window)
@@ -28,27 +64,33 @@ class TradeRequestsView(Frame):
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
 
-        canvas = Canvas(self)
-        canvas.grid(column=0, row=0, sticky="snew")
+        self.canvas = Canvas(self)
+        self.canvas.grid(column=0, row=0, sticky="snew")
 
-        scroll = Scrollbar(self, orient="vertical", command=canvas.yview)
+        scroll = Scrollbar(self, orient="vertical", command=self.canvas.yview)
         scroll.grid(column=1, row=0, sticky="ns")
 
-        canvas.configure(yscrollcommand=scroll.set)
-        canvas.config(scrollregion=canvas.bbox(ALL))
+        self.canvas.configure(yscrollcommand=scroll.set)
+        self.canvas.bind("<Configure>", lambda e: self.canvas.config(scrollregion=self.canvas.bbox(ALL)))
 
-        f = Frame(canvas)
-        canvas.create_window((0, 0), window=f, anchor="nw")
+        self.content = Frame(self.canvas, bg="red")
+        self.content.columnconfigure(0, weight=1)
+        self.content.rowconfigure(0, weight=1)
+        self.canvas_frame = self.canvas.create_window((0,0), window=self.content, anchor="nw")
 
-        self.list_requests = ListRequestsView(f)
+        self.content.bind('<Configure>', self._frame_configure)
+        self.canvas.bind('<Configure>', self._change_frame_width)
 
-        self.user = None
+        self.request_view = RequestView(self.content)
+        self.request_view.grid(column=0, row=0, sticky="snew")
 
     def update_view(self, *args, **kwargs):
-        sock = ClientSocket()
-        cmd = RequestUser(self.window.logged_user_id)
-        resp = sock.send_receive(cmd)
-        self.user = resp.user
+        self.request_view.update_view(user_id=self.window.logged_user_id)
 
-        self.list_requests.clear()
-        self.list_requests.add_requests(self.user.trades_received)
+    def _change_frame_width(self, event):
+        canvas_width = event.width
+        canvas_height = event.height
+        self.canvas.itemconfig(self.canvas_frame, width = canvas_width, height=canvas_height)
+
+    def _frame_configure(self, event):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))

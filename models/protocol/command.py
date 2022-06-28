@@ -1,5 +1,7 @@
 import json
 from typing import List
+
+from models.domain.entity import Stickers
 from ..domain import entity
 
 
@@ -40,13 +42,48 @@ class ResponseTradeUserToUserCommand(Command):
 
 
 class RequestTradesReceivedUserCommand(Command):
-    def __init__(self, user_id) -> None:
+    def __init__(self, user_id: int) -> None:
         self.message_type = RequestTradesReceivedUserCommand.__name__
         self.user_id = user_id
 
 
+class TradeItem:
+    def __init__(
+        self,
+        username_orig: str,
+        username_dest: str,
+        stickers_orig: List[Stickers],
+        stickers_dest: List[Stickers],
+        status: entity.Status,
+    ) -> None:
+        self.username_orig = username_orig
+        self.username_dest = username_dest
+        self.stickers_orig = stickers_orig
+        self.stickers_dest = stickers_dest
+        self.status = status
+
+    def as_dict(self):
+        return {
+            "username_orig": self.username_orig,
+            "username_dest": self.username_dest,
+            "stickers_orig": [s.as_dict() for s in self.stickers_orig],
+            "stickers_dest": [s.as_dict() for s in self.stickers_dest],
+            "status": self.status.value,
+        }
+
+    @staticmethod
+    def from_dict(obj: dict):
+        return TradeItem(
+            obj["username_orig"],
+            obj["username_dest"],
+            [Stickers.from_dict(s) for s in obj["stickers_orig"]],
+            [Stickers.from_dict(s) for s in obj["stickers_dest"]],
+            obj["status"],
+        )
+
+
 class ResponseTradesReceivedUserCommand(Command):
-    def __init__(self, trades: List[entity.Trade]) -> None:
+    def __init__(self, trades: List[TradeItem]) -> None:
         self.message_type = ResponseTradesReceivedUserCommand.__name__
         self.trades = trades
 
@@ -56,9 +93,11 @@ class ResponseTradesReceivedUserCommand(Command):
             "trades_received": [t.as_dict() for t in self.trades],
         }
 
-    @classmethod
-    def from_dict(cls, obj: dict):
-        return ResponseTradesReceivedUserCommand(entity.Trade.from_dict(obj))
+    @staticmethod
+    def from_dict(obj: dict):
+        return ResponseTradesReceivedUserCommand(
+            [TradeItem.from_dict(t) for t in obj["trades_received"]]
+        )
 
 
 class RequestAnswerTradeCommand(Command):
@@ -116,15 +155,15 @@ class ResponseLoginCommand(Command):
         return ResponseLoginCommand(obj["user_id"])
 
 
-class RequestUser(Command):
+class RequestUserCommand(Command):
     def __init__(self, user_id: int):
-        self.message_type = RequestUser.__name__
+        self.message_type = RequestUserCommand.__name__
         self.user_id = user_id
 
 
-class ResponseUser(Command):
+class ResponseUserCommand(Command):
     def __init__(self, user: entity.Users):
-        self.message_type = ResponseUser.__name__
+        self.message_type = ResponseUserCommand.__name__
         self.user = user
 
     def as_dict(self):
@@ -132,7 +171,7 @@ class ResponseUser(Command):
 
     @classmethod
     def from_dict(cls, obj: dict):
-        return ResponseUser(entity.Users.from_dict(obj["user"]))
+        return ResponseUserCommand(entity.Users.from_dict(obj["user"]))
 
 
 class RequestAllUsersCommand(Command):

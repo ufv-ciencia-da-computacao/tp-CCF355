@@ -71,8 +71,8 @@ class Stickers(Base):
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-    @classmethod
-    def from_dict(cls, obj: dict):
+    @staticmethod
+    def from_dict(obj: dict):
         return Stickers(
             playername=obj["playername"],
             country=obj["country"],
@@ -156,7 +156,8 @@ class Trade(Base):
         ret["status"] = self.status
         return ret
 
-    def from_dict(self, obj: dict):
+    @staticmethod
+    def from_dict(obj: dict):
         return Trade(
             id=obj["trade"],
             trades_stickers=[

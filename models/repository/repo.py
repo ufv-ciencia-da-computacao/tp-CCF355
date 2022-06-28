@@ -139,14 +139,14 @@ class TradeRepository(AbstractRepository):
     def get(self, id) -> entity.Trade:
         return self.session.query(entity.Trade).filter_by(id=id).one()
 
-    def get_by_sender_id(self, user_sender_id: int) -> entity.Trade:
+    def get_by_sender_id(self, user_sender_id: int) -> List[entity.Trade]:
         return (
             self.session.query(entity.Trade)
             .filter_by(user_sender_id=user_sender_id)
             .all()
         )
 
-    def get_by_receiver_id(self, user_receiver_id: int) -> entity.Trade:
+    def get_by_receiver_id(self, user_receiver_id: int) -> List[entity.Trade]:
         return (
             self.session.query(entity.Trade)
             .filter_by(user_receiver_id=user_receiver_id)
