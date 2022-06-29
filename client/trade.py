@@ -191,4 +191,6 @@ class TradeView(Frame):
             self.user.username, my_stickers, self.other_name_entry.get(), other_stickers
         )
         resp = sock.send_receive(cmd)
-        print(resp)
+        
+        if resp.status:
+            self.window.show_page("homepage", menu=True)

@@ -1,7 +1,7 @@
 import json
 from typing import List
 
-from models.domain.entity import Stickers
+from models.domain.entity import Status, Stickers
 from ..domain import entity
 
 
@@ -50,12 +50,14 @@ class RequestTradesReceivedUserCommand(Command):
 class TradeItem:
     def __init__(
         self,
+        trade_id: int,
         username_orig: str,
         username_dest: str,
         stickers_orig: List[Stickers],
         stickers_dest: List[Stickers],
         status: entity.Status,
     ) -> None:
+        self.trade_id = trade_id
         self.username_orig = username_orig
         self.username_dest = username_dest
         self.stickers_orig = stickers_orig
@@ -64,6 +66,7 @@ class TradeItem:
 
     def as_dict(self):
         return {
+            "trade_id": self.trade_id,
             "username_orig": self.username_orig,
             "username_dest": self.username_dest,
             "stickers_orig": [s.as_dict() for s in self.stickers_orig],
@@ -74,11 +77,12 @@ class TradeItem:
     @staticmethod
     def from_dict(obj: dict):
         return TradeItem(
+            obj["trade_id"],
             obj["username_orig"],
             obj["username_dest"],
             [Stickers.from_dict(s) for s in obj["stickers_orig"]],
             [Stickers.from_dict(s) for s in obj["stickers_dest"]],
-            obj["status"],
+            Status(obj["status"])
         )
 
 

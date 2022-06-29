@@ -61,8 +61,8 @@ class TradeStickersService:
         user_receiver_id = trade["user_receiver_id"]
 
         error = False
-        if answer == Status.recused:
-            self.t_repo.update_trade_status(trade.id, Status.recused)
+        if answer == False:
+            self.t_repo.update_trade_status(trade["id"], Status.recused)
         else:
             error = False
             for ss in trade["stickers_sent"]:

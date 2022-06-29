@@ -132,14 +132,15 @@ class ReaderRequest(Reader):
                     stickers_received = []
                     stickers_sent = []
 
-                    for tr in t.trades_requests:
-                        if tr.receiver_sender == entity.ReceiverSender.receiver:
-                            stickers_received.append(tr.sender_sticker)
+                    for ts in t.trades_stickers:
+                        if ts.receiver_sender == entity.ReceiverSender.sender:
+                            stickers_received.append(ts.sender_sticker)
                         else:
-                            stickers_sent.append(tr.sender_sticker)
+                            stickers_sent.append(ts.sender_sticker)
 
                     trade_item_list.append(
                         TradeItem(
+                            t.id,
                             t.sender_user.username,
                             t.receiver_user.username,
                             stickers_received,
