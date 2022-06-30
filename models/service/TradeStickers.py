@@ -60,6 +60,10 @@ class TradeStickersService:
         user_sender_id = trade["user_sender_id"]
         user_receiver_id = trade["user_receiver_id"]
 
+        # get all pairs (sticker, user)
+        # the # of pais in DB has to be grater than or equal to the # of pais in the request
+        # for each user
+
         error = False
         if answer == False:
             self.t_repo.update_trade_status(trade["id"], Status.recused)
