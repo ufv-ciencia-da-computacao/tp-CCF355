@@ -1,7 +1,6 @@
 from tkinter import *
 from typing import List
 from client.app import App
-from middleware.clientSocket import ClientSocket
 from models.domain.entity import Users
 from models.protocol.command import RequestUserCommand
 
@@ -61,7 +60,7 @@ class HomepageView(Frame):
         self.user = None
 
     def update_view(self, *args, **kwargs):
-        sock = ClientSocket()
+        sock = self.window.sock
         cmd = RequestUserCommand(self.window.logged_user_id)
         resp = sock.send_receive(cmd)
 

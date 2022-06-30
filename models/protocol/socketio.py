@@ -29,24 +29,23 @@ from ..service.TradeStickers import TradeStickersService
 
 EOF = 0x05
 
+class ClientDisconnectedException(Exception):
+    pass
 
 class Reader:
     def _read_message(sock: socket.socket):
         chunks = []
-        print("address: ", sock.getsockname())
-
         while True:
             data = sock.recv(4096)
             if not data:
-                print("communication failed")
-                break
-            print(len(data))
+                raise ClientDisconnectedException()
             if data[len(data) - 1] == EOF:
                 chunks.append(str(data[: len(data) - 1].decode("utf-8")))
                 break
             else:
                 chunks.append(str(data.decode("utf-8")))
 
+        print("socket received:", "".join(chunks))
         return "".join(chunks)
 
 
@@ -73,7 +72,6 @@ class ReaderRequest(Reader):
         message_type = data["message_type"]
 
         cmd = None
-        print("received:", message_type)
         if message_type == RequestCreateUserCommand.__name__:
             u = entity.Users(username=data["username"], password=data["password"])
             try:
@@ -118,8 +116,7 @@ class ReaderRequest(Reader):
                     data["stickers_user_orig"],
                     data["stickers_user_dest"],
                 )
-                trade = self.t_repo.get(trade.id)
-                print(trade.as_dict())
+                # trade = self.t_repo.get(trade.id)
                 cmd = ResponseTradeUserToUserCommand(True)
             except:
                 traceback.print_exception(*sys.exc_info())
@@ -172,9 +169,6 @@ class ReaderResponse(Reader):
     @staticmethod
     def read(sock: socket.socket):
         data = Reader._read_message(sock)
-        print()
-        print()
-        print(data)
         data = json.loads(data)
         cmd = None
         if data["message_type"] == ResponseCreateUserCommand.__name__:
@@ -198,7 +192,6 @@ class ReaderResponse(Reader):
 
 class Writer:
     def _write_string(sock: socket.socket, msg: str) -> None:
-        print(len(msg))
         sock.sendall(msg.encode("utf-8"))
         sock.sendall(bytearray([EOF]))
 

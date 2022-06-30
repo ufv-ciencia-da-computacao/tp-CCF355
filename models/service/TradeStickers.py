@@ -56,7 +56,7 @@ class TradeStickersService:
 
     def answer_trade(self, trade_id, answer):
         trade = self.t_repo.get(trade_id).as_dict()
-        print(trade)
+        print("TradeStickersService.answer_trade.trade", trade)
         user_sender_id = trade["user_sender_id"]
         user_receiver_id = trade["user_receiver_id"]
 
@@ -77,7 +77,6 @@ class TradeStickersService:
                     user_receiver_id, sr["sticker"]["id"]
                 )
                 if sticker_from_ls is None:
-                    print(user_receiver_id, sr["id"])
                     error = True
 
             if error == False:

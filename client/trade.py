@@ -11,7 +11,6 @@ from tkinter import (
     Scrollbar,
 )
 from typing import Any, Callable, List
-from middleware.clientSocket import ClientSocket
 from models.domain.entity import Stickers, Users
 from client.app import App
 from models.protocol.command import RequestListStickersUserCommand, RequestTradeUserToUserCommand, RequestUserCommand
@@ -160,7 +159,7 @@ class TradeView(Frame):
         self.other_name_entry.delete(0, END)
 
     def update_view(self):
-        sock = ClientSocket()
+        sock = self.window.sock
         cmd = RequestUserCommand(self.window.logged_user_id)
         resp = sock.send_receive(cmd)
         self.user = resp.user
@@ -176,7 +175,7 @@ class TradeView(Frame):
             # cant trade with myself
             return
 
-        sock = ClientSocket()
+        sock = self.window.sock
         cmd = RequestListStickersUserCommand(username=username)
         resp = sock.send_receive(cmd)
 
@@ -186,7 +185,9 @@ class TradeView(Frame):
         my_stickers = self.my_list.get_selected_stickers()
         other_stickers = self.other_list.get_selected_stickers()
 
-        sock = ClientSocket()
+        print("trade.TradeView._trade", my_stickers, other_stickers)
+
+        sock = self.window.sock
         cmd = RequestTradeUserToUserCommand(
             self.user.username, my_stickers, self.other_name_entry.get(), other_stickers
         )

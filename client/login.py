@@ -1,6 +1,5 @@
 from tkinter import *
 from client.app import App
-from middleware.clientSocket import ClientSocket
 from models.protocol.command import RequestLoginCommand
 
 class LoginView(Frame):
@@ -47,7 +46,7 @@ class LoginView(Frame):
         username = self.username.get()
         password = self.password.get()
 
-        sock = ClientSocket()
+        sock = self.window.sock
         cmd = RequestLoginCommand(username=username, password=password)
         resp = sock.send_receive(cmd)
 

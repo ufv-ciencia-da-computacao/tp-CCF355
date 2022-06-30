@@ -3,7 +3,7 @@ import threading
 import traceback
 import sys
 
-from models.protocol.socketio import ReaderRequest
+from models.protocol.socketio import ClientDisconnectedException, ReaderRequest
 from models.repository.repo import (
     ListStickersRepository,
     StickersRepository,
@@ -45,9 +45,9 @@ class ServerSocket:
             try:
                 cmd = self.reader_request.read(client)
                 Writer.write_command(client, cmd)
+            except ClientDisconnectedException:
+                print("connection closed")
                 client.close()
                 return
             except Exception as e:
                 traceback.print_exception(*sys.exc_info())
-                client.close()
-                return False

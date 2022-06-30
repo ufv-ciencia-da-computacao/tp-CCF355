@@ -2,7 +2,6 @@ from tkinter import *
 from turtle import position
 from typing import List
 from client.app import App
-from middleware.clientSocket import ClientSocket
 from models.domain.entity import Status, Stickers
 from models.protocol.command import RequestAnswerTradeCommand, RequestTradesReceivedUserCommand, ResponseAnswerTradeCommand, ResponseTradesReceivedUserCommand, TradeItem
 
@@ -129,7 +128,7 @@ class TradeRequestsView(Frame):
 
 
     def update_view(self, *args, **kwargs):
-        sock = ClientSocket()
+        sock = self.window.sock
         cmd = RequestTradesReceivedUserCommand(self.window.logged_user_id)
         resp: ResponseTradesReceivedUserCommand = sock.send_receive(cmd)
         self.position = 0
@@ -150,7 +149,7 @@ class TradeRequestsView(Frame):
     def _accept_clicked(self, event = None):
         trade = self.list_trades[self.position]
 
-        sock = ClientSocket()
+        sock = self.window.sock
         cmd = RequestAnswerTradeCommand(trade.trade_id, True)
         resp: ResponseAnswerTradeCommand = sock.send_receive(cmd)
 
@@ -164,7 +163,7 @@ class TradeRequestsView(Frame):
     def _recuse_clicked(self, event = None):
         trade = self.list_trades[self.position]
 
-        sock = ClientSocket()
+        sock = self.window.sock
         cmd = RequestAnswerTradeCommand(trade.trade_id, False)
         resp: ResponseAnswerTradeCommand = sock.send_receive(cmd)
 
