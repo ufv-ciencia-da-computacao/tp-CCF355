@@ -201,7 +201,6 @@ class TradeSticker(Base):
         return ret
 
     def from_dict(self, obj: dict):
-        print(obj)
         return TradeSticker(
             id=obj["id"],
             id_trade=obj["id_trade"],

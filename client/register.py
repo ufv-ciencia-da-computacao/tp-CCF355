@@ -3,7 +3,6 @@ import json
 from tkinter import *
 
 from client.app import App
-from middleware.clientSocket import ClientSocket
 from models.protocol.command import RequestCreateUserCommand
 
 
@@ -53,7 +52,7 @@ class RegisterView(Frame):
             self._show_error("Senhas diferentes")
             return
 
-        sock = ClientSocket()
+        sock = self.window.sock
         cmd = RequestCreateUserCommand(username=username, password=password)
         resp = sock.send_receive(cmd)
 
@@ -68,5 +67,4 @@ class RegisterView(Frame):
         self.error_msg_lbl.config(text=msg)
 
     def _cancel_clicked(self, event = None):
-        print("go to login")
         self.window.show_page("login")

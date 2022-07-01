@@ -28,3 +28,6 @@ Múltiplos processos clientes podem ser executados
 ```
 python3 client.py
 ```
+
+## Documentação
+A documentação desse trabalho está localizada na pasta `docs`

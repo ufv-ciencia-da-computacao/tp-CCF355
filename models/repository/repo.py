@@ -56,7 +56,7 @@ class UsersRepository(AbstractRepository):
         else:
             self.session.commit()
 
-    def get(self, username: string) -> entity.Users:
+    def get(self, username: string) -> entity.Users:    
         return self.session.query(entity.Users).filter_by(username=username).one()
 
     def get_by_id(self, id: int) -> entity.Users:
@@ -85,7 +85,7 @@ class ListStickersRepository(AbstractRepository):
     def get_by_user_id_and_by_sticker_id(
         self, user_id: int, sticker_id: int
     ) -> entity.ListStickers:
-        print(user_id, sticker_id)
+        print("repo.ListStickersRepository.get_by_user_id_and_by_sticker_id", user_id, sticker_id)
         return (
             self.session.query(entity.ListStickers)
             .filter_by(user_id=user_id)
@@ -105,7 +105,7 @@ class ListStickersRepository(AbstractRepository):
         )
 
     def update_list_stickers(self, id: int, new_user_id: int) -> None:
-        print(id, new_user_id)
+        print("repo.ListStickerRepository.update_list_sticker", id, new_user_id)
         try:
             self.session.query(entity.ListStickers).filter(
                 entity.ListStickers.id == id
