@@ -13,7 +13,7 @@ class StickersPack:
         self.ls_repo = ls_repo
         self.probability = [82, 15, 3]
         self.rarity = [1, 2, 3]
-        self.rarities = random.choices(self.rarity, weights=(self.probability), k=2)
+        self.rarities = random.choices(self.rarity, weights=(self.probability), k=10)
 
     def _get_pack(self) -> List[Stickers]:
         pack = []
