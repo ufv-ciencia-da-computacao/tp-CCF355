@@ -1,10 +1,5 @@
 from tkinter import *
 
-from sqlalchemy import column
-from middleware.clientSocket import ClientSocket
-
-from models.domain.entity import Users
-
 class App(Tk):
     logged_user_id: int
 
@@ -17,7 +12,8 @@ class App(Tk):
         self.pages = dict()
         self.cur_page = None
         self.logged_user_id = None
-        self.sock = ClientSocket()
+        self.username = ""
+        
 
     def set_logged_user_id(self, user_id: int):
         self.logged_user_id = user_id

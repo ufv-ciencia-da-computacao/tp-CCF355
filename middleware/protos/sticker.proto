@@ -1,0 +1,16 @@
+syntax = "proto3";
+package sticker;
+
+service StickerService {
+    rpc list_of_user (ListStickersRequest) returns (stream Sticker) {}
+}
+
+message Sticker {
+    string playername = 1;
+    string country = 2;
+    int32 rarity = 3;
+}
+
+message ListStickersRequest {
+    string username = 1;
+}

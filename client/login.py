@@ -1,6 +1,9 @@
 from tkinter import *
 from client.app import App
-from models.protocol.command import RequestLoginCommand
+
+import grpc
+from middleware.user_pb2_grpc import UserServiceStub
+from middleware.user_pb2 import LoginRequest, LoginResponse
 
 class LoginView(Frame):
     def __init__(self, window: App):
@@ -46,15 +49,15 @@ class LoginView(Frame):
         username = self.username.get()
         password = self.password.get()
 
-        sock = self.window.sock
-        cmd = RequestLoginCommand(username=username, password=password)
-        resp = sock.send_receive(cmd)
-
-        if resp.user_id != None:
-            self.window.set_logged_user_id(user_id=resp.user_id)
-            self.window.show_page("homepage", menu=True)
-        else:
-            self._show_error_msg()
+        try:
+            with grpc.insecure_channel('localhost:5555') as channel:
+                stub = UserServiceStub(channel=channel)
+                resp = stub.login(LoginRequest(username=username, password=password))
+                self.window.username = username
+                self.window.set_logged_user_id(user_id=resp.user_id)
+                self.window.show_page("homepage", menu=True)
+        except Exception:
+            self._show_error_msg()  
 
     def _register_clicked(self, event = None):
         self.window.show_page("register")

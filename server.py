@@ -1,11 +1,27 @@
+from concurrent import futures
 from models.repository.DBConfig import AlbumCredentials, SQLiteConnection
 from models.repository import repo
-from middleware.serverSocket import ServerSocket
 from sqlalchemy.orm import sessionmaker, scoped_session
+
+import grpc
+from service.StickerService import StickerService
+from service.UserService import UserService
+import middleware.user_pb2_grpc as user_pb2_grpc
+import middleware.sticker_pb2_grpc as sticker_pb2_grpc
 
 if __name__ == "__main__":
     con = SQLiteConnection.get_connection(AlbumCredentials.host)
     session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=con))
 
-    ss = ServerSocket(session=session)
-    ss.listen()
+    s_repo = repo.StickersRepository(session)
+    ls_repo = repo.ListStickersRepository(session)
+    us_repo = repo.UsersRepository(session)
+    t_repo = repo.TradeRepository(session)
+    tr_repo = repo.TradeStickersRepository(session)
+    
+    server = grpc.server(futures.ThreadPoolExecutor())
+    user_pb2_grpc.add_UserServiceServicer_to_server(UserService(us_repo, s_repo, ls_repo), server)
+    sticker_pb2_grpc.add_StickerServiceServicer_to_server(StickerService(us_repo), server)
+    server.add_insecure_port("localhost:5555")
+    server.start()
+    server.wait_for_termination()

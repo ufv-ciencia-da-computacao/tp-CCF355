@@ -10,10 +10,9 @@ from tkinter import (
     Label,
     Scrollbar,
 )
-from typing import Any, Callable, List
+from typing import List
 from models.domain.entity import Stickers, Users
 from client.app import App
-from models.protocol.command import RequestListStickersUserCommand, RequestTradeUserToUserCommand, RequestUserCommand
 
 class ItemListSticker(Frame):
     sticker: Stickers
@@ -159,39 +158,42 @@ class TradeView(Frame):
         self.other_name_entry.delete(0, END)
 
     def update_view(self):
-        sock = self.window.sock
-        cmd = RequestUserCommand(self.window.logged_user_id)
-        resp = sock.send_receive(cmd)
-        self.user = resp.user
+        pass
+        # sock = self.window.sock
+        # cmd = RequestUserCommand(self.window.logged_user_id)
+        # resp = sock.send_receive(cmd)
+        # self.user = resp.user
 
-        self.clear()
-        self.my_list.add_stickers(self.user.stickers)
+        # self.clear()
+        # self.my_list.add_stickers(self.user.stickers)
 
     def _search_clicked(self, event=None):
-        self.other_list.clear()
-        username = self.other_name_entry.get()
+        pass
+        # self.other_list.clear()
+        # username = self.other_name_entry.get()
 
-        if username == self.user.username:
-            # cant trade with myself
-            return
+        # if username == self.user.username:
+        #     # cant trade with myself
+        #     return
 
-        sock = self.window.sock
-        cmd = RequestListStickersUserCommand(username=username)
-        resp = sock.send_receive(cmd)
+        # sock = self.window.sock
+        # cmd = RequestListStickersUserCommand(username=username)
+        # resp = sock.send_receive(cmd)
 
-        self.other_list.add_stickers(resp.stickers)
+        # self.other_list.add_stickers(resp.stickers)
 
     def _trade(self):
-        my_stickers = self.my_list.get_selected_stickers()
-        other_stickers = self.other_list.get_selected_stickers()
+        pass
+        # my_stickers = self.my_list.get_selected_stickers()
+        # other_stickers = self.other_list.get_selected_stickers()
 
-        print("trade.TradeView._trade", my_stickers, other_stickers)
+        # print("trade.TradeView._trade", my_stickers, other_stickers)
 
-        sock = self.window.sock
-        cmd = RequestTradeUserToUserCommand(
-            self.user.username, my_stickers, self.other_name_entry.get(), other_stickers
-        )
-        resp = sock.send_receive(cmd)
+        # sock = self.window.sock
+        # cmd = RequestTradeUserToUserCommand(
+        #     self.user.username, my_stickers, self.other_name_entry.get(), other_stickers
+        # )
+        # resp = sock.send_receive(cmd)
         
-        if resp.status:
-            self.window.show_page("homepage", menu=True)
+        # if resp.status:
+        #     self.window.show_page("homepage", menu=True)

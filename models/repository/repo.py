@@ -1,12 +1,9 @@
 import abc
 import string
 from typing import List
-from contextlib import contextmanager
-import sqlalchemy
 from ..domain import entity
 from sqlalchemy.sql.expression import func, select
 from sqlalchemy.orm import Session
-from sqlalchemy import update
 
 
 class AbstractRepository(abc.ABC):

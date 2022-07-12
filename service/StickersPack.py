@@ -1,7 +1,7 @@
 from typing import List
 import random
-from ..repository.repo import StickersRepository, ListStickersRepository
-from ..domain.entity import ListStickers, Stickers
+from models.repository.repo import StickersRepository, ListStickersRepository
+from models.domain.entity import ListStickers, Stickers
 from models.domain import entity
 
 

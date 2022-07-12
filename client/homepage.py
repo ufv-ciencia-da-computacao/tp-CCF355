@@ -2,7 +2,11 @@ from tkinter import *
 from typing import List
 from client.app import App
 from models.domain.entity import Users
-from models.protocol.command import RequestUserCommand
+
+import grpc
+from middleware.sticker_pb2 import ListStickersRequest
+from middleware.sticker_pb2_grpc import StickerServiceStub, StickerServiceServicer
+import service.StickerService
 
 class StickerFrame(Frame):
     def __init__(self, window: Frame, playername: str,  country: str, rarity: int):
@@ -60,18 +64,17 @@ class HomepageView(Frame):
         self.user = None
 
     def update_view(self, *args, **kwargs):
-        sock = self.window.sock
-        cmd = RequestUserCommand(self.window.logged_user_id)
-        resp = sock.send_receive(cmd)
-
-        self.user = resp.user
-
-        self.welcome.config(text="Bem vindo " + self.user.username)
+        self.welcome.config(text="Bem vindo " + self.window.username)
         self.clear()
-        for sticker in self.user.stickers:
-            s = StickerFrame(self.f, sticker.playername, sticker.country, sticker.rarity)
-            s.pack(side="left", padx=10)
-            self.list_stickers.append(s)
+
+        with grpc.insecure_channel('localhost:5555') as channel:
+            stub = StickerServiceStub(channel=channel)
+            resp = stub.list_of_user(ListStickersRequest(username=self.window.username))
+            for r in resp:
+                print(r.playername, r.country, r.rarity)
+                s = StickerFrame(self.f, r.playername, r.country, r.rarity)
+                s.pack(side="left", padx=10)
+                self.list_stickers.append(s)
 
     def clear(self):
         for s in self.list_stickers:

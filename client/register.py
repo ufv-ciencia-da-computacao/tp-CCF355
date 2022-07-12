@@ -3,7 +3,6 @@ import json
 from tkinter import *
 
 from client.app import App
-from models.protocol.command import RequestCreateUserCommand
 
 
 class RegisterView(Frame):
@@ -40,26 +39,27 @@ class RegisterView(Frame):
         self.username_input.focus()
 
     def _confirm_clicked(self, event = None):
-        username = self.username_input.get()
-        password = self.password_input.get()
-        confirm = self.confirm_input.get()
+        pass
+        # username = self.username_input.get()
+        # password = self.password_input.get()
+        # confirm = self.confirm_input.get()
 
-        if len(username) == 0 or len(password) == 0 or len(confirm) == 0:
-            self._show_error("Campos não preenchidos")
-            return
+        # if len(username) == 0 or len(password) == 0 or len(confirm) == 0:
+        #     self._show_error("Campos não preenchidos")
+        #     return
 
-        if password != confirm:
-            self._show_error("Senhas diferentes")
-            return
+        # if password != confirm:
+        #     self._show_error("Senhas diferentes")
+        #     return
 
-        sock = self.window.sock
-        cmd = RequestCreateUserCommand(username=username, password=password)
-        resp = sock.send_receive(cmd)
+        # sock = self.window.sock
+        # cmd = RequestCreateUserCommand(username=username, password=password)
+        # resp = sock.send_receive(cmd)
 
-        if resp.status:
-            self.window.show_page("login")
-        else:
-            self._show_error("Falha ao cadastrar")
+        # if resp.status:
+        #     self.window.show_page("login")
+        # else:
+        #     self._show_error("Falha ao cadastrar")
 
     def _show_error(self, msg: str):
         self.error_msg_lbl.grid_forget()

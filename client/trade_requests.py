@@ -1,9 +1,7 @@
 from tkinter import *
-from turtle import position
 from typing import List
 from client.app import App
 from models.domain.entity import Status, Stickers
-from models.protocol.command import RequestAnswerTradeCommand, RequestTradesReceivedUserCommand, ResponseAnswerTradeCommand, ResponseTradesReceivedUserCommand, TradeItem
 
 class ItemListSticker(Frame):
     sticker: Stickers
@@ -79,7 +77,7 @@ class ListSticker(Frame):
 
 
 class TradeRequestsView(Frame):
-    list_trades: List[TradeItem]
+    # list_trades: List[TradeItem]
     position: int
 
     def __init__(self, window: App):
@@ -128,15 +126,16 @@ class TradeRequestsView(Frame):
 
 
     def update_view(self, *args, **kwargs):
-        sock = self.window.sock
-        cmd = RequestTradesReceivedUserCommand(self.window.logged_user_id)
-        resp: ResponseTradesReceivedUserCommand = sock.send_receive(cmd)
-        self.position = 0
-        self.list_trades = []
-        for t in resp.trades:
-            if t.status == Status.pendent:
-                self.list_trades.append(t)
-        self.show()
+        pass
+        # sock = self.window.sock
+        # cmd = RequestTradesReceivedUserCommand(self.window.logged_user_id)
+        # resp: ResponseTradesReceivedUserCommand = sock.send_receive(cmd)
+        # self.position = 0
+        # self.list_trades = []
+        # for t in resp.trades:
+        #     if t.status == Status.pendent:
+        #         self.list_trades.append(t)
+        # self.show()
 
     def _next_clicked(self, event = None):
         self.position += 1
@@ -147,32 +146,34 @@ class TradeRequestsView(Frame):
         self.show()
 
     def _accept_clicked(self, event = None):
-        trade = self.list_trades[self.position]
+        pass
+        # trade = self.list_trades[self.position]
 
-        sock = self.window.sock
-        cmd = RequestAnswerTradeCommand(trade.trade_id, True)
-        resp: ResponseAnswerTradeCommand = sock.send_receive(cmd)
+        # sock = self.window.sock
+        # cmd = RequestAnswerTradeCommand(trade.trade_id, True)
+        # resp: ResponseAnswerTradeCommand = sock.send_receive(cmd)
 
-        if resp.status:
-            print("stickers traded")
-        else:
-            print("something went wrong")
+        # if resp.status:
+        #     print("stickers traded")
+        # else:
+        #     print("something went wrong")
 
-        self.update_view()
+        # self.update_view()
 
     def _recuse_clicked(self, event = None):
-        trade = self.list_trades[self.position]
+        pass
+        # trade = self.list_trades[self.position]
 
-        sock = self.window.sock
-        cmd = RequestAnswerTradeCommand(trade.trade_id, False)
-        resp: ResponseAnswerTradeCommand = sock.send_receive(cmd)
+        # sock = self.window.sock
+        # cmd = RequestAnswerTradeCommand(trade.trade_id, False)
+        # resp: ResponseAnswerTradeCommand = sock.send_receive(cmd)
 
-        if resp.status:
-            print("trade recused")
-        else:
-            print("something went wrong")
+        # if resp.status:
+        #     print("trade recused")
+        # else:
+        #     print("something went wrong")
 
-        self.update_view()
+        # self.update_view()
 
     def show(self):
         if len(self.list_trades) == 0:
