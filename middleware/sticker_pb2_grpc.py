@@ -14,17 +14,17 @@ class StickerServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.list_of_user = channel.unary_stream(
-                '/sticker.StickerService/list_of_user',
+        self.list_stickers = channel.unary_unary(
+                '/sticker.StickerService/list_stickers',
                 request_serializer=sticker__pb2.ListStickersRequest.SerializeToString,
-                response_deserializer=sticker__pb2.Sticker.FromString,
+                response_deserializer=sticker__pb2.ListStickerResponse.FromString,
                 )
 
 
 class StickerServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def list_of_user(self, request, context):
+    def list_stickers(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,10 +33,10 @@ class StickerServiceServicer(object):
 
 def add_StickerServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'list_of_user': grpc.unary_stream_rpc_method_handler(
-                    servicer.list_of_user,
+            'list_stickers': grpc.unary_unary_rpc_method_handler(
+                    servicer.list_stickers,
                     request_deserializer=sticker__pb2.ListStickersRequest.FromString,
-                    response_serializer=sticker__pb2.Sticker.SerializeToString,
+                    response_serializer=sticker__pb2.ListStickerResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -49,7 +49,7 @@ class StickerService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def list_of_user(request,
+    def list_stickers(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,8 +59,8 @@ class StickerService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/sticker.StickerService/list_of_user',
+        return grpc.experimental.unary_unary(request, target, '/sticker.StickerService/list_stickers',
             sticker__pb2.ListStickersRequest.SerializeToString,
-            sticker__pb2.Sticker.FromString,
+            sticker__pb2.ListStickerResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

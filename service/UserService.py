@@ -1,5 +1,5 @@
-import middleware.user_pb2 as user_pb2
 from models.domain import entity
+from middleware.user_pb2 import LoginResponse, CreateResponse
 
 from models.repository.repo import ListStickersRepository, StickersRepository, UsersRepository
 from service.StickersPack import StickersPack
@@ -12,14 +12,14 @@ class UserService(UserServiceServicer):
         self.stickers_pack = StickersPack(s_repo, ls_repo)
         
     def login(self, request, context):
-        resp = user_pb2.LoginResponse()
+        resp = LoginResponse(user_id=-1)
         user = self.us_repo.get(request.username)
         if user is not None and user.password == request.password:
             resp.user_id = user.id
         return resp
 
     def register(self, request, context):
-        resp = user_pb2.CreateResponse()
+        resp = CreateResponse(status=False)
         user = entity.Users(username=request.username, password=request.password)
         try:
             self.us_repo.add(user=user)

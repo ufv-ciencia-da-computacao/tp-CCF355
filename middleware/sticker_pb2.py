@@ -14,18 +14,27 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rsticker.proto\x12\x07sticker\">\n\x07Sticker\x12\x12\n\nplayername\x18\x01 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x02 \x01(\t\x12\x0e\n\x06rarity\x18\x03 \x01(\x05\"\'\n\x13ListStickersRequest\x12\x10\n\x08username\x18\x01 \x01(\t2T\n\x0eStickerService\x12\x42\n\x0clist_of_user\x12\x1c.sticker.ListStickersRequest\x1a\x10.sticker.Sticker\"\x00\x30\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rsticker.proto\x12\x07sticker\"\x98\x01\n\x13ListStickerResponse\x12\x35\n\x07sticker\x18\x01 \x03(\x0b\x32$.sticker.ListStickerResponse.Sticker\x1aJ\n\x07Sticker\x12\x12\n\nplayername\x18\x01 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x02 \x01(\t\x12\x0e\n\x06rarity\x18\x03 \x01(\x05\x12\n\n\x02id\x18\x04 \x01(\x05\"\'\n\x13ListStickersRequest\x12\x10\n\x08username\x18\x01 \x01(\t2_\n\x0eStickerService\x12M\n\rlist_stickers\x12\x1c.sticker.ListStickersRequest\x1a\x1c.sticker.ListStickerResponse\"\x00\x62\x06proto3')
 
 
 
-_STICKER = DESCRIPTOR.message_types_by_name['Sticker']
+_LISTSTICKERRESPONSE = DESCRIPTOR.message_types_by_name['ListStickerResponse']
+_LISTSTICKERRESPONSE_STICKER = _LISTSTICKERRESPONSE.nested_types_by_name['Sticker']
 _LISTSTICKERSREQUEST = DESCRIPTOR.message_types_by_name['ListStickersRequest']
-Sticker = _reflection.GeneratedProtocolMessageType('Sticker', (_message.Message,), {
-  'DESCRIPTOR' : _STICKER,
+ListStickerResponse = _reflection.GeneratedProtocolMessageType('ListStickerResponse', (_message.Message,), {
+
+  'Sticker' : _reflection.GeneratedProtocolMessageType('Sticker', (_message.Message,), {
+    'DESCRIPTOR' : _LISTSTICKERRESPONSE_STICKER,
+    '__module__' : 'sticker_pb2'
+    # @@protoc_insertion_point(class_scope:sticker.ListStickerResponse.Sticker)
+    })
+  ,
+  'DESCRIPTOR' : _LISTSTICKERRESPONSE,
   '__module__' : 'sticker_pb2'
-  # @@protoc_insertion_point(class_scope:sticker.Sticker)
+  # @@protoc_insertion_point(class_scope:sticker.ListStickerResponse)
   })
-_sym_db.RegisterMessage(Sticker)
+_sym_db.RegisterMessage(ListStickerResponse)
+_sym_db.RegisterMessage(ListStickerResponse.Sticker)
 
 ListStickersRequest = _reflection.GeneratedProtocolMessageType('ListStickersRequest', (_message.Message,), {
   'DESCRIPTOR' : _LISTSTICKERSREQUEST,
@@ -38,10 +47,12 @@ _STICKERSERVICE = DESCRIPTOR.services_by_name['StickerService']
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _STICKER._serialized_start=26
-  _STICKER._serialized_end=88
-  _LISTSTICKERSREQUEST._serialized_start=90
-  _LISTSTICKERSREQUEST._serialized_end=129
-  _STICKERSERVICE._serialized_start=131
-  _STICKERSERVICE._serialized_end=215
+  _LISTSTICKERRESPONSE._serialized_start=27
+  _LISTSTICKERRESPONSE._serialized_end=179
+  _LISTSTICKERRESPONSE_STICKER._serialized_start=105
+  _LISTSTICKERRESPONSE_STICKER._serialized_end=179
+  _LISTSTICKERSREQUEST._serialized_start=181
+  _LISTSTICKERSREQUEST._serialized_end=220
+  _STICKERSERVICE._serialized_start=222
+  _STICKERSERVICE._serialized_end=317
 # @@protoc_insertion_point(module_scope)

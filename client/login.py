@@ -50,12 +50,11 @@ class LoginView(Frame):
         password = self.password.get()
 
         try:
-            with grpc.insecure_channel('localhost:5555') as channel:
-                stub = UserServiceStub(channel=channel)
-                resp = stub.login(LoginRequest(username=username, password=password))
-                self.window.username = username
-                self.window.set_logged_user_id(user_id=resp.user_id)
-                self.window.show_page("homepage", menu=True)
+            stub = UserServiceStub(channel=self.window.channel)
+            resp = stub.login(LoginRequest(username=username, password=password))
+            self.window.logged_user_username = username
+            self.window.logged_user_id = resp.user_id
+            self.window.show_page("homepage", menu=True)
         except Exception:
             self._show_error_msg()  
 

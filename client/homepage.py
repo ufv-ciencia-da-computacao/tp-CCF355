@@ -64,17 +64,16 @@ class HomepageView(Frame):
         self.user = None
 
     def update_view(self, *args, **kwargs):
-        self.welcome.config(text="Bem vindo " + self.window.username)
+        self.welcome.config(text="Bem vindo " + self.window.logged_user_username)
         self.clear()
 
-        with grpc.insecure_channel('localhost:5555') as channel:
-            stub = StickerServiceStub(channel=channel)
-            resp = stub.list_of_user(ListStickersRequest(username=self.window.username))
-            for r in resp:
-                print(r.playername, r.country, r.rarity)
-                s = StickerFrame(self.f, r.playername, r.country, r.rarity)
-                s.pack(side="left", padx=10)
-                self.list_stickers.append(s)
+        stub = StickerServiceStub(channel=self.window.channel)
+        resp = stub.list_stickers(ListStickersRequest(username=self.window.logged_user_username))
+        for r in resp.sticker:
+            print(r.playername, r.country, r.rarity, r.id)
+            s = StickerFrame(self.f, r.playername, r.country, r.rarity)
+            s.pack(side="left", padx=10)
+            self.list_stickers.append(s)
 
     def clear(self):
         for s in self.list_stickers:

@@ -1,5 +1,7 @@
 from tkinter import *
 
+import grpc
+
 class App(Tk):
     logged_user_id: int
 
@@ -12,7 +14,8 @@ class App(Tk):
         self.pages = dict()
         self.cur_page = None
         self.logged_user_id = None
-        self.username = ""
+        self.logged_user_username = ""
+        self.channel = grpc.insecure_channel("localhost:5555")
         
 
     def set_logged_user_id(self, user_id: int):

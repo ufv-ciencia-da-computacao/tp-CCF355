@@ -11,6 +11,8 @@ from tkinter import (
     Scrollbar,
 )
 from typing import List
+from middleware.sticker_pb2 import ListStickersRequest
+from middleware.sticker_pb2_grpc import StickerServiceStub
 from models.domain.entity import Stickers, Users
 from client.app import App
 
@@ -158,14 +160,13 @@ class TradeView(Frame):
         self.other_name_entry.delete(0, END)
 
     def update_view(self):
-        pass
-        # sock = self.window.sock
-        # cmd = RequestUserCommand(self.window.logged_user_id)
-        # resp = sock.send_receive(cmd)
-        # self.user = resp.user
-
-        # self.clear()
-        # self.my_list.add_stickers(self.user.stickers)
+        stub = StickerServiceStub(channel=self.window.channel)
+        resp = stub.list_stickers(ListStickersRequest(username=self.window.logged_user_username))
+        
+        self.clear()
+        self.my_list.add_stickers(
+            [Stickers(playername=s.playername, country=s.country, rarity=s.rarity) for s in resp.sticker]
+        )
 
     def _search_clicked(self, event=None):
         pass

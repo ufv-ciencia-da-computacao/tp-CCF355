@@ -1,10 +1,10 @@
-from ..repository.repo import (
+from models.repository.repo import (
     ListStickersRepository,
     UsersRepository,
     TradeStickersRepository,
     TradeRepository,
 )
-from ..domain.entity import ReceiverSender, Status, Trade, TradeSticker
+from models.domain.entity import ReceiverSender, Status, Trade, TradeSticker
 from typing import List
 import itertools
 
