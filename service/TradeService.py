@@ -1,5 +1,6 @@
 from middleware.trade_pb2_grpc import TradeServiceServicer
-from middleware.trade_pb2 import TradeResponse
+from middleware.trade_pb2 import GetTradesResponse, TradeResponse
+from models.domain import entity
 from models.repository.repo import ListStickersRepository, StickersRepository, TradeRepository, TradeStickersRepository, UsersRepository
 from service.TradeStickers import TradeStickersService
 
@@ -12,6 +13,7 @@ class TradeService(TradeServiceServicer):
     ) -> None:
         super().__init__()
         self.us_repo = us_repo
+        self.t_repo = t_repo
         self.trade_stickers = TradeStickersService(
             t_repo=t_repo,
             tr_repo=ts_repo,
@@ -28,10 +30,9 @@ class TradeService(TradeServiceServicer):
             trade = self.trade_stickers.request_trade(
                 user_orig.id,
                 user_dest.id,
-                [s.id for s in request.my_stickers],
-                [s.id for s in request.other_stickers]
+                [s for s in request.my_stickers],
+                [s for s in request.other_stickers]
             )
-            print(trade)
             resp.status = True
         except Exception:
             pass
@@ -42,4 +43,46 @@ class TradeService(TradeServiceServicer):
         return super().answer_trade(request, context)
 
     def get_trades(self, request, context):
-        return super().get_trades(request, context)
+        user = self.us_repo.get(request.username)
+        trades = self.t_repo.get_by_receiver_id(user.id)
+        
+        resp = GetTradesResponse()
+
+        for t in trades:
+            if t.status != entity.Status.pendent:
+                continue;
+
+            received = []
+            sent = []
+            
+            for ts in t.trades_stickers:
+                if ts.receiver_sender == entity.ReceiverSender.sender:
+                    received.append(ts.sender_sticker)
+                else:
+                    sent.append(ts.sender_sticker)
+
+            resp.trades.extend([
+                GetTradesResponse.Trade(
+                    to_send=[GetTradesResponse.Trade.Sticker(
+                        playername=s.playername,
+                        country=s.country,
+                        rarity=s.rarity,
+                        id=s.id
+                    ) for s in sent],
+
+                    to_receive=[GetTradesResponse.Trade.Sticker(
+                        playername=s.playername,
+                        country=s.country,
+                        rarity=s.rarity,
+                        id=s.id
+                    ) for s in received],
+                    
+                    username=t.sender_user.username,
+                    
+                    status=GetTradesResponse.Trade.Status.PENDENT,
+
+                    trade_id=t.id
+                )
+            ])
+
+        return resp

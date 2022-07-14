@@ -1,10 +1,12 @@
 from tkinter import *
 from typing import List
 from client.app import App
+from middleware.trade_pb2 import GetTradesRequest
+from middleware.trade_pb2 import GetTradesResponse
 from models.domain.entity import Status, Stickers
 
 class ItemListSticker(Frame):
-    sticker: Stickers
+    sticker: GetTradesResponse.Trade.Sticker
 
     def __init__(self, window: Frame, sticker: Stickers):
         super().__init__(
@@ -57,7 +59,7 @@ class ListSticker(Frame):
 
         self.view_list = []
 
-    def add_stickers(self, stickers: List[Stickers]):
+    def add_stickers(self, stickers: List[GetTradesResponse.Trade.Sticker]):
         for s in stickers:
             item = ItemListSticker(self.content, sticker=s)
             item.pack(fill="x")
@@ -77,7 +79,7 @@ class ListSticker(Frame):
 
 
 class TradeRequestsView(Frame):
-    # list_trades: List[TradeItem]
+    list_trades: List[GetTradesResponse.Trade]
     position: int
 
     def __init__(self, window: App):
@@ -126,16 +128,16 @@ class TradeRequestsView(Frame):
 
 
     def update_view(self, *args, **kwargs):
-        pass
-        # sock = self.window.sock
-        # cmd = RequestTradesReceivedUserCommand(self.window.logged_user_id)
-        # resp: ResponseTradesReceivedUserCommand = sock.send_receive(cmd)
-        # self.position = 0
-        # self.list_trades = []
-        # for t in resp.trades:
-        #     if t.status == Status.pendent:
-        #         self.list_trades.append(t)
-        # self.show()
+        resp = self.window.trade_stub.get_trades(
+            GetTradesRequest(
+                username=self.window.logged_user_username
+            )
+        )
+        self.position = 0
+        self.list_trades = []
+        for t in resp.trades:
+            self.list_trades.append(t)
+        self.show()
 
     def _next_clicked(self, event = None):
         self.position += 1
@@ -199,10 +201,10 @@ class TradeRequestsView(Frame):
             else:
                 self.btn_next.config(state=NORMAL)
 
-            self.header.config(text="Solicitação de " + trade.username_orig)
+            self.header.config(text="Solicitação de " + trade.username)
 
             self.list_receive.clear()
-            self.list_receive.add_stickers(trade.stickers_orig)
+            self.list_receive.add_stickers(trade.to_receive)
 
             self.list_send.clear()
-            self.list_send.add_stickers(trade.stickers_dest)
+            self.list_send.add_stickers(trade.to_send)

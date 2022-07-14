@@ -11,15 +11,12 @@ from tkinter import (
     Scrollbar,
 )
 from typing import List
-from middleware.sticker_pb2 import ListStickersRequest
-from middleware.sticker_pb2_grpc import StickerServiceStub
-from models.domain.entity import Stickers, Users
+from middleware.sticker_pb2 import ListStickerResponse, ListStickersRequest
 from client.app import App
+from middleware.trade_pb2 import TradeRequest
 
 class ItemListSticker(Frame):
-    sticker: Stickers
-
-    def __init__(self, window: Frame, sticker: Stickers):
+    def __init__(self, window: Frame, sticker: ListStickerResponse.Sticker):
         super().__init__(
             window, highlightbackground="gray", highlightthickness=1, pady=5
         )
@@ -49,8 +46,6 @@ class ItemListSticker(Frame):
 
 
 class ListSticker(Frame):
-    view_list: List[ItemListSticker]
-
     def __init__(self, window: Frame):
         super().__init__(window)
         self.rowconfigure(0, weight=1)
@@ -91,7 +86,7 @@ class ListSticker(Frame):
             v.destroy()
         self.view_list.clear()
 
-    def add_stickers(self, stickers: List[Stickers]):
+    def add_stickers(self, stickers: List[ListStickerResponse.Sticker]):
         for s in stickers:
             item = ItemListSticker(self.content, sticker=s)
             item.pack(fill="x")
@@ -109,10 +104,7 @@ class ListSticker(Frame):
     def _frame_configure(self, event):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
-
 class TradeView(Frame):
-    user: Users
-
     def __init__(self, window: App):
         super().__init__(window)
         self.window = window
@@ -160,41 +152,42 @@ class TradeView(Frame):
         self.other_name_entry.delete(0, END)
 
     def update_view(self):
-        stub = StickerServiceStub(channel=self.window.channel)
-        resp = stub.list_stickers(ListStickersRequest(username=self.window.logged_user_username))
+        resp = self.window.sticker_stub.list_stickers(ListStickersRequest(username=self.window.logged_user_username))
         
         self.clear()
-        self.my_list.add_stickers(
-            [Stickers(playername=s.playername, country=s.country, rarity=s.rarity) for s in resp.sticker]
-        )
+        self.my_list.add_stickers(resp.sticker)
 
     def _search_clicked(self, event=None):
-        pass
-        # self.other_list.clear()
-        # username = self.other_name_entry.get()
+        self.other_list.clear()
+        username = self.other_name_entry.get()
 
-        # if username == self.user.username:
-        #     # cant trade with myself
-        #     return
+        if username == self.window.logged_user_username:
+            # cant trade with myself
+            return
 
-        # sock = self.window.sock
-        # cmd = RequestListStickersUserCommand(username=username)
-        # resp = sock.send_receive(cmd)
+        resp = self.window.sticker_stub.list_stickers(
+            ListStickersRequest(
+                username=username
+            )
+        )
 
-        # self.other_list.add_stickers(resp.stickers)
+        self.other_list.add_stickers(resp.sticker)
 
     def _trade(self):
-        pass
-        # my_stickers = self.my_list.get_selected_stickers()
-        # other_stickers = self.other_list.get_selected_stickers()
+        other_username = self.other_name_entry.get()
+        my_stickers = self.my_list.get_selected_stickers()
+        other_stickers = self.other_list.get_selected_stickers()
 
-        # print("trade.TradeView._trade", my_stickers, other_stickers)
-
-        # sock = self.window.sock
-        # cmd = RequestTradeUserToUserCommand(
-        #     self.user.username, my_stickers, self.other_name_entry.get(), other_stickers
-        # )
-        # resp = sock.send_receive(cmd)
+        resp = self.window.trade_stub.request_trade(
+            TradeRequest(
+                my_stickers=my_stickers,
+                other_stickers=other_stickers,
+                my_username=self.window.logged_user_username,
+                other_username=other_username
+            )
+        )
         
-        # if resp.status:
-        #     self.window.show_page("homepage", menu=True)
+        if resp.status:
+            self.window.show_page("homepage", menu=True)
+        else:
+            print("Error on trade")

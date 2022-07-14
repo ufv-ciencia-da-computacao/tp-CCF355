@@ -67,10 +67,8 @@ class HomepageView(Frame):
         self.welcome.config(text="Bem vindo " + self.window.logged_user_username)
         self.clear()
 
-        stub = StickerServiceStub(channel=self.window.channel)
-        resp = stub.list_stickers(ListStickersRequest(username=self.window.logged_user_username))
+        resp = self.window.sticker_stub.list_stickers(ListStickersRequest(username=self.window.logged_user_username))
         for r in resp.sticker:
-            print(r.playername, r.country, r.rarity, r.id)
             s = StickerFrame(self.f, r.playername, r.country, r.rarity)
             s.pack(side="left", padx=10)
             self.list_stickers.append(s)

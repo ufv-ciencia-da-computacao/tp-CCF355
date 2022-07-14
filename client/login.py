@@ -36,6 +36,7 @@ class LoginView(Frame):
         content.pack(expand=True)
 
     def update_view(self, *args, **kwargs):
+        self.lbl_error.grid_forget()
         self.username.delete(0, END)
         self.password.delete(0, END)
         self.username.focus()
@@ -50,8 +51,7 @@ class LoginView(Frame):
         password = self.password.get()
 
         try:
-            stub = UserServiceStub(channel=self.window.channel)
-            resp = stub.login(LoginRequest(username=username, password=password))
+            resp = self.window.user_stub.login(LoginRequest(username=username, password=password))
             self.window.logged_user_username = username
             self.window.logged_user_id = resp.user_id
             self.window.show_page("homepage", menu=True)

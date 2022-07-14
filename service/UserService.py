@@ -16,7 +16,8 @@ class UserService(UserServiceServicer):
         user = self.us_repo.get(request.username)
         if user is not None and user.password == request.password:
             resp.user_id = user.id
-        return resp
+            return resp
+        raise
 
     def register(self, request, context):
         resp = CreateResponse(status=False)
@@ -27,6 +28,7 @@ class UserService(UserServiceServicer):
                 user=self.us_repo.get(user.username)
             )
             resp.status = True
+            print("ok")
         except Exception:
             pass
         

@@ -3,7 +3,8 @@ import json
 from tkinter import *
 
 from client.app import App
-
+from middleware.user_pb2 import CreateRequest, CreateResponse
+from middleware.user_pb2_grpc import UserServiceStub
 
 class RegisterView(Frame):
     def __init__(self, window: App):
@@ -39,27 +40,24 @@ class RegisterView(Frame):
         self.username_input.focus()
 
     def _confirm_clicked(self, event = None):
-        pass
-        # username = self.username_input.get()
-        # password = self.password_input.get()
-        # confirm = self.confirm_input.get()
+        username = self.username_input.get()
+        password = self.password_input.get()
+        confirm = self.confirm_input.get()
 
-        # if len(username) == 0 or len(password) == 0 or len(confirm) == 0:
-        #     self._show_error("Campos não preenchidos")
-        #     return
+        if len(username) == 0 or len(password) == 0 or len(confirm) == 0:
+            self._show_error("Campos não preenchidos")
+            return
 
-        # if password != confirm:
-        #     self._show_error("Senhas diferentes")
-        #     return
+        if password != confirm:
+            self._show_error("Senhas diferentes")
+            return
 
-        # sock = self.window.sock
-        # cmd = RequestCreateUserCommand(username=username, password=password)
-        # resp = sock.send_receive(cmd)
-
-        # if resp.status:
-        #     self.window.show_page("login")
-        # else:
-        #     self._show_error("Falha ao cadastrar")
+        resp = self.window.user_stub.register(CreateRequest(username=username, password=password))
+        print(resp.status)
+        if resp.status:
+            self.window.show_page("login")
+        else:
+            self._show_error("Falha ao cadastrar")
 
     def _show_error(self, msg: str):
         self.error_msg_lbl.grid_forget()

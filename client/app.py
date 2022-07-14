@@ -1,6 +1,10 @@
 from tkinter import *
 
 import grpc
+from middleware.trade_pb2_grpc import TradeServiceStub
+
+from middleware.user_pb2_grpc import UserServiceStub
+from middleware.sticker_pb2_grpc import StickerServiceStub
 
 class App(Tk):
     logged_user_id: int
@@ -15,7 +19,10 @@ class App(Tk):
         self.cur_page = None
         self.logged_user_id = None
         self.logged_user_username = ""
-        self.channel = grpc.insecure_channel("localhost:5555")
+        channel = grpc.insecure_channel("localhost:5555")
+        self.user_stub = UserServiceStub(channel=channel)
+        self.sticker_stub = StickerServiceStub(channel=channel)
+        self.trade_stub = TradeServiceStub(channel=channel)
         
 
     def set_logged_user_id(self, user_id: int):
