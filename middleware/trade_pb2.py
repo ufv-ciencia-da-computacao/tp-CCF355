@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0btrade.proto\x12\x05trade\"h\n\x0cTradeRequest\x12\x13\n\x0bmy_stickers\x18\x01 \x03(\x05\x12\x16\n\x0eother_stickers\x18\x02 \x03(\x05\x12\x13\n\x0bmy_username\x18\x03 \x01(\t\x12\x16\n\x0eother_username\x18\x04 \x01(\t\"\x1f\n\rTradeResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\"$\n\x12\x41nswerTradeRequest\x12\x0e\n\x06\x61\x63\x63\x65pt\x18\x01 \x01(\x08\"%\n\x13\x41nswerTradeResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\"$\n\x10GetTradesRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x9b\x03\n\x11GetTradesResponse\x12.\n\x06trades\x18\x01 \x03(\x0b\x32\x1e.trade.GetTradesResponse.Trade\x1a\xd5\x02\n\x05Trade\x12\x37\n\x07to_send\x18\x01 \x03(\x0b\x32&.trade.GetTradesResponse.Trade.Sticker\x12:\n\nto_receive\x18\x02 \x03(\x0b\x32&.trade.GetTradesResponse.Trade.Sticker\x12\x10\n\x08username\x18\x03 \x01(\t\x12\x35\n\x06status\x18\x04 \x01(\x0e\x32%.trade.GetTradesResponse.Trade.Status\x12\x10\n\x08trade_id\x18\x05 \x01(\x05\x1aJ\n\x07Sticker\x12\x12\n\nplayername\x18\x01 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x02 \x01(\t\x12\x0e\n\x06rarity\x18\x03 \x01(\x05\x12\n\n\x02id\x18\x04 \x01(\x05\"0\n\x06Status\x12\x0b\n\x07PENDENT\x10\x00\x12\x0c\n\x08\x41\x43\x43\x45PTED\x10\x01\x12\x0b\n\x07RECUSED\x10\x02\x32\xd8\x01\n\x0cTradeService\x12<\n\rrequest_trade\x12\x13.trade.TradeRequest\x1a\x14.trade.TradeResponse\"\x00\x12G\n\x0c\x61nswer_trade\x12\x19.trade.AnswerTradeRequest\x1a\x1a.trade.AnswerTradeResponse\"\x00\x12\x41\n\nget_trades\x12\x17.trade.GetTradesRequest\x1a\x18.trade.GetTradesResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0btrade.proto\x12\x05trade\"h\n\x0cTradeRequest\x12\x13\n\x0bmy_stickers\x18\x01 \x03(\x05\x12\x16\n\x0eother_stickers\x18\x02 \x03(\x05\x12\x13\n\x0bmy_username\x18\x03 \x01(\t\x12\x16\n\x0eother_username\x18\x04 \x01(\t\"\x1f\n\rTradeResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\"6\n\x12\x41nswerTradeRequest\x12\x0e\n\x06\x61\x63\x63\x65pt\x18\x01 \x01(\x08\x12\x10\n\x08trade_id\x18\x02 \x01(\x05\"%\n\x13\x41nswerTradeResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\"$\n\x10GetTradesRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x9b\x03\n\x11GetTradesResponse\x12.\n\x06trades\x18\x01 \x03(\x0b\x32\x1e.trade.GetTradesResponse.Trade\x1a\xd5\x02\n\x05Trade\x12\x37\n\x07to_send\x18\x01 \x03(\x0b\x32&.trade.GetTradesResponse.Trade.Sticker\x12:\n\nto_receive\x18\x02 \x03(\x0b\x32&.trade.GetTradesResponse.Trade.Sticker\x12\x10\n\x08username\x18\x03 \x01(\t\x12\x35\n\x06status\x18\x04 \x01(\x0e\x32%.trade.GetTradesResponse.Trade.Status\x12\x10\n\x08trade_id\x18\x05 \x01(\x05\x1aJ\n\x07Sticker\x12\x12\n\nplayername\x18\x01 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x02 \x01(\t\x12\x0e\n\x06rarity\x18\x03 \x01(\x05\x12\n\n\x02id\x18\x04 \x01(\x05\"0\n\x06Status\x12\x0b\n\x07PENDENT\x10\x00\x12\x0c\n\x08\x41\x43\x43\x45PTED\x10\x01\x12\x0b\n\x07RECUSED\x10\x02\x32\xd8\x01\n\x0cTradeService\x12<\n\rrequest_trade\x12\x13.trade.TradeRequest\x1a\x14.trade.TradeResponse\"\x00\x12G\n\x0c\x61nswer_trade\x12\x19.trade.AnswerTradeRequest\x1a\x1a.trade.AnswerTradeResponse\"\x00\x12\x41\n\nget_trades\x12\x17.trade.GetTradesRequest\x1a\x18.trade.GetTradesResponse\"\x00\x62\x06proto3')
 
 
 
@@ -94,19 +94,19 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _TRADERESPONSE._serialized_start=128
   _TRADERESPONSE._serialized_end=159
   _ANSWERTRADEREQUEST._serialized_start=161
-  _ANSWERTRADEREQUEST._serialized_end=197
-  _ANSWERTRADERESPONSE._serialized_start=199
-  _ANSWERTRADERESPONSE._serialized_end=236
-  _GETTRADESREQUEST._serialized_start=238
-  _GETTRADESREQUEST._serialized_end=274
-  _GETTRADESRESPONSE._serialized_start=277
-  _GETTRADESRESPONSE._serialized_end=688
-  _GETTRADESRESPONSE_TRADE._serialized_start=347
-  _GETTRADESRESPONSE_TRADE._serialized_end=688
-  _GETTRADESRESPONSE_TRADE_STICKER._serialized_start=564
-  _GETTRADESRESPONSE_TRADE_STICKER._serialized_end=638
-  _GETTRADESRESPONSE_TRADE_STATUS._serialized_start=640
-  _GETTRADESRESPONSE_TRADE_STATUS._serialized_end=688
-  _TRADESERVICE._serialized_start=691
-  _TRADESERVICE._serialized_end=907
+  _ANSWERTRADEREQUEST._serialized_end=215
+  _ANSWERTRADERESPONSE._serialized_start=217
+  _ANSWERTRADERESPONSE._serialized_end=254
+  _GETTRADESREQUEST._serialized_start=256
+  _GETTRADESREQUEST._serialized_end=292
+  _GETTRADESRESPONSE._serialized_start=295
+  _GETTRADESRESPONSE._serialized_end=706
+  _GETTRADESRESPONSE_TRADE._serialized_start=365
+  _GETTRADESRESPONSE_TRADE._serialized_end=706
+  _GETTRADESRESPONSE_TRADE_STICKER._serialized_start=582
+  _GETTRADESRESPONSE_TRADE_STICKER._serialized_end=656
+  _GETTRADESRESPONSE_TRADE_STATUS._serialized_start=658
+  _GETTRADESRESPONSE_TRADE_STATUS._serialized_end=706
+  _TRADESERVICE._serialized_start=709
+  _TRADESERVICE._serialized_end=925
 # @@protoc_insertion_point(module_scope)

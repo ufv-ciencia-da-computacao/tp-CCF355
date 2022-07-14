@@ -1,7 +1,7 @@
 from tkinter import *
 from typing import List
 from client.app import App
-from middleware.trade_pb2 import GetTradesRequest
+from middleware.trade_pb2 import AnswerTradeRequest, GetTradesRequest
 from middleware.trade_pb2 import GetTradesResponse
 from models.domain.entity import Status, Stickers
 
@@ -148,34 +148,32 @@ class TradeRequestsView(Frame):
         self.show()
 
     def _accept_clicked(self, event = None):
-        pass
-        # trade = self.list_trades[self.position]
+        trade = self.list_trades[self.position]
 
-        # sock = self.window.sock
-        # cmd = RequestAnswerTradeCommand(trade.trade_id, True)
-        # resp: ResponseAnswerTradeCommand = sock.send_receive(cmd)
+        resp = self.window.trade_stub.answer_trade(
+            AnswerTradeRequest(accept=True, trade_id=trade.trade_id)
+        )
 
-        # if resp.status:
-        #     print("stickers traded")
-        # else:
-        #     print("something went wrong")
+        if resp.status:
+            print("stickers traded")
+        else:
+            print("something went wrong")
 
-        # self.update_view()
+        self.update_view()
 
     def _recuse_clicked(self, event = None):
-        pass
-        # trade = self.list_trades[self.position]
+        trade = self.list_trades[self.position]
 
-        # sock = self.window.sock
-        # cmd = RequestAnswerTradeCommand(trade.trade_id, False)
-        # resp: ResponseAnswerTradeCommand = sock.send_receive(cmd)
+        resp = self.window.trade_stub.answer_trade(
+            AnswerTradeRequest(accept=False, trade_id=trade.trade_id)
+        )
 
-        # if resp.status:
-        #     print("trade recused")
-        # else:
-        #     print("something went wrong")
+        if resp.status:
+            print("trade recused")
+        else:
+            print("something went wrong")
 
-        # self.update_view()
+        self.update_view()
 
     def show(self):
         if len(self.list_trades) == 0:

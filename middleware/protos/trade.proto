@@ -20,6 +20,7 @@ message TradeResponse {
 
 message AnswerTradeRequest {
     bool accept = 1;
+    int32 trade_id = 2;
 }
 
 message AnswerTradeResponse {

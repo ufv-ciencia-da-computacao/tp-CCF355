@@ -1,5 +1,5 @@
 from middleware.trade_pb2_grpc import TradeServiceServicer
-from middleware.trade_pb2 import GetTradesResponse, TradeResponse
+from middleware.trade_pb2 import AnswerTradeResponse, GetTradesResponse, TradeResponse
 from models.domain import entity
 from models.repository.repo import ListStickersRepository, StickersRepository, TradeRepository, TradeStickersRepository, UsersRepository
 from service.TradeStickers import TradeStickersService
@@ -40,7 +40,14 @@ class TradeService(TradeServiceServicer):
         return resp
 
     def answer_trade(self, request, context):
-        return super().answer_trade(request, context)
+        resp = AnswerTradeResponse(status=False)
+        try:
+            self.trade_stickers.answer_trade(request.trade_id, request.accept)
+            resp.status=True
+        except Exception:
+            pass
+
+        return resp
 
     def get_trades(self, request, context):
         user = self.us_repo.get(request.username)
