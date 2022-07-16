@@ -15,6 +15,7 @@ from middleware.sticker_pb2 import ListStickerResponse, ListStickersRequest
 from client.app import App
 from middleware.trade_pb2 import TradeRequest
 
+
 class ItemListSticker(Frame):
     def __init__(self, window: Frame, sticker: ListStickerResponse.Sticker):
         super().__init__(
@@ -104,6 +105,7 @@ class ListSticker(Frame):
     def _frame_configure(self, event):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
+
 class TradeView(Frame):
     def __init__(self, window: App):
         super().__init__(window)
@@ -152,8 +154,10 @@ class TradeView(Frame):
         self.other_name_entry.delete(0, END)
 
     def update_view(self):
-        resp = self.window.sticker_stub.list_stickers(ListStickersRequest(username=self.window.logged_user_username))
-        
+        resp = self.window.sticker_stub.list_stickers(
+            ListStickersRequest(username=self.window.logged_user_username)
+        )
+
         self.clear()
         self.my_list.add_stickers(resp.sticker)
 
@@ -166,9 +170,7 @@ class TradeView(Frame):
             return
 
         resp = self.window.sticker_stub.list_stickers(
-            ListStickersRequest(
-                username=username
-            )
+            ListStickersRequest(username=username)
         )
 
         self.other_list.add_stickers(resp.sticker)
@@ -183,10 +185,10 @@ class TradeView(Frame):
                 my_stickers=my_stickers,
                 other_stickers=other_stickers,
                 my_username=self.window.logged_user_username,
-                other_username=other_username
+                other_username=other_username,
             )
         )
-        
+
         if resp.status:
             self.window.show_page("homepage", menu=True)
         else:

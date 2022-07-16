@@ -6,6 +6,7 @@ from client.app import App
 from middleware.user_pb2 import CreateRequest, CreateResponse
 from middleware.user_pb2_grpc import UserServiceStub
 
+
 class RegisterView(Frame):
     def __init__(self, window: App):
         super().__init__(window)
@@ -25,10 +26,12 @@ class RegisterView(Frame):
         self.confirm_input.grid(row=5, column=0, columnspan=2)
         self.error_msg_lbl = Label(content, fg="red")
         self.btn_cancel = Button(content, text="Cancelar", command=self._cancel_clicked)
-        self.btn_cancel.bind('<Return>', self._cancel_clicked)
+        self.btn_cancel.bind("<Return>", self._cancel_clicked)
         self.btn_cancel.grid(row=7, column=0, sticky="e", pady=10, padx=5)
-        self.btn_confirm = Button(content, text="Confirmar", command=self._confirm_clicked)
-        self.btn_confirm.bind('<Return>', self._confirm_clicked)
+        self.btn_confirm = Button(
+            content, text="Confirmar", command=self._confirm_clicked
+        )
+        self.btn_confirm.bind("<Return>", self._confirm_clicked)
         self.btn_confirm.grid(row=7, column=1, sticky="e", pady=10, padx=5)
         content.pack(expand=True)
 
@@ -39,7 +42,7 @@ class RegisterView(Frame):
         self.error_msg_lbl.grid_forget()
         self.username_input.focus()
 
-    def _confirm_clicked(self, event = None):
+    def _confirm_clicked(self, event=None):
         username = self.username_input.get()
         password = self.password_input.get()
         confirm = self.confirm_input.get()
@@ -52,7 +55,9 @@ class RegisterView(Frame):
             self._show_error("Senhas diferentes")
             return
 
-        resp = self.window.user_stub.register(CreateRequest(username=username, password=password))
+        resp = self.window.user_stub.register(
+            CreateRequest(username=username, password=password)
+        )
         print(resp.status)
         if resp.status:
             self.window.show_page("login")
@@ -64,5 +69,5 @@ class RegisterView(Frame):
         self.error_msg_lbl.grid(row=6, column=0, sticky="w")
         self.error_msg_lbl.config(text=msg)
 
-    def _cancel_clicked(self, event = None):
+    def _cancel_clicked(self, event=None):
         self.window.show_page("login")

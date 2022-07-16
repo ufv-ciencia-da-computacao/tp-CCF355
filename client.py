@@ -20,5 +20,5 @@ if __name__ == "__main__":
     app.add_page("trade_requests", trade_requests)
 
     app.show_page("login")
-    
+
     app.mainloop()

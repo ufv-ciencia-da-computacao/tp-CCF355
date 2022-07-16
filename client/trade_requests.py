@@ -5,6 +5,7 @@ from middleware.trade_pb2 import AnswerTradeRequest, GetTradesRequest
 from middleware.trade_pb2 import GetTradesResponse
 from models.domain.entity import Status, Stickers
 
+
 class ItemListSticker(Frame):
     sticker: GetTradesResponse.Trade.Sticker
 
@@ -108,30 +109,39 @@ class TradeRequestsView(Frame):
         self.buttons_frame.columnconfigure(3, weight=1)
 
         # create lists
-        Label(self.content_frame, text="Figurinhas a receber", pady=10).grid(column=0, row=0)
+        Label(self.content_frame, text="Figurinhas a receber", pady=10).grid(
+            column=0, row=0
+        )
         self.list_receive = ListSticker(self.content_frame)
         self.list_receive.grid(column=0, row=1, sticky="snew")
 
-        Label(self.content_frame, text="Figurinhas a enviar", pady=10).grid(column=1, row=0)
+        Label(self.content_frame, text="Figurinhas a enviar", pady=10).grid(
+            column=1, row=0
+        )
         self.list_send = ListSticker(self.content_frame)
         self.list_send.grid(column=1, row=1, sticky="snew")
 
         # create buttons
-        self.btn_next = Button(self.buttons_frame, text="Próximo", command=self._next_clicked)
+        self.btn_next = Button(
+            self.buttons_frame, text="Próximo", command=self._next_clicked
+        )
         self.btn_next.grid(column=3, row=0, sticky="e", padx=10)
-        self.btn_prev = Button(self.buttons_frame, text="Anterior", command=self._prev_clicked)
+        self.btn_prev = Button(
+            self.buttons_frame, text="Anterior", command=self._prev_clicked
+        )
         self.btn_prev.grid(column=0, row=0, sticky="w", padx=10)
-        self.btn_accept = Button(self.buttons_frame, text="Aceitar", command=self._accept_clicked)
+        self.btn_accept = Button(
+            self.buttons_frame, text="Aceitar", command=self._accept_clicked
+        )
         self.btn_accept.grid(column=2, row=0, sticky="w", padx=10)
-        self.btn_recuse = Button(self.buttons_frame, text="Recusar", command=self._recuse_clicked)
+        self.btn_recuse = Button(
+            self.buttons_frame, text="Recusar", command=self._recuse_clicked
+        )
         self.btn_recuse.grid(column=1, row=0, sticky="e", padx=10)
-
 
     def update_view(self, *args, **kwargs):
         resp = self.window.trade_stub.get_trades(
-            GetTradesRequest(
-                username=self.window.logged_user_username
-            )
+            GetTradesRequest(username=self.window.logged_user_username)
         )
         self.position = 0
         self.list_trades = []
@@ -139,15 +149,15 @@ class TradeRequestsView(Frame):
             self.list_trades.append(t)
         self.show()
 
-    def _next_clicked(self, event = None):
+    def _next_clicked(self, event=None):
         self.position += 1
         self.show()
 
-    def _prev_clicked(self, event = None):
+    def _prev_clicked(self, event=None):
         self.position -= 1
         self.show()
 
-    def _accept_clicked(self, event = None):
+    def _accept_clicked(self, event=None):
         trade = self.list_trades[self.position]
 
         resp = self.window.trade_stub.answer_trade(
@@ -161,7 +171,7 @@ class TradeRequestsView(Frame):
 
         self.update_view()
 
-    def _recuse_clicked(self, event = None):
+    def _recuse_clicked(self, event=None):
         trade = self.list_trades[self.position]
 
         resp = self.window.trade_stub.answer_trade(
@@ -188,13 +198,13 @@ class TradeRequestsView(Frame):
             trade = self.list_trades[self.position]
             self.btn_accept.config(state=NORMAL)
             self.btn_recuse.config(state=NORMAL)
-            
+
             if self.position == 0:
                 self.btn_prev.config(state=DISABLED)
             else:
                 self.btn_prev.config(state=NORMAL)
 
-            if self.position == len(self.list_trades)-1:
+            if self.position == len(self.list_trades) - 1:
                 self.btn_next.config(state=DISABLED)
             else:
                 self.btn_next.config(state=NORMAL)

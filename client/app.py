@@ -6,6 +6,7 @@ from middleware.trade_pb2_grpc import TradeServiceStub
 from middleware.user_pb2_grpc import UserServiceStub
 from middleware.sticker_pb2_grpc import StickerServiceStub
 
+
 class App(Tk):
     logged_user_id: int
 
@@ -23,7 +24,6 @@ class App(Tk):
         self.user_stub = UserServiceStub(channel=channel)
         self.sticker_stub = StickerServiceStub(channel=channel)
         self.trade_stub = TradeServiceStub(channel=channel)
-        
 
     def set_logged_user_id(self, user_id: int):
         self.logged_user_id = user_id
@@ -48,8 +48,15 @@ class App(Tk):
 
     def _show_menu_bar(self):
         self.menubar = Menu(self)
-        self.menubar.add_command(label="inicio", command=lambda:self.show_page("homepage", menu=True))
-        self.menubar.add_command(label="trocar", command=lambda:self.show_page("trade", menu=True))
-        self.menubar.add_command(label="solicitações", command=lambda:self.show_page("trade_requests", menu=True))
-        self.menubar.add_command(label="sair", command=lambda:self.show_page("login"))
+        self.menubar.add_command(
+            label="inicio", command=lambda: self.show_page("homepage", menu=True)
+        )
+        self.menubar.add_command(
+            label="trocar", command=lambda: self.show_page("trade", menu=True)
+        )
+        self.menubar.add_command(
+            label="solicitações",
+            command=lambda: self.show_page("trade_requests", menu=True),
+        )
+        self.menubar.add_command(label="sair", command=lambda: self.show_page("login"))
         self.config(menu=self.menubar)

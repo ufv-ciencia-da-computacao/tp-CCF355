@@ -3,6 +3,7 @@ from models.domain.entity import Stickers
 from models.repository.repo import UsersRepository
 from middleware.sticker_pb2 import ListStickerResponse
 
+
 class StickerService(StickerServiceServicer):
     def __init__(self, us_repo: UsersRepository) -> None:
         super().__init__()
@@ -13,11 +14,15 @@ class StickerService(StickerServiceServicer):
         resp = ListStickerResponse()
         if user is not None:
             for s in user.stickers:
-                s : Stickers
-                resp.sticker.extend([ListStickerResponse.Sticker(
-                    playername=s.playername,
-                    country=s.country,
-                    rarity=s.rarity,
-                    id=s.id
-                )])
+                s: Stickers
+                resp.sticker.extend(
+                    [
+                        ListStickerResponse.Sticker(
+                            playername=s.playername,
+                            country=s.country,
+                            rarity=s.rarity,
+                            id=s.id,
+                        )
+                    ]
+                )
         return resp

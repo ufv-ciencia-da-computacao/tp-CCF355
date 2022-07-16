@@ -20,11 +20,17 @@ if __name__ == "__main__":
     us_repo = repo.UsersRepository(session)
     t_repo = repo.TradeRepository(session)
     tr_repo = repo.TradeStickersRepository(session)
-    
+
     server = grpc.server(futures.ThreadPoolExecutor())
-    user_pb2_grpc.add_UserServiceServicer_to_server(UserService(us_repo, s_repo, ls_repo), server)
-    sticker_pb2_grpc.add_StickerServiceServicer_to_server(StickerService(us_repo), server)
-    trade_pb2_grpc.add_TradeServiceServicer_to_server(TradeService(us_repo, ls_repo, t_repo, tr_repo), server)
+    user_pb2_grpc.add_UserServiceServicer_to_server(
+        UserService(us_repo, s_repo, ls_repo), server
+    )
+    sticker_pb2_grpc.add_StickerServiceServicer_to_server(
+        StickerService(us_repo), server
+    )
+    trade_pb2_grpc.add_TradeServiceServicer_to_server(
+        TradeService(us_repo, ls_repo, t_repo, tr_repo), server
+    )
     server.add_insecure_port("localhost:5555")
     server.start()
     server.wait_for_termination()

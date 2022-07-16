@@ -7,52 +7,62 @@ from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
+
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
 
 
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+    b'\n\rsticker.proto\x12\x07sticker"\x98\x01\n\x13ListStickerResponse\x12\x35\n\x07sticker\x18\x01 \x03(\x0b\x32$.sticker.ListStickerResponse.Sticker\x1aJ\n\x07Sticker\x12\x12\n\nplayername\x18\x01 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x02 \x01(\t\x12\x0e\n\x06rarity\x18\x03 \x01(\x05\x12\n\n\x02id\x18\x04 \x01(\x05"\'\n\x13ListStickersRequest\x12\x10\n\x08username\x18\x01 \x01(\t2_\n\x0eStickerService\x12M\n\rlist_stickers\x12\x1c.sticker.ListStickersRequest\x1a\x1c.sticker.ListStickerResponse"\x00\x62\x06proto3'
+)
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rsticker.proto\x12\x07sticker\"\x98\x01\n\x13ListStickerResponse\x12\x35\n\x07sticker\x18\x01 \x03(\x0b\x32$.sticker.ListStickerResponse.Sticker\x1aJ\n\x07Sticker\x12\x12\n\nplayername\x18\x01 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x02 \x01(\t\x12\x0e\n\x06rarity\x18\x03 \x01(\x05\x12\n\n\x02id\x18\x04 \x01(\x05\"\'\n\x13ListStickersRequest\x12\x10\n\x08username\x18\x01 \x01(\t2_\n\x0eStickerService\x12M\n\rlist_stickers\x12\x1c.sticker.ListStickersRequest\x1a\x1c.sticker.ListStickerResponse\"\x00\x62\x06proto3')
-
-
-
-_LISTSTICKERRESPONSE = DESCRIPTOR.message_types_by_name['ListStickerResponse']
-_LISTSTICKERRESPONSE_STICKER = _LISTSTICKERRESPONSE.nested_types_by_name['Sticker']
-_LISTSTICKERSREQUEST = DESCRIPTOR.message_types_by_name['ListStickersRequest']
-ListStickerResponse = _reflection.GeneratedProtocolMessageType('ListStickerResponse', (_message.Message,), {
-
-  'Sticker' : _reflection.GeneratedProtocolMessageType('Sticker', (_message.Message,), {
-    'DESCRIPTOR' : _LISTSTICKERRESPONSE_STICKER,
-    '__module__' : 'sticker_pb2'
-    # @@protoc_insertion_point(class_scope:sticker.ListStickerResponse.Sticker)
-    })
-  ,
-  'DESCRIPTOR' : _LISTSTICKERRESPONSE,
-  '__module__' : 'sticker_pb2'
-  # @@protoc_insertion_point(class_scope:sticker.ListStickerResponse)
-  })
+_LISTSTICKERRESPONSE = DESCRIPTOR.message_types_by_name["ListStickerResponse"]
+_LISTSTICKERRESPONSE_STICKER = _LISTSTICKERRESPONSE.nested_types_by_name["Sticker"]
+_LISTSTICKERSREQUEST = DESCRIPTOR.message_types_by_name["ListStickersRequest"]
+ListStickerResponse = _reflection.GeneratedProtocolMessageType(
+    "ListStickerResponse",
+    (_message.Message,),
+    {
+        "Sticker": _reflection.GeneratedProtocolMessageType(
+            "Sticker",
+            (_message.Message,),
+            {
+                "DESCRIPTOR": _LISTSTICKERRESPONSE_STICKER,
+                "__module__": "sticker_pb2"
+                # @@protoc_insertion_point(class_scope:sticker.ListStickerResponse.Sticker)
+            },
+        ),
+        "DESCRIPTOR": _LISTSTICKERRESPONSE,
+        "__module__": "sticker_pb2"
+        # @@protoc_insertion_point(class_scope:sticker.ListStickerResponse)
+    },
+)
 _sym_db.RegisterMessage(ListStickerResponse)
 _sym_db.RegisterMessage(ListStickerResponse.Sticker)
 
-ListStickersRequest = _reflection.GeneratedProtocolMessageType('ListStickersRequest', (_message.Message,), {
-  'DESCRIPTOR' : _LISTSTICKERSREQUEST,
-  '__module__' : 'sticker_pb2'
-  # @@protoc_insertion_point(class_scope:sticker.ListStickersRequest)
-  })
+ListStickersRequest = _reflection.GeneratedProtocolMessageType(
+    "ListStickersRequest",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _LISTSTICKERSREQUEST,
+        "__module__": "sticker_pb2"
+        # @@protoc_insertion_point(class_scope:sticker.ListStickersRequest)
+    },
+)
 _sym_db.RegisterMessage(ListStickersRequest)
 
-_STICKERSERVICE = DESCRIPTOR.services_by_name['StickerService']
+_STICKERSERVICE = DESCRIPTOR.services_by_name["StickerService"]
 if _descriptor._USE_C_DESCRIPTORS == False:
 
-  DESCRIPTOR._options = None
-  _LISTSTICKERRESPONSE._serialized_start=27
-  _LISTSTICKERRESPONSE._serialized_end=179
-  _LISTSTICKERRESPONSE_STICKER._serialized_start=105
-  _LISTSTICKERRESPONSE_STICKER._serialized_end=179
-  _LISTSTICKERSREQUEST._serialized_start=181
-  _LISTSTICKERSREQUEST._serialized_end=220
-  _STICKERSERVICE._serialized_start=222
-  _STICKERSERVICE._serialized_end=317
+    DESCRIPTOR._options = None
+    _LISTSTICKERRESPONSE._serialized_start = 27
+    _LISTSTICKERRESPONSE._serialized_end = 179
+    _LISTSTICKERRESPONSE_STICKER._serialized_start = 105
+    _LISTSTICKERRESPONSE_STICKER._serialized_end = 179
+    _LISTSTICKERSREQUEST._serialized_start = 181
+    _LISTSTICKERSREQUEST._serialized_end = 220
+    _STICKERSERVICE._serialized_start = 222
+    _STICKERSERVICE._serialized_end = 317
 # @@protoc_insertion_point(module_scope)

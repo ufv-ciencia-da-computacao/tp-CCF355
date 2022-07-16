@@ -15,10 +15,10 @@ class StickerServiceStub(object):
             channel: A grpc.Channel.
         """
         self.list_stickers = channel.unary_unary(
-                '/sticker.StickerService/list_stickers',
-                request_serializer=sticker__pb2.ListStickersRequest.SerializeToString,
-                response_deserializer=sticker__pb2.ListStickerResponse.FromString,
-                )
+            "/sticker.StickerService/list_stickers",
+            request_serializer=sticker__pb2.ListStickersRequest.SerializeToString,
+            response_deserializer=sticker__pb2.ListStickerResponse.FromString,
+        )
 
 
 class StickerServiceServicer(object):
@@ -27,40 +27,53 @@ class StickerServiceServicer(object):
     def list_stickers(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
 
 
 def add_StickerServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'list_stickers': grpc.unary_unary_rpc_method_handler(
-                    servicer.list_stickers,
-                    request_deserializer=sticker__pb2.ListStickersRequest.FromString,
-                    response_serializer=sticker__pb2.ListStickerResponse.SerializeToString,
-            ),
+        "list_stickers": grpc.unary_unary_rpc_method_handler(
+            servicer.list_stickers,
+            request_deserializer=sticker__pb2.ListStickersRequest.FromString,
+            response_serializer=sticker__pb2.ListStickerResponse.SerializeToString,
+        ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'sticker.StickerService', rpc_method_handlers)
+        "sticker.StickerService", rpc_method_handlers
+    )
     server.add_generic_rpc_handlers((generic_handler,))
 
 
- # This class is part of an EXPERIMENTAL API.
+# This class is part of an EXPERIMENTAL API.
 class StickerService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def list_stickers(request,
+    def list_stickers(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
             target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/sticker.StickerService/list_stickers',
+            "/sticker.StickerService/list_stickers",
             sticker__pb2.ListStickersRequest.SerializeToString,
             sticker__pb2.ListStickerResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )
