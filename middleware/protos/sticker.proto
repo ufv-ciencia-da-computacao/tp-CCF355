@@ -11,6 +11,7 @@ message ListStickerResponse {
         string country = 2;
         int32 rarity = 3;
         int32 id = 4;
+        bytes photo = 5;
     }
 
     repeated Sticker sticker = 1;

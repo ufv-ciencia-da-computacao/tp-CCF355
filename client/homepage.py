@@ -1,4 +1,6 @@
+import io
 from tkinter import *
+import tkinter
 from typing import List
 from client.app import App
 from models.domain.entity import Users
@@ -8,9 +10,10 @@ from middleware.sticker_pb2 import ListStickersRequest
 from middleware.sticker_pb2_grpc import StickerServiceStub, StickerServiceServicer
 import service.StickerService
 
+from PIL import Image, ImageTk
 
 class StickerFrame(Frame):
-    def __init__(self, window: Frame, playername: str, country: str, rarity: int):
+    def __init__(self, window: Frame, playername: str, country: str, rarity: int, photo: bytearray):
         super().__init__(window, width=200, height=330, pady=10, bg="#E5E7E9")
         self.pack_propagate(False)
         self.window = window
@@ -20,6 +23,14 @@ class StickerFrame(Frame):
         self.image = Frame(self, bg="grey", width=180, height=180)
         self.grid_propagate(False)
         self.image.grid(row=0, column=0, pady=5, columnspan=2)
+
+        img = Image.open(io.BytesIO(photo))
+        img = img.resize((180, 180), Image.ANTIALIAS)
+
+        test = ImageTk.PhotoImage(img)
+        lbl = Label(self.image, image=test)
+        lbl.image = test
+        lbl.pack()
 
         Label(self, text="Nome: ", bg=self["bg"]).grid(
             column=0, row=1, padx=10, sticky="w"
@@ -88,7 +99,7 @@ class HomepageView(Frame):
             ListStickersRequest(username=self.window.logged_user_username)
         )
         for r in resp.sticker:
-            s = StickerFrame(self.f, r.playername, r.country, r.rarity)
+            s = StickerFrame(self.f, r.playername, r.country, r.rarity, r.photo)
             s.pack(side="left", padx=10)
             self.list_stickers.append(s)
 

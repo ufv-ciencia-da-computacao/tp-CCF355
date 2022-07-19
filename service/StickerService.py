@@ -3,6 +3,9 @@ from models.domain.entity import Stickers
 from models.repository.repo import UsersRepository
 from middleware.sticker_pb2 import ListStickerResponse
 
+def read_image_bytes(path: str):
+    with open(path, "rb") as f:
+        return f.read()
 
 class StickerService(StickerServiceServicer):
     def __init__(self, us_repo: UsersRepository) -> None:
@@ -22,6 +25,7 @@ class StickerService(StickerServiceServicer):
                             country=s.country,
                             rarity=s.rarity,
                             id=s.id,
+                            photo=read_image_bytes("data/img/neymar.jpg")
                         )
                     ]
                 )

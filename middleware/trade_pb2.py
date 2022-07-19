@@ -7,136 +7,106 @@ from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
-
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
-    b'\n\x0btrade.proto\x12\x05trade"h\n\x0cTradeRequest\x12\x13\n\x0bmy_stickers\x18\x01 \x03(\x05\x12\x16\n\x0eother_stickers\x18\x02 \x03(\x05\x12\x13\n\x0bmy_username\x18\x03 \x01(\t\x12\x16\n\x0eother_username\x18\x04 \x01(\t"\x1f\n\rTradeResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08"6\n\x12\x41nswerTradeRequest\x12\x0e\n\x06\x61\x63\x63\x65pt\x18\x01 \x01(\x08\x12\x10\n\x08trade_id\x18\x02 \x01(\x05"%\n\x13\x41nswerTradeResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08"$\n\x10GetTradesRequest\x12\x10\n\x08username\x18\x01 \x01(\t"\x9b\x03\n\x11GetTradesResponse\x12.\n\x06trades\x18\x01 \x03(\x0b\x32\x1e.trade.GetTradesResponse.Trade\x1a\xd5\x02\n\x05Trade\x12\x37\n\x07to_send\x18\x01 \x03(\x0b\x32&.trade.GetTradesResponse.Trade.Sticker\x12:\n\nto_receive\x18\x02 \x03(\x0b\x32&.trade.GetTradesResponse.Trade.Sticker\x12\x10\n\x08username\x18\x03 \x01(\t\x12\x35\n\x06status\x18\x04 \x01(\x0e\x32%.trade.GetTradesResponse.Trade.Status\x12\x10\n\x08trade_id\x18\x05 \x01(\x05\x1aJ\n\x07Sticker\x12\x12\n\nplayername\x18\x01 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x02 \x01(\t\x12\x0e\n\x06rarity\x18\x03 \x01(\x05\x12\n\n\x02id\x18\x04 \x01(\x05"0\n\x06Status\x12\x0b\n\x07PENDENT\x10\x00\x12\x0c\n\x08\x41\x43\x43\x45PTED\x10\x01\x12\x0b\n\x07RECUSED\x10\x02\x32\xd8\x01\n\x0cTradeService\x12<\n\rrequest_trade\x12\x13.trade.TradeRequest\x1a\x14.trade.TradeResponse"\x00\x12G\n\x0c\x61nswer_trade\x12\x19.trade.AnswerTradeRequest\x1a\x1a.trade.AnswerTradeResponse"\x00\x12\x41\n\nget_trades\x12\x17.trade.GetTradesRequest\x1a\x18.trade.GetTradesResponse"\x00\x62\x06proto3'
-)
 
 
-_TRADEREQUEST = DESCRIPTOR.message_types_by_name["TradeRequest"]
-_TRADERESPONSE = DESCRIPTOR.message_types_by_name["TradeResponse"]
-_ANSWERTRADEREQUEST = DESCRIPTOR.message_types_by_name["AnswerTradeRequest"]
-_ANSWERTRADERESPONSE = DESCRIPTOR.message_types_by_name["AnswerTradeResponse"]
-_GETTRADESREQUEST = DESCRIPTOR.message_types_by_name["GetTradesRequest"]
-_GETTRADESRESPONSE = DESCRIPTOR.message_types_by_name["GetTradesResponse"]
-_GETTRADESRESPONSE_TRADE = _GETTRADESRESPONSE.nested_types_by_name["Trade"]
-_GETTRADESRESPONSE_TRADE_STICKER = _GETTRADESRESPONSE_TRADE.nested_types_by_name[
-    "Sticker"
-]
-_GETTRADESRESPONSE_TRADE_STATUS = _GETTRADESRESPONSE_TRADE.enum_types_by_name["Status"]
-TradeRequest = _reflection.GeneratedProtocolMessageType(
-    "TradeRequest",
-    (_message.Message,),
-    {
-        "DESCRIPTOR": _TRADEREQUEST,
-        "__module__": "trade_pb2"
-        # @@protoc_insertion_point(class_scope:trade.TradeRequest)
-    },
-)
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0btrade.proto\x12\x05trade\"h\n\x0cTradeRequest\x12\x13\n\x0bmy_stickers\x18\x01 \x03(\x05\x12\x16\n\x0eother_stickers\x18\x02 \x03(\x05\x12\x13\n\x0bmy_username\x18\x03 \x01(\t\x12\x16\n\x0eother_username\x18\x04 \x01(\t\"\x1f\n\rTradeResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\"6\n\x12\x41nswerTradeRequest\x12\x0e\n\x06\x61\x63\x63\x65pt\x18\x01 \x01(\x08\x12\x10\n\x08trade_id\x18\x02 \x01(\x05\"%\n\x13\x41nswerTradeResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\"$\n\x10GetTradesRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x9b\x03\n\x11GetTradesResponse\x12.\n\x06trades\x18\x01 \x03(\x0b\x32\x1e.trade.GetTradesResponse.Trade\x1a\xd5\x02\n\x05Trade\x12\x37\n\x07to_send\x18\x01 \x03(\x0b\x32&.trade.GetTradesResponse.Trade.Sticker\x12:\n\nto_receive\x18\x02 \x03(\x0b\x32&.trade.GetTradesResponse.Trade.Sticker\x12\x10\n\x08username\x18\x03 \x01(\t\x12\x35\n\x06status\x18\x04 \x01(\x0e\x32%.trade.GetTradesResponse.Trade.Status\x12\x10\n\x08trade_id\x18\x05 \x01(\x05\x1aJ\n\x07Sticker\x12\x12\n\nplayername\x18\x01 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x02 \x01(\t\x12\x0e\n\x06rarity\x18\x03 \x01(\x05\x12\n\n\x02id\x18\x04 \x01(\x05\"0\n\x06Status\x12\x0b\n\x07PENDENT\x10\x00\x12\x0c\n\x08\x41\x43\x43\x45PTED\x10\x01\x12\x0b\n\x07RECUSED\x10\x02\x32\xd8\x01\n\x0cTradeService\x12<\n\rrequest_trade\x12\x13.trade.TradeRequest\x1a\x14.trade.TradeResponse\"\x00\x12G\n\x0c\x61nswer_trade\x12\x19.trade.AnswerTradeRequest\x1a\x1a.trade.AnswerTradeResponse\"\x00\x12\x41\n\nget_trades\x12\x17.trade.GetTradesRequest\x1a\x18.trade.GetTradesResponse\"\x00\x62\x06proto3')
+
+
+
+_TRADEREQUEST = DESCRIPTOR.message_types_by_name['TradeRequest']
+_TRADERESPONSE = DESCRIPTOR.message_types_by_name['TradeResponse']
+_ANSWERTRADEREQUEST = DESCRIPTOR.message_types_by_name['AnswerTradeRequest']
+_ANSWERTRADERESPONSE = DESCRIPTOR.message_types_by_name['AnswerTradeResponse']
+_GETTRADESREQUEST = DESCRIPTOR.message_types_by_name['GetTradesRequest']
+_GETTRADESRESPONSE = DESCRIPTOR.message_types_by_name['GetTradesResponse']
+_GETTRADESRESPONSE_TRADE = _GETTRADESRESPONSE.nested_types_by_name['Trade']
+_GETTRADESRESPONSE_TRADE_STICKER = _GETTRADESRESPONSE_TRADE.nested_types_by_name['Sticker']
+_GETTRADESRESPONSE_TRADE_STATUS = _GETTRADESRESPONSE_TRADE.enum_types_by_name['Status']
+TradeRequest = _reflection.GeneratedProtocolMessageType('TradeRequest', (_message.Message,), {
+  'DESCRIPTOR' : _TRADEREQUEST,
+  '__module__' : 'trade_pb2'
+  # @@protoc_insertion_point(class_scope:trade.TradeRequest)
+  })
 _sym_db.RegisterMessage(TradeRequest)
 
-TradeResponse = _reflection.GeneratedProtocolMessageType(
-    "TradeResponse",
-    (_message.Message,),
-    {
-        "DESCRIPTOR": _TRADERESPONSE,
-        "__module__": "trade_pb2"
-        # @@protoc_insertion_point(class_scope:trade.TradeResponse)
-    },
-)
+TradeResponse = _reflection.GeneratedProtocolMessageType('TradeResponse', (_message.Message,), {
+  'DESCRIPTOR' : _TRADERESPONSE,
+  '__module__' : 'trade_pb2'
+  # @@protoc_insertion_point(class_scope:trade.TradeResponse)
+  })
 _sym_db.RegisterMessage(TradeResponse)
 
-AnswerTradeRequest = _reflection.GeneratedProtocolMessageType(
-    "AnswerTradeRequest",
-    (_message.Message,),
-    {
-        "DESCRIPTOR": _ANSWERTRADEREQUEST,
-        "__module__": "trade_pb2"
-        # @@protoc_insertion_point(class_scope:trade.AnswerTradeRequest)
-    },
-)
+AnswerTradeRequest = _reflection.GeneratedProtocolMessageType('AnswerTradeRequest', (_message.Message,), {
+  'DESCRIPTOR' : _ANSWERTRADEREQUEST,
+  '__module__' : 'trade_pb2'
+  # @@protoc_insertion_point(class_scope:trade.AnswerTradeRequest)
+  })
 _sym_db.RegisterMessage(AnswerTradeRequest)
 
-AnswerTradeResponse = _reflection.GeneratedProtocolMessageType(
-    "AnswerTradeResponse",
-    (_message.Message,),
-    {
-        "DESCRIPTOR": _ANSWERTRADERESPONSE,
-        "__module__": "trade_pb2"
-        # @@protoc_insertion_point(class_scope:trade.AnswerTradeResponse)
-    },
-)
+AnswerTradeResponse = _reflection.GeneratedProtocolMessageType('AnswerTradeResponse', (_message.Message,), {
+  'DESCRIPTOR' : _ANSWERTRADERESPONSE,
+  '__module__' : 'trade_pb2'
+  # @@protoc_insertion_point(class_scope:trade.AnswerTradeResponse)
+  })
 _sym_db.RegisterMessage(AnswerTradeResponse)
 
-GetTradesRequest = _reflection.GeneratedProtocolMessageType(
-    "GetTradesRequest",
-    (_message.Message,),
-    {
-        "DESCRIPTOR": _GETTRADESREQUEST,
-        "__module__": "trade_pb2"
-        # @@protoc_insertion_point(class_scope:trade.GetTradesRequest)
-    },
-)
+GetTradesRequest = _reflection.GeneratedProtocolMessageType('GetTradesRequest', (_message.Message,), {
+  'DESCRIPTOR' : _GETTRADESREQUEST,
+  '__module__' : 'trade_pb2'
+  # @@protoc_insertion_point(class_scope:trade.GetTradesRequest)
+  })
 _sym_db.RegisterMessage(GetTradesRequest)
 
-GetTradesResponse = _reflection.GeneratedProtocolMessageType(
-    "GetTradesResponse",
-    (_message.Message,),
-    {
-        "Trade": _reflection.GeneratedProtocolMessageType(
-            "Trade",
-            (_message.Message,),
-            {
-                "Sticker": _reflection.GeneratedProtocolMessageType(
-                    "Sticker",
-                    (_message.Message,),
-                    {
-                        "DESCRIPTOR": _GETTRADESRESPONSE_TRADE_STICKER,
-                        "__module__": "trade_pb2"
-                        # @@protoc_insertion_point(class_scope:trade.GetTradesResponse.Trade.Sticker)
-                    },
-                ),
-                "DESCRIPTOR": _GETTRADESRESPONSE_TRADE,
-                "__module__": "trade_pb2"
-                # @@protoc_insertion_point(class_scope:trade.GetTradesResponse.Trade)
-            },
-        ),
-        "DESCRIPTOR": _GETTRADESRESPONSE,
-        "__module__": "trade_pb2"
-        # @@protoc_insertion_point(class_scope:trade.GetTradesResponse)
-    },
-)
+GetTradesResponse = _reflection.GeneratedProtocolMessageType('GetTradesResponse', (_message.Message,), {
+
+  'Trade' : _reflection.GeneratedProtocolMessageType('Trade', (_message.Message,), {
+
+    'Sticker' : _reflection.GeneratedProtocolMessageType('Sticker', (_message.Message,), {
+      'DESCRIPTOR' : _GETTRADESRESPONSE_TRADE_STICKER,
+      '__module__' : 'trade_pb2'
+      # @@protoc_insertion_point(class_scope:trade.GetTradesResponse.Trade.Sticker)
+      })
+    ,
+    'DESCRIPTOR' : _GETTRADESRESPONSE_TRADE,
+    '__module__' : 'trade_pb2'
+    # @@protoc_insertion_point(class_scope:trade.GetTradesResponse.Trade)
+    })
+  ,
+  'DESCRIPTOR' : _GETTRADESRESPONSE,
+  '__module__' : 'trade_pb2'
+  # @@protoc_insertion_point(class_scope:trade.GetTradesResponse)
+  })
 _sym_db.RegisterMessage(GetTradesResponse)
 _sym_db.RegisterMessage(GetTradesResponse.Trade)
 _sym_db.RegisterMessage(GetTradesResponse.Trade.Sticker)
 
-_TRADESERVICE = DESCRIPTOR.services_by_name["TradeService"]
+_TRADESERVICE = DESCRIPTOR.services_by_name['TradeService']
 if _descriptor._USE_C_DESCRIPTORS == False:
 
-    DESCRIPTOR._options = None
-    _TRADEREQUEST._serialized_start = 22
-    _TRADEREQUEST._serialized_end = 126
-    _TRADERESPONSE._serialized_start = 128
-    _TRADERESPONSE._serialized_end = 159
-    _ANSWERTRADEREQUEST._serialized_start = 161
-    _ANSWERTRADEREQUEST._serialized_end = 215
-    _ANSWERTRADERESPONSE._serialized_start = 217
-    _ANSWERTRADERESPONSE._serialized_end = 254
-    _GETTRADESREQUEST._serialized_start = 256
-    _GETTRADESREQUEST._serialized_end = 292
-    _GETTRADESRESPONSE._serialized_start = 295
-    _GETTRADESRESPONSE._serialized_end = 706
-    _GETTRADESRESPONSE_TRADE._serialized_start = 365
-    _GETTRADESRESPONSE_TRADE._serialized_end = 706
-    _GETTRADESRESPONSE_TRADE_STICKER._serialized_start = 582
-    _GETTRADESRESPONSE_TRADE_STICKER._serialized_end = 656
-    _GETTRADESRESPONSE_TRADE_STATUS._serialized_start = 658
-    _GETTRADESRESPONSE_TRADE_STATUS._serialized_end = 706
-    _TRADESERVICE._serialized_start = 709
-    _TRADESERVICE._serialized_end = 925
+  DESCRIPTOR._options = None
+  _TRADEREQUEST._serialized_start=22
+  _TRADEREQUEST._serialized_end=126
+  _TRADERESPONSE._serialized_start=128
+  _TRADERESPONSE._serialized_end=159
+  _ANSWERTRADEREQUEST._serialized_start=161
+  _ANSWERTRADEREQUEST._serialized_end=215
+  _ANSWERTRADERESPONSE._serialized_start=217
+  _ANSWERTRADERESPONSE._serialized_end=254
+  _GETTRADESREQUEST._serialized_start=256
+  _GETTRADESREQUEST._serialized_end=292
+  _GETTRADESRESPONSE._serialized_start=295
+  _GETTRADESRESPONSE._serialized_end=706
+  _GETTRADESRESPONSE_TRADE._serialized_start=365
+  _GETTRADESRESPONSE_TRADE._serialized_end=706
+  _GETTRADESRESPONSE_TRADE_STICKER._serialized_start=582
+  _GETTRADESRESPONSE_TRADE_STICKER._serialized_end=656
+  _GETTRADESRESPONSE_TRADE_STATUS._serialized_start=658
+  _GETTRADESRESPONSE_TRADE_STATUS._serialized_end=706
+  _TRADESERVICE._serialized_start=709
+  _TRADESERVICE._serialized_end=925
 # @@protoc_insertion_point(module_scope)

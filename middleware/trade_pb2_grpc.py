@@ -15,20 +15,20 @@ class TradeServiceStub(object):
             channel: A grpc.Channel.
         """
         self.request_trade = channel.unary_unary(
-            "/trade.TradeService/request_trade",
-            request_serializer=trade__pb2.TradeRequest.SerializeToString,
-            response_deserializer=trade__pb2.TradeResponse.FromString,
-        )
+                '/trade.TradeService/request_trade',
+                request_serializer=trade__pb2.TradeRequest.SerializeToString,
+                response_deserializer=trade__pb2.TradeResponse.FromString,
+                )
         self.answer_trade = channel.unary_unary(
-            "/trade.TradeService/answer_trade",
-            request_serializer=trade__pb2.AnswerTradeRequest.SerializeToString,
-            response_deserializer=trade__pb2.AnswerTradeResponse.FromString,
-        )
+                '/trade.TradeService/answer_trade',
+                request_serializer=trade__pb2.AnswerTradeRequest.SerializeToString,
+                response_deserializer=trade__pb2.AnswerTradeResponse.FromString,
+                )
         self.get_trades = channel.unary_unary(
-            "/trade.TradeService/get_trades",
-            request_serializer=trade__pb2.GetTradesRequest.SerializeToString,
-            response_deserializer=trade__pb2.GetTradesResponse.FromString,
-        )
+                '/trade.TradeService/get_trades',
+                request_serializer=trade__pb2.GetTradesRequest.SerializeToString,
+                response_deserializer=trade__pb2.GetTradesResponse.FromString,
+                )
 
 
 class TradeServiceServicer(object):
@@ -37,133 +37,96 @@ class TradeServiceServicer(object):
     def request_trade(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details("Method not implemented!")
-        raise NotImplementedError("Method not implemented!")
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def answer_trade(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details("Method not implemented!")
-        raise NotImplementedError("Method not implemented!")
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def get_trades(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details("Method not implemented!")
-        raise NotImplementedError("Method not implemented!")
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
 
 def add_TradeServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        "request_trade": grpc.unary_unary_rpc_method_handler(
-            servicer.request_trade,
-            request_deserializer=trade__pb2.TradeRequest.FromString,
-            response_serializer=trade__pb2.TradeResponse.SerializeToString,
-        ),
-        "answer_trade": grpc.unary_unary_rpc_method_handler(
-            servicer.answer_trade,
-            request_deserializer=trade__pb2.AnswerTradeRequest.FromString,
-            response_serializer=trade__pb2.AnswerTradeResponse.SerializeToString,
-        ),
-        "get_trades": grpc.unary_unary_rpc_method_handler(
-            servicer.get_trades,
-            request_deserializer=trade__pb2.GetTradesRequest.FromString,
-            response_serializer=trade__pb2.GetTradesResponse.SerializeToString,
-        ),
+            'request_trade': grpc.unary_unary_rpc_method_handler(
+                    servicer.request_trade,
+                    request_deserializer=trade__pb2.TradeRequest.FromString,
+                    response_serializer=trade__pb2.TradeResponse.SerializeToString,
+            ),
+            'answer_trade': grpc.unary_unary_rpc_method_handler(
+                    servicer.answer_trade,
+                    request_deserializer=trade__pb2.AnswerTradeRequest.FromString,
+                    response_serializer=trade__pb2.AnswerTradeResponse.SerializeToString,
+            ),
+            'get_trades': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_trades,
+                    request_deserializer=trade__pb2.GetTradesRequest.FromString,
+                    response_serializer=trade__pb2.GetTradesResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-        "trade.TradeService", rpc_method_handlers
-    )
+            'trade.TradeService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
-# This class is part of an EXPERIMENTAL API.
+ # This class is part of an EXPERIMENTAL API.
 class TradeService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def request_trade(
-        request,
-        target,
-        options=(),
-        channel_credentials=None,
-        call_credentials=None,
-        insecure=False,
-        compression=None,
-        wait_for_ready=None,
-        timeout=None,
-        metadata=None,
-    ):
-        return grpc.experimental.unary_unary(
-            request,
+    def request_trade(request,
             target,
-            "/trade.TradeService/request_trade",
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/trade.TradeService/request_trade',
             trade__pb2.TradeRequest.SerializeToString,
             trade__pb2.TradeResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-        )
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def answer_trade(
-        request,
-        target,
-        options=(),
-        channel_credentials=None,
-        call_credentials=None,
-        insecure=False,
-        compression=None,
-        wait_for_ready=None,
-        timeout=None,
-        metadata=None,
-    ):
-        return grpc.experimental.unary_unary(
-            request,
+    def answer_trade(request,
             target,
-            "/trade.TradeService/answer_trade",
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/trade.TradeService/answer_trade',
             trade__pb2.AnswerTradeRequest.SerializeToString,
             trade__pb2.AnswerTradeResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-        )
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def get_trades(
-        request,
-        target,
-        options=(),
-        channel_credentials=None,
-        call_credentials=None,
-        insecure=False,
-        compression=None,
-        wait_for_ready=None,
-        timeout=None,
-        metadata=None,
-    ):
-        return grpc.experimental.unary_unary(
-            request,
+    def get_trades(request,
             target,
-            "/trade.TradeService/get_trades",
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/trade.TradeService/get_trades',
             trade__pb2.GetTradesRequest.SerializeToString,
             trade__pb2.GetTradesResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-        )
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
