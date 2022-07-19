@@ -14,7 +14,12 @@ from PIL import Image, ImageTk
 
 class StickerFrame(Frame):
     def __init__(self, window: Frame, playername: str, country: str, rarity: int, photo: bytearray):
-        super().__init__(window, width=200, height=330, pady=10, bg="#E5E7E9")
+        super().__init__(window, 
+            width=200, 
+            height=330, 
+            pady=10, 
+            bg="#FFD700" if rarity == 3 else "#C0C0C0" if rarity == 2 else "#CD7F32"
+        )
         self.pack_propagate(False)
         self.window = window
 
