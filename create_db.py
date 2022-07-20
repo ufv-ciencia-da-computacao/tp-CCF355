@@ -1,10 +1,10 @@
 from models.domain import entity
 from models.repository.DBConfig import AlbumCredentials, SQLiteConnection
 from models.repository import repo
-from models.protocol import command
-from models.service.StickersPack import StickersPack
+from service.StickersPack import StickersPack
 import json
 from sqlalchemy.orm import sessionmaker, scoped_session
+import os
 
 if __name__ == "__main__":
     con = SQLiteConnection.get_connection(AlbumCredentials.host)
@@ -23,8 +23,14 @@ if __name__ == "__main__":
     stickerspack = StickersPack(stickers_repo, ls_repo)
 
     for d in players:
+        with open(os.path.join("./data/img", d["img"]), "rb") as f:
+            photo = f.read()
+
         s = entity.Stickers(
-            country=d["country"], playername=d["playername"], rarity=d["rarity"]
+            country=d["country"],
+            playername=d["playername"],
+            rarity=d["rarity"],
+            photo=photo,
         )
         stickers_repo.add(s)
 

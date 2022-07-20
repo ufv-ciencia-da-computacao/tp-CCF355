@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Enum
+from sqlalchemy import BLOB, Column, Integer, String, ForeignKey, Table, Enum
 import enum
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -59,14 +59,17 @@ class Stickers(Base):
     playername = Column(String, unique=True, nullable=False)
     country = Column(String, nullable=False)
     rarity = Column(Integer, nullable=False)
-    # photo
+    photo = Column(BLOB, nullable=True)
     users = relationship("Users", secondary="list_stickers", back_populates="stickers")
 
-    def __init__(self, playername: str, country: str, rarity: int, id: int = None):
+    def __init__(
+        self, playername: str, country: str, rarity: int, photo, id: int = None
+    ):
         self.id = id
         self.playername = playername
         self.country = country
         self.rarity = rarity
+        self.photo = photo
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
