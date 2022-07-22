@@ -15,6 +15,10 @@ Em seguida o banco de dados deve ser criado através do comando a seguir
 python3 create_db.py
 ```
 
+- Dois usuários são criados automaticamente.
+    - Username: 'a' - Senha: 'a'
+    - Username: 'b' - Senha: 'b'
+
 ## Executando o processo servidor
 Um único processo servidor deve ser executado para a utilização do sistema
 
@@ -23,7 +27,7 @@ python3 server.py
 ```
 
 ## Executando processos clientes
-Múltiplos processos clientes podem ser executados 
+Múltiplos processos clientes podem ser executados
 
 ```
 python3 client.py
