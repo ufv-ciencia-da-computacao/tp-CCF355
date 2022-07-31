@@ -4,21 +4,29 @@ import tkinter
 from typing import List
 from client.app import App
 from models.domain.entity import Users
-
-import grpc
-from middleware.sticker_pb2 import ListStickersRequest
-from middleware.sticker_pb2_grpc import StickerServiceStub, StickerServiceServicer
 import service.StickerService
 
 from PIL import Image, ImageTk
+import requests
+from base64 import b64decode
+import json
+
 
 class StickerFrame(Frame):
-    def __init__(self, window: Frame, playername: str, country: str, rarity: int, photo: bytearray):
-        super().__init__(window, 
-            width=200, 
-            height=330, 
-            pady=10, 
-            bg="#FFD700" if rarity == 3 else "#C0C0C0" if rarity == 2 else "#CD7F32"
+    def __init__(
+        self,
+        window: Frame,
+        playername: str,
+        country: str,
+        rarity: int,
+        photo: bytearray,
+    ):
+        super().__init__(
+            window,
+            width=200,
+            height=330,
+            pady=10,
+            bg="#FFD700" if rarity == 3 else "#C0C0C0" if rarity == 2 else "#CD7F32",
         )
         self.pack_propagate(False)
         self.window = window
@@ -100,11 +108,22 @@ class HomepageView(Frame):
         self.welcome.config(text="Bem vindo " + self.window.logged_user_username)
         self.clear()
 
-        resp = self.window.sticker_stub.list_stickers(
-            ListStickersRequest(username=self.window.logged_user_username)
-        )
-        for r in resp.sticker:
-            s = StickerFrame(self.f, r.playername, r.country, r.rarity, r.photo)
+        resp = requests.get(
+            self.window.stickers_route + "/list",
+            data=json.dumps(
+                {"username": self.window.logged_user_username}, ensure_ascii=False
+            ),
+            headers=self.window.headers,
+        ).json()
+
+        for r in resp:
+            s = StickerFrame(
+                self.f,
+                r["playername"],
+                r["country"],
+                r["rarity"],
+                b64decode(r["photo"].encode("utf-8")),
+            )
             s.pack(side="left", padx=10)
             self.list_stickers.append(s)
 

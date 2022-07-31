@@ -1,5 +1,3 @@
-from middleware.trade_pb2_grpc import TradeServiceServicer
-from middleware.trade_pb2 import AnswerTradeResponse, GetTradesResponse, TradeResponse
 from models.domain import entity
 from models.repository.repo import (
     ListStickersRepository,
@@ -11,7 +9,7 @@ from models.repository.repo import (
 from service.TradeStickers import TradeStickersService
 
 
-class TradeService(TradeServiceServicer):
+class TradeService:
     def __init__(
         self,
         us_repo: UsersRepository,

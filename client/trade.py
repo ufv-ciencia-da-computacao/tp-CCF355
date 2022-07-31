@@ -11,13 +11,13 @@ from tkinter import (
     Scrollbar,
 )
 from typing import List
-from middleware.sticker_pb2 import ListStickerResponse, ListStickersRequest
 from client.app import App
-from middleware.trade_pb2 import TradeRequest
+import requests
+import json
 
 
 class ItemListSticker(Frame):
-    def __init__(self, window: Frame, sticker: ListStickerResponse.Sticker):
+    def __init__(self, window: Frame, sticker: dict):
         super().__init__(
             window, highlightbackground="gray", highlightthickness=1, pady=5
         )
@@ -30,15 +30,17 @@ class ItemListSticker(Frame):
         )
 
         Label(self, text="Nome:", padx=5).grid(row=0, column=1, sticky="w")
-        Label(self, text=self.sticker.playername, padx=5).grid(
+        Label(self, text=self.sticker["playername"], padx=5).grid(
             row=0, column=2, sticky="w"
         )
 
         Label(self, text="País:", padx=5).grid(row=1, column=1, sticky="w")
-        Label(self, text=self.sticker.country, padx=5).grid(row=1, column=2, sticky="w")
+        Label(self, text=self.sticker["country"], padx=5).grid(
+            row=1, column=2, sticky="w"
+        )
 
         Label(self, text="Raridade:", padx=5).grid(row=2, column=1, sticky="w")
-        Label(self, text=str(self.sticker.rarity), padx=5).grid(
+        Label(self, text=str(self.sticker["rarity"]), padx=5).grid(
             row=2, column=2, sticky="w"
         )
 
@@ -78,7 +80,7 @@ class ListSticker(Frame):
         selected = []
         for item in self.view_list:
             if item.is_selected():
-                selected.append(item.sticker.id)
+                selected.append(item.sticker["id"])
         return selected
 
     def update_view(self, *args, **kwargs):
@@ -87,7 +89,7 @@ class ListSticker(Frame):
             v.destroy()
         self.view_list.clear()
 
-    def add_stickers(self, stickers: List[ListStickerResponse.Sticker]):
+    def add_stickers(self, stickers: List):
         for s in stickers:
             item = ItemListSticker(self.content, sticker=s)
             item.pack(fill="x")
@@ -154,12 +156,17 @@ class TradeView(Frame):
         self.other_name_entry.delete(0, END)
 
     def update_view(self):
-        resp = self.window.sticker_stub.list_stickers(
-            ListStickersRequest(username=self.window.logged_user_username)
-        )
+        resp = requests.get(
+            self.window.stickers_route + "/list",
+            data=json.dumps(
+                {"username": self.window.logged_user_username}, ensure_ascii=False
+            ),
+            headers=self.window.headers,
+        ).json()
 
         self.clear()
-        self.my_list.add_stickers(resp.sticker)
+        print(resp)
+        self.my_list.add_stickers(resp)
 
     def _search_clicked(self, event=None):
         self.other_list.clear()
@@ -169,27 +176,33 @@ class TradeView(Frame):
             # cant trade with myself
             return
 
-        resp = self.window.sticker_stub.list_stickers(
-            ListStickersRequest(username=username)
-        )
+        resp = requests.get(
+            self.window.stickers_route + "/list",
+            data=json.dumps({"username": username}, ensure_ascii=False),
+            headers=self.window.headers,
+        ).json()
 
-        self.other_list.add_stickers(resp.sticker)
+        print(resp)
+        self.other_list.add_stickers(resp)
 
     def _trade(self):
         other_username = self.other_name_entry.get()
         my_stickers = self.my_list.get_selected_stickers()
         other_stickers = self.other_list.get_selected_stickers()
 
-        resp = self.window.trade_stub.request_trade(
-            TradeRequest(
-                my_stickers=my_stickers,
-                other_stickers=other_stickers,
-                my_username=self.window.logged_user_username,
-                other_username=other_username,
-            )
-        )
+        data = {
+            "my_stickers": my_stickers,
+            "other_stickers": other_stickers,
+            "my_username": self.window.logged_user_username,
+            "other_username": other_username,
+        }
+        resp = requests.post(
+            self.window.trade_route + "/request",
+            data=json.dumps(data, ensure_ascii=False),
+            headers=self.window.headers,
+        ).json()
 
-        if resp.status:
+        if resp["status"]:
             self.window.show_page("homepage", menu=True)
         else:
             print("Error on trade")

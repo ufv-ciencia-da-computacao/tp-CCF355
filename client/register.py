@@ -1,10 +1,10 @@
 from cgitb import text
+from email import header
 import json
 from tkinter import *
 
 from client.app import App
-from middleware.user_pb2 import CreateRequest, CreateResponse
-from middleware.user_pb2_grpc import UserServiceStub
+import requests
 
 
 class RegisterView(Frame):
@@ -55,11 +55,14 @@ class RegisterView(Frame):
             self._show_error("Senhas diferentes")
             return
 
-        resp = self.window.user_stub.register(
-            CreateRequest(username=username, password=password)
-        )
-        print(resp.status)
-        if resp.status:
+        resp = requests.post(
+            self.window.users_route + "/register",
+            data=json.dumps(
+                {"username": username, "password": password}, ensure_ascii=False
+            ),
+            headers=self.window.headers,
+        ).json()
+        if resp["status"]:
             self.window.show_page("login")
         else:
             self._show_error("Falha ao cadastrar")

@@ -1,5 +1,4 @@
 from models.domain import entity
-from middleware.user_pb2 import LoginResponse, CreateResponse
 
 from models.repository.repo import (
     ListStickersRepository,
@@ -7,10 +6,9 @@ from models.repository.repo import (
     UsersRepository,
 )
 from service.StickersPack import StickersPack
-from middleware.user_pb2_grpc import UserServiceServicer
 
 
-class UserService(UserServiceServicer):
+class UserService:
     def __init__(
         self,
         us_repo: UsersRepository,

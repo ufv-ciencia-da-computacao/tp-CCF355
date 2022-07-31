@@ -1,15 +1,16 @@
 from tkinter import *
 from typing import List
 from client.app import App
-from middleware.trade_pb2 import AnswerTradeRequest, GetTradesRequest
-from middleware.trade_pb2 import GetTradesResponse
+from models.domain import entity
 from models.domain.entity import Status, Stickers
+import json
+import requests
 
 
 class ItemListSticker(Frame):
-    sticker: GetTradesResponse.Trade.Sticker
+    sticker: dict
 
-    def __init__(self, window: Frame, sticker: Stickers):
+    def __init__(self, window: Frame, sticker: dict):
         super().__init__(
             window, highlightbackground="gray", highlightthickness=1, pady=5
         )
@@ -17,15 +18,17 @@ class ItemListSticker(Frame):
         self.sticker = sticker
 
         Label(self, text="Nome:", padx=5).grid(row=0, column=1, sticky="w")
-        Label(self, text=self.sticker.playername, padx=5).grid(
+        Label(self, text=self.sticker["playername"], padx=5).grid(
             row=0, column=2, sticky="w"
         )
 
         Label(self, text="País:", padx=5).grid(row=1, column=1, sticky="w")
-        Label(self, text=self.sticker.country, padx=5).grid(row=1, column=2, sticky="w")
+        Label(self, text=self.sticker["country"], padx=5).grid(
+            row=1, column=2, sticky="w"
+        )
 
         Label(self, text="Raridade:", padx=5).grid(row=2, column=1, sticky="w")
-        Label(self, text=str(self.sticker.rarity), padx=5).grid(
+        Label(self, text=str(self.sticker["rarity"]), padx=5).grid(
             row=2, column=2, sticky="w"
         )
 
@@ -60,7 +63,7 @@ class ListSticker(Frame):
 
         self.view_list = []
 
-    def add_stickers(self, stickers: List[GetTradesResponse.Trade.Sticker]):
+    def add_stickers(self, stickers: List):
         for s in stickers:
             item = ItemListSticker(self.content, sticker=s)
             item.pack(fill="x")
@@ -80,7 +83,7 @@ class ListSticker(Frame):
 
 
 class TradeRequestsView(Frame):
-    list_trades: List[GetTradesResponse.Trade]
+    list_trades: List
     position: int
 
     def __init__(self, window: App):
@@ -140,12 +143,17 @@ class TradeRequestsView(Frame):
         self.btn_recuse.grid(column=1, row=0, sticky="e", padx=10)
 
     def update_view(self, *args, **kwargs):
-        resp = self.window.trade_stub.get_trades(
-            GetTradesRequest(username=self.window.logged_user_username)
-        )
+        resp = requests.get(
+            self.window.trade_route + "/list",
+            data=json.dumps(
+                {"username": self.window.logged_user_username}, ensure_ascii=False
+            ),
+            headers=self.window.headers,
+        ).json()
+
         self.position = 0
         self.list_trades = []
-        for t in resp.trades:
+        for t in resp:
             self.list_trades.append(t)
         self.show()
 
@@ -160,11 +168,17 @@ class TradeRequestsView(Frame):
     def _accept_clicked(self, event=None):
         trade = self.list_trades[self.position]
 
-        resp = self.window.trade_stub.answer_trade(
-            AnswerTradeRequest(accept=True, trade_id=trade.trade_id)
-        )
+        print(trade)
 
-        if resp.status:
+        resp = requests.post(
+            self.window.trade_route + "/answer",
+            data=json.dumps(
+                {"trade_id": trade["trade_id"], "answer": True}, ensure_ascii=False
+            ),
+            headers=self.window.headers,
+        ).json()
+
+        if resp["status"]:
             print("stickers traded")
         else:
             print("something went wrong")
@@ -174,11 +188,15 @@ class TradeRequestsView(Frame):
     def _recuse_clicked(self, event=None):
         trade = self.list_trades[self.position]
 
-        resp = self.window.trade_stub.answer_trade(
-            AnswerTradeRequest(accept=False, trade_id=trade.trade_id)
-        )
+        resp = requests.post(
+            self.window.trade_route + "/answer",
+            data=json.dumps(
+                {"trade_id": trade["trade_id"], "answer": False}, ensure_ascii=False
+            ),
+            headers=self.window.headers,
+        ).json()
 
-        if resp.status:
+        if resp["status"]:
             print("trade recused")
         else:
             print("something went wrong")
@@ -209,10 +227,10 @@ class TradeRequestsView(Frame):
             else:
                 self.btn_next.config(state=NORMAL)
 
-            self.header.config(text="Solicitação de " + trade.username)
+            self.header.config(text="Solicitação de " + trade["username"])
 
             self.list_receive.clear()
-            self.list_receive.add_stickers(trade.to_receive)
+            self.list_receive.add_stickers(trade["to_receive"])
 
             self.list_send.clear()
-            self.list_send.add_stickers(trade.to_send)
+            self.list_send.add_stickers(trade["to_send"])

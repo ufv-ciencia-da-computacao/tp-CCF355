@@ -1,9 +1,8 @@
+from email import header
 from tkinter import *
 from client.app import App
-
-import grpc
-from middleware.user_pb2_grpc import UserServiceStub
-from middleware.user_pb2 import LoginRequest, LoginResponse
+import requests
+import json
 
 
 class LoginView(Frame):
@@ -53,13 +52,19 @@ class LoginView(Frame):
         password = self.password.get()
 
         try:
-            resp = self.window.user_stub.login(
-                LoginRequest(username=username, password=password)
+            resp = requests.get(
+                self.window.users_route + "/login",
+                data=json.dumps(
+                    {"username": username, "password": password}, ensure_ascii=False
+                ),
+                headers=self.window.headers,
             )
+            resp = resp.json()
             self.window.logged_user_username = username
-            self.window.logged_user_id = resp.user_id
+            self.window.logged_user_id = resp["user_id"]
             self.window.show_page("homepage", menu=True)
-        except Exception:
+        except Exception as e:
+            print(e)
             self._show_error_msg()
 
     def _register_clicked(self, event=None):
