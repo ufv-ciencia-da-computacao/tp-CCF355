@@ -21,23 +21,19 @@ class UserService(UserServiceServicer):
         self.us_repo = us_repo
         self.stickers_pack = StickersPack(s_repo, ls_repo)
 
-    def login(self, request, context):
-        resp = LoginResponse(user_id=-1)
-        user = self.us_repo.get(request.username)
-        if user is not None and user.password == request.password:
-            resp.user_id = user.id
-            return resp
-        raise
+    def login(self, username, password):
+        user = self.us_repo.get(username)
+        if user is not None and user.password == password:
+            return user.id
+        return -1
 
-    def register(self, request, context):
-        resp = CreateResponse(status=False)
-        user = entity.Users(username=request.username, password=request.password)
+    def register(self, username, password):
+        user = entity.Users(username=username, password=password)
         try:
             self.us_repo.add(user=user)
             self.stickers_pack.add_pack2user(user=self.us_repo.get(user.username))
-            resp.status = True
-            print("ok")
+            status = True
         except Exception:
-            pass
+            status = False
 
-        return resp
+        return status

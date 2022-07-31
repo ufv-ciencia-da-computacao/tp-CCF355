@@ -56,7 +56,6 @@ class TradeStickersService:
 
     def answer_trade(self, trade_id, answer):
         trade = self.t_repo.get(trade_id).as_dict()
-        print("TradeStickersService.answer_trade.trade", trade)
         user_sender_id = trade["user_sender_id"]
         user_receiver_id = trade["user_receiver_id"]
 

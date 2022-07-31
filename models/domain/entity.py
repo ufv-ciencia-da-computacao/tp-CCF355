@@ -1,3 +1,4 @@
+from re import X
 from sqlalchemy import BLOB, Column, Integer, String, ForeignKey, Table, Enum
 import enum
 from sqlalchemy.orm import declarative_base, relationship
@@ -63,7 +64,7 @@ class Stickers(Base):
     users = relationship("Users", secondary="list_stickers", back_populates="stickers")
 
     def __init__(
-        self, playername: str, country: str, rarity: int, photo, id: int = None
+        self, playername: str, country: str, rarity: int, photo=None, id: int = None
     ):
         self.id = id
         self.playername = playername

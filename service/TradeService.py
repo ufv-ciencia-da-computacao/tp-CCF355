@@ -26,39 +26,36 @@ class TradeService(TradeServiceServicer):
             t_repo=t_repo, tr_repo=ts_repo, us_repo=us_repo, ls_repo=ls_repo
         )
 
-    def request_trade(self, request, context):
-        resp = TradeResponse(status=False)
-
+    def request_trade(self, my_username, other_username, my_stickers, other_stickers):
         try:
-            user_orig = self.us_repo.get(request.my_username)
-            user_dest = self.us_repo.get(request.other_username)
+            user_orig = self.us_repo.get(my_username)
+            user_dest = self.us_repo.get(other_username)
             trade = self.trade_stickers.request_trade(
                 user_orig.id,
                 user_dest.id,
-                [s for s in request.my_stickers],
-                [s for s in request.other_stickers],
+                [s for s in my_stickers],
+                [s for s in other_stickers],
             )
-            resp.status = True
+            status = True
         except Exception:
-            pass
+            status = False
 
-        return resp
+        return status
 
-    def answer_trade(self, request, context):
-        resp = AnswerTradeResponse(status=False)
+    def answer_trade(self, trade_id, accept):
         try:
-            self.trade_stickers.answer_trade(request.trade_id, request.accept)
-            resp.status = True
+            self.trade_stickers.answer_trade(trade_id, accept)
+            status = True
         except Exception:
-            pass
+            status = False
 
-        return resp
+        return status
 
-    def get_trades(self, request, context):
-        user = self.us_repo.get(request.username)
+    def get_trades(self, username):
+        user = self.us_repo.get(username)
         trades = self.t_repo.get_by_receiver_id(user.id)
 
-        resp = GetTradesResponse()
+        resp = []
 
         for t in trades:
             if t.status != entity.Status.pendent:
@@ -73,32 +70,30 @@ class TradeService(TradeServiceServicer):
                 else:
                     sent.append(ts.sender_sticker)
 
-            resp.trades.extend(
-                [
-                    GetTradesResponse.Trade(
-                        to_send=[
-                            GetTradesResponse.Trade.Sticker(
-                                playername=s.playername,
-                                country=s.country,
-                                rarity=s.rarity,
-                                id=s.id,
-                            )
-                            for s in sent
-                        ],
-                        to_receive=[
-                            GetTradesResponse.Trade.Sticker(
-                                playername=s.playername,
-                                country=s.country,
-                                rarity=s.rarity,
-                                id=s.id,
-                            )
-                            for s in received
-                        ],
-                        username=t.sender_user.username,
-                        status=GetTradesResponse.Trade.Status.PENDENT,
-                        trade_id=t.id,
-                    )
-                ]
+            resp.append(
+                {
+                    "to_send": [
+                        entity.Stickers(
+                            playername=s.playername,
+                            country=s.country,
+                            rarity=s.rarity,
+                            id=s.id,
+                        ).as_dict()
+                        for s in sent
+                    ],
+                    "to_receive": [
+                        entity.Stickers(
+                            playername=s.playername,
+                            country=s.country,
+                            rarity=s.rarity,
+                            id=s.id,
+                        ).as_dict()
+                        for s in received
+                    ],
+                    "username": t.sender_user.username,
+                    "status": t.status.pendent.name,
+                    "trade_id": t.id,
+                }
             )
 
         return resp
