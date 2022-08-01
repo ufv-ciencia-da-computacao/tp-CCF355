@@ -106,7 +106,6 @@ class ListStickersRepository(AbstractRepository):
         )
 
     def update_list_stickers(self, id: int, new_user_id: int) -> None:
-        print("repo.ListStickerRepository.update_list_sticker", id, new_user_id)
         try:
             self.session.query(entity.ListStickers).filter(
                 entity.ListStickers.id == id

@@ -168,7 +168,7 @@ class TradeRequestsView(Frame):
     def _accept_clicked(self, event=None):
         trade = self.list_trades[self.position]
 
-        print(trade)
+        # print(trade)
 
         resp = requests.post(
             self.window.trade_route + "/answer",

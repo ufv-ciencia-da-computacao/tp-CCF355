@@ -51,20 +51,20 @@ class LoginView(Frame):
         username = self.username.get()
         password = self.password.get()
 
-        try:
-            resp = requests.get(
-                self.window.users_route + "/login",
-                data=json.dumps(
-                    {"username": username, "password": password}, ensure_ascii=False
-                ),
-                headers=self.window.headers,
-            )
-            resp = resp.json()
-            self.window.logged_user_username = username
-            self.window.logged_user_id = resp["user_id"]
+        resp = requests.get(
+            self.window.users_route + "/login",
+            data=json.dumps(
+                {"username": username, "password": password}, ensure_ascii=False
+            ),
+            headers=self.window.headers,
+        )
+        resp = resp.json()
+        self.window.logged_user_username = username
+        uid = resp["user_id"]
+        if uid != -1:    
+            self.window.logged_user_id = uid
             self.window.show_page("homepage", menu=True)
-        except Exception as e:
-            print(e)
+        else:
             self._show_error_msg()
 
     def _register_clicked(self, event=None):

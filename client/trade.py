@@ -165,7 +165,6 @@ class TradeView(Frame):
         ).json()
 
         self.clear()
-        print(resp)
         self.my_list.add_stickers(resp)
 
     def _search_clicked(self, event=None):
@@ -182,7 +181,6 @@ class TradeView(Frame):
             headers=self.window.headers,
         ).json()
 
-        print(resp)
         self.other_list.add_stickers(resp)
 
     def _trade(self):
